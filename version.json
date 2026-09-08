@@ -1,5 +1,5 @@
 {
-  "version": "V3.61.25",
-  "updatedAt": "2026-09-08T17:30:00+09:00",
-  "mode": "AdaptiveRoute-NoPing-LogIsolation-MinimalCriticalGuard"
+  "version": "V3.61.27",
+  "updatedAt": "2026-09-09T05:45:00+09:00",
+  "mode": "V3.61.25-Base-TwoBugFixOnly"
 }
