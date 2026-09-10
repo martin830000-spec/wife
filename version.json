@@ -1,5 +1,5 @@
 {
-  "version": "V3.61.45",
-  "updatedAt": "2026-09-10T15:30:00+09:00",
-  "mode": "V3.61.45-SpeedCauseABCD-RegionCompare-LivePerf100-PartialCopy-QualityFrozen-ForwardFrozen-BothHedge4s"
+  "version": "V3.61.49",
+  "updatedAt": "2026-09-11T11:45:00+09:00",
+  "mode": "V3.61.49-L2KForwardMinimal-K2LForwardLow-CompactBackMinimal-LegacyLowRecovery-UnicodeGuard-HedgeRescueFrozen"
 }
