@@ -1,1 +1,5 @@
-{"version":"V3.61.95","updatedAt":"2026-09-15T13:35:00+09:00","notes":"diagnostic device-count stabilization: non-destructive same-device candidate grouping by exact anonymous environment fingerprint; raw pdev count remains visible; translation/STT/TTS, Cloud Run 3.7.12 and Cloudflare Worker V3.61.94 unchanged"}
+{
+  "version": "V3.61.118",
+  "build": "20260920-V3.61.118-RETRANSLATE-SERVICE-1",
+  "notes": "SERVICE 승격: V3.61.95 이후 누적 변경을 반영한 V3.61.118. 일반 통역앱 추가, SERVICE 경로와 기존 운영 저장상태 연속성, 최초 1회 한국어·라오어 업데이트 안내/업데이트 내역, 본앱 재번역 UI를 포함. 번역 프롬프트, STT/TTS, Relay/fallback, QualityGuard 코어는 TEST 확정판과 동일."
+}
