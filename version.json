@@ -1,5 +1,5 @@
 {
-  "version": "V3.61.118",
-  "build": "20260920-V3.61.118-RETRANSLATE-SERVICE-1",
-  "notes": "SERVICE 승격: V3.61.95 이후 누적 변경을 반영한 V3.61.118. 일반 통역앱 추가, SERVICE 경로와 기존 운영 저장상태 연속성, 최초 1회 한국어·라오어 업데이트 안내/업데이트 내역, 본앱 재번역 UI를 포함. 번역 프롬프트, STT/TTS, Relay/fallback, QualityGuard 코어는 TEST 확정판과 동일."
+  "version": "V3.61.119",
+  "build": "20260920-V3.61.119-CLEANUP-SERVICE-1",
+  "notes": "SERVICE 유지보수 청소패치. 자동 의미확인 기본화 후 남아 있던 구형 수동 검증/숨은 재번역/빈 복사설정 UI 잔여 코드를 제거하고 자체점검 경계를 현재 구조에 맞게 갱신. 일반앱 SERVICE 안내문과 한/라오 업데이트 팝업 접근성 연결을 정리. 번역/역번역/STT/TTS/Relay/fallback/프롬프트/최근기록/자동업데이트/운영 저장키는 변경하지 않음."
 }

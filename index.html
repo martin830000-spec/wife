@@ -282,15 +282,16 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
   <div class="release-notice-card">
     <div id="releaseNoticeKo">
       <h2 id="releaseNoticeTitle">✨ 새 버전으로 업데이트되었습니다</h2>
-      <p class="release-notice-sub">주요 변경사항을 간단히 안내합니다.</p>
-      <ul class="release-notice-list"><li>일반 통역앱이 새로 추가되었습니다.</li><li>입력 문장의 말투·호칭·핵심 의미 보존을 개선했습니다.</li><li>자동 의미확인·재번역·⚠️ 이상징후 경고 방식을 개선했습니다.</li><li>모바일 UI·사용설명서·업데이트 안내·진단 기능을 개선했습니다.</li></ul>
+      <p class="release-notice-sub">이번 버전은 기능 추가보다 코드 정리와 안내 정확성에 초점을 맞췄습니다.</p>
+      <ul class="release-notice-list"><li>자동 의미확인에서 더 이상 쓰지 않는 수동 검증 버튼 관련 잔여 코드를 정리했습니다.</li><li>숨겨져 있던 구형 재번역·복사 설정 UI 잔여 코드를 제거했습니다.</li><li>서비스 안내문과 한국어·라오어 업데이트 창의 접근성 연결을 현재 구조에 맞게 정리했습니다.</li><li>번역·역번역·STT/TTS·프롬프트·네트워크·최근기록 동작은 변경하지 않았습니다.</li></ul>
       <div class="release-notice-guide">자세한 내용은 사용설명서의 ‘업데이트 내역’에서 확인하세요.</div>
     </div>
     <div id="releaseNoticeLo" hidden>
-      <h2>✨ ແອັບໄດ້ອັບເດດເປັນເວີຊັນໃໝ່ແລ້ວ</h2>
-      <p class="release-notice-sub">ສະຫຼຸບການປ່ຽນແປງຫຼັກ.</p>
-      <ul class="release-notice-list"><li>ເພີ່ມແອັບລ່າມທົ່ວໄປໃໝ່.</li><li>ປັບປຸງການຮັກສານ້ຳສຽງ, ຄຳເອີ້ນ ແລະ ໃຈຄວາມສຳຄັນຂອງຕົ້ນສະບັບ.</li><li>ປັບປຸງການກວດຄວາມໝາຍອັດຕະໂນມັດ, ປຸ່ມແປໃໝ່ ແລະ ⚠️ ຄຳເຕືອນຈຸດທີ່ຄວນກວດ.</li><li>ປັບປຸງ UI ມືຖື, ຄູ່ມື, ການແຈ້ງອັບເດດ ແລະ ເຄື່ອງມືກວດ.</li></ul>
+      <h2 id="releaseNoticeTitleLo">✨ ແອັບໄດ້ອັບເດດເປັນເວີຊັນໃໝ່ແລ້ວ</h2>
+      <p class="release-notice-sub">ເວີຊັນນີ້ເນັ້ນການຈັດລະບຽບໂຄດ ແລະ ແກ້ໄຂຄຳອະທິບາຍໃຫ້ຖືກຕ້ອງ.</p>
+      <ul class="release-notice-list"><li>ລຶບໂຄດຄວບຄຸມປຸ່ມກວດຄວາມໝາຍແບບສັ່ງເອງທີ່ບໍ່ໄດ້ໃຊ້ແລ້ວ.</li><li>ລຶບ UI ເກົ່າທີ່ຖືກເຊື່ອງສຳລັບການແປໃໝ່ ແລະ ການຕັ້ງຄ່າຄັດລອກທີ່ບໍ່ໄດ້ໃຊ້.</li><li>ປັບຄຳອະທິບາຍບໍລິການ ແລະ ການເຊື່ອມປ້າຍການເຂົ້າເຖິງຂອງໜ້າອັບເດດພາສາເກົາຫຼີ·ລາວ.</li><li>ການແປ, ແປກັບ, STT/TTS, prompt, ເຄືອຂ່າຍ ແລະ ປະຫວັດຫຼ້າສຸດບໍ່ໄດ້ປ່ຽນ.</li></ul>
       <div class="release-notice-guide">ເບິ່ງລາຍລະອຽດໃນ ‘ປະຫວັດອັບເດດ’ ຂອງຄູ່ມື.</div>
+    </div>
     </div>
     <button id="releaseNoticeOk" class="release-notice-ok" type="button">닫기</button>
   </div>
@@ -300,18 +301,16 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
   <div id="manualUpdateHistoryKo">
    <h2 id="manualUpdateHistoryTitle">🆕 업데이트 내역</h2><div class="release-history-version">현재 버전: <b data-release-current-version>--</b></div>
    <h3>이전 버전 대비 주요 업데이트</h3>
-   <div class="release-history-section"><h3>새 기능</h3><ul><li>여행·식당·쇼핑·이동·일상 대화를 위한 일반 통역앱을 새로 추가했습니다.</li><li>본앱↔일반앱을 바로 이동할 수 있고, 일반앱은 한국어↔라오어 방향에 따라 화면 언어도 함께 전환됩니다.</li><li>새 버전의 주요 변경사항을 최초 1회 안내하고, 사용설명서에서 업데이트 내역을 다시 확인할 수 있습니다.</li></ul></div>
-   <div class="release-history-section"><h3>번역 및 의미확인</h3><ul><li>입력 문장의 존댓말·반말과 자연스러운 말투를 보존하도록 개선했습니다.</li><li>부부 호칭, 화자·상대방 역할, 고유명사와 핵심 의미 보존 규칙을 보강했습니다.</li><li>정번역 후 의미확인(역번역)을 자동으로 실행하고, 수동 검증 버튼 대신 결과 영역에 [🔄 재번역] 버튼을 추가했습니다.</li></ul></div>
-   <div class="release-history-section"><h3>품질 표시</h3><ul><li>번역 품질을 숫자 점수로 단정하지 않고, 확인이 필요한 경우에만 ⚠️ 이상징후와 이유를 표시하도록 변경했습니다.</li></ul></div>
-   <div class="release-history-section"><h3>UI·설명서·진단</h3><ul><li>모바일 화면과 좁은 화면의 상단 배치, 일반앱 언어전환, 사용설명서를 현재 기능에 맞게 정리했습니다.</li><li>번역 품질 숫자 대신 필요한 경우에만 ⚠️ 이상징후와 이유를 표시하도록 정리했습니다.</li><li>진단 기능과 안정성을 현재 앱 구조에 맞게 정리했습니다.</li></ul></div>
+   <div class="release-history-section"><h3>코드 정리</h3><ul><li>자동 의미확인이 기본 동작이 된 뒤 남아 있던 수동 [역번역 검증/검증 중지] 버튼 제어 코드를 제거했습니다.</li><li>실제로 표시되지 않던 구형 품질 재번역 버튼과 더 이상 사용하지 않는 복사 설정 빈 함수를 제거했습니다.</li><li>자체점검은 현재 실제 [재번역] 버튼과 현재 함수 경계를 검사하도록 함께 수정했습니다.</li></ul></div>
+   <div class="release-history-section"><h3>안내·접근성</h3><ul><li>일반 통역앱에 남아 있던 테스트 환경 안내 문구를 실제 SERVICE 환경에 맞게 수정했습니다.</li><li>한국어·라오어 업데이트 팝업과 업데이트 내역 창의 접근성 제목 연결을 현재 표시 언어에 맞게 정리했습니다.</li></ul></div>
+   <div class="release-history-section"><h3>유지된 기능</h3><ul><li>정번역·자동 의미확인(역번역)·재번역·STT/TTS·Relay/fallback·프롬프트·최근기록·자동업데이트·운영 저장키는 변경하지 않았습니다.</li></ul></div>
   </div>
   <div id="manualUpdateHistoryLo" hidden>
-   <h2>🆕 ປະຫວັດອັບເດດ</h2><div class="release-history-version">ເວີຊັນປັດຈຸບັນ: <b data-release-current-version>--</b></div>
+   <h2 id="manualUpdateHistoryTitleLo">🆕 ປະຫວັດອັບເດດ</h2><div class="release-history-version">ເວີຊັນປັດຈຸບັນ: <b data-release-current-version>--</b></div>
    <h3>ການປັບປຸງຫຼັກຈາກເວີຊັນກ່ອນ</h3>
-   <div class="release-history-section"><h3>ຟັງຊັນໃໝ່</h3><ul><li>ເພີ່ມແອັບລ່າມທົ່ວໄປໃໝ່ສຳລັບການເດີນທາງ, ຮ້ານອາຫານ, ຊື້ເຄື່ອງ ແລະ ສົນທະນາປະຈຳວັນ.</li><li>ສາມາດສະຫຼັບລະຫວ່າງແອັບຫຼັກກັບແອັບລ່າມໄດ້ທັນທີ ແລະ UI ຂອງແອັບລ່າມປ່ຽນພາສາຕາມທິດທາງ ເກົາຫຼີ↔ລາວ.</li><li>ເມື່ອມີເວີຊັນໃໝ່ ຈະແຈ້ງການປ່ຽນແປງຫຼັກ 1 ຄັ້ງ ແລະ ສາມາດເບິ່ງປະຫວັດອັບເດດໃນຄູ່ມືໄດ້.</li></ul></div>
-   <div class="release-history-section"><h3>ການແປ ແລະ ກວດຄວາມໝາຍ</h3><ul><li>ປັບປຸງໃຫ້ຮັກສາລະດັບຄວາມສຸພາບ ແລະ ນ້ຳສຽງຂອງຕົ້ນສະບັບ.</li><li>ເສີມການຮັກສາຄຳເອີ້ນຄູ່ສົມລົດ, ບົດບາດຜູ້ເວົ້າ/ຜູ້ຟັງ, ຊື່ສະເພາະ ແລະ ໃຈຄວາມສຳຄັນ.</li><li>ຫຼັງຄຳແປຫຼັກ ຈະກວດຄວາມໝາຍ (ແປກັບ) ອັດຕະໂນມັດ ແລະ ປ່ຽນປຸ່ມກວດແບບສັ່ງເອງເປັນ [🔄 ແປໃໝ່].</li></ul></div>
-   <div class="release-history-section"><h3>ການແຈ້ງຄຸນນະພາບ</h3><ul><li>ບໍ່ຕັດສິນຄຸນນະພາບດ້ວຍຄະແນນຕົວເລກ; ຈະສະແດງ ⚠️ ແລະ ເຫດຜົນສະເພາະເມື່ອມີຈຸດທີ່ຄວນກວດ.</li></ul></div>
-   <div class="release-history-section"><h3>UI · ຄູ່ມື · ການກວດ</h3><ul><li>ຈັດລະບົບ UI ມືຖື, ສ່ວນເທິງໃນໜ້າຈໍແຄບ, ການປ່ຽນພາສາໃນແອັບລ່າມ ແລະ ຄູ່ມືໃຫ້ກົງກັບຟັງຊັນປັດຈຸບັນ.</li><li>ບໍ່ສະແດງຄະແນນຄຸນນະພາບການແປເປັນຕົວເລກ; ຈະສະແດງ ⚠️ ຈຸດທີ່ຄວນກວດ ແລະ ເຫດຜົນເມື່ອຈຳເປັນ.</li><li>ຈັດລະບົບເຄື່ອງມືກວດ ແລະ ຄວາມສະຖຽນໃຫ້ກົງກັບໂຄງສ້າງແອັປັດຈຸບັນ.</li></ul></div>
+   <div class="release-history-section"><h3>ຈັດລະບຽບໂຄດ</h3><ul><li>ລຶບໂຄດຄວບຄຸມປຸ່ມກວດ/ຢຸດການກວດແບບສັ່ງເອງທີ່ບໍ່ໄດ້ໃຊ້ ຫຼັງຈາກການກວດຄວາມໝາຍອັດຕະໂນມັດເປັນຄ່າຫຼັກ.</li><li>ລຶບປຸ່ມແປໃໝ່ແບບເກົ່າທີ່ຖືກເຊື່ອງ ແລະ ຟັງຊັນການຕັ້ງຄ່າຄັດລອກທີ່ວ່າງເປົ່າ.</li><li>ປັບການກວດຕົນເອງໃຫ້ກວດປຸ່ມ [ແປໃໝ່] ແລະ ຂອບເຂດຟັງຊັນທີ່ໃຊ້ຈິງ.</li></ul></div>
+   <div class="release-history-section"><h3>ຄຳອະທິບາຍ · ການເຂົ້າເຖິງ</h3><ul><li>ແກ້ໄຂຄຳອະທິບາຍໃນແອັບລ່າມທີ່ຍັງເວົ້າເຖິງໂໝດທົດສອບ ໃຫ້ກົງກັບ SERVICE ປັດຈຸບັນ.</li><li>ປັບການເຊື່ອມຊື່ຫົວຂໍ້ຂອງ popup ແລະ ປະຫວັດອັບເດດໃຫ້ກົງກັບພາສາທີ່ກຳລັງສະແດງ.</li></ul></div>
+   <div class="release-history-section"><h3>ຟັງຊັນທີ່ຮັກສາໄວ້</h3><ul><li>ການແປ, ກວດຄວາມໝາຍອັດຕະໂນມັດ (ແປກັບ), ແປໃໝ່, STT/TTS, Relay/fallback, prompt, ປະຫວັດຫຼ້າສຸດ, ອັບເດດອັດຕະໂນມັດ ແລະ storage key ບໍ່ໄດ້ປ່ຽນ.</li></ul></div>
   </div>
   <button id="manualUpdateHistoryClose" class="release-history-close" type="button">닫기</button>
  </div>
@@ -373,7 +372,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div id="authScreen" class="auth-screen" role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="auth-card">
-    <span class="auth-corner-version" data-app-version aria-label="앱 버전">V3.61.118</span>
+    <span class="auth-corner-version" data-app-version aria-label="앱 버전">V3.61.119</span>
     <div class="auth-icon">🇰🇷 ↔ 🇱🇦</div>
     <div class="auth-head-row">
       <h1 id="authTitle" class="auth-title">한↔라오 번역기<span class="auth-title-lo">ແອັບແປພາສາ ເກົາຫຼີ ↔ ລາວ</span></h1>
@@ -393,8 +392,8 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
       <button id="forceRefreshBtn" class="auth-version-btn" type="button" onclick="forceUnifiedFreshReload()">⬇️ 최신파일 다시받기
 ໂຫຼດໄຟລ໌ລ່າສຸດໃໝ່</button>
     </div>
-    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.118</span> · 최신 버전을 확인할 수 있습니다.
-ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.118</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
+    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.119</span> · 최신 버전을 확인할 수 있습니다.
+ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.119</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
     <div id="authStartStatus" class="auth-start-status">앱을 준비하고 있습니다.
 ກຳລັງກຽມແອັບໃຫ້ພ້ອມໃຊ້ງານ.</div>
     <button class="manual-btn" type="button" onclick="requestManualLanguageChoice()">📖 자세한 사용설명서 · ຄູ່ມືລະອຽດ</button>
@@ -432,7 +431,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div class="shell">
   <div class="switchbar" role="navigation" aria-label="번역기 모드 선택">
-    <div class="shell-version-tools"><span class="shell-version" data-app-version>V3.61.118</span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ">📖 <span class="shell-guide-label">자세한 설명서</span></button></div>
+    <div class="shell-version-tools"><span class="shell-version" data-app-version>V3.61.119</span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ">📖 <span class="shell-guide-label">자세한 설명서</span></button></div>
     <div class="mode-buttons">
       <button id="husbandModeBtn" class="mode-btn" type="button" onclick="selectMode('husband')">🇰🇷 한국</button>
       <button id="wifeModeBtn" class="mode-btn" type="button" onclick="selectMode('wife')">🇱🇦 ລາວ</button>
@@ -459,7 +458,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 </div>
 
 
-<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="3a227b802150f10a6e71c1590505d83b5c4f15bfcb33e3da03b7aa0412ef1849">&lt;!DOCTYPE html&gt;
+<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="b135ecd70877785cc204041da9b0a531fcdc4434ebe3ad2ca5769585a6c8aa37">&lt;!DOCTYPE html&gt;
 &lt;html lang="ko"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
@@ -881,7 +880,7 @@ body.ui-result-focus .primary-result-section .btn-group-top button,body.ui-resul
         &lt;/div&gt;
         &lt;div class="result-box" id="laoResult" style="color: #1a73e8;"&gt;&lt;/div&gt;
 
-        &lt;div class="quality-line translation-quality-line" aria-live="polite"&gt;&lt;div id="qualityBadge" class="quality-badge"&gt;&lt;/div&gt;&lt;button type="button" id="qualityReasonBtn" class="quality-reason-btn" onclick="openQualityReasonDialog()" aria-controls="qualityReasonDialog" aria-expanded="false"&gt;⚠️ 주의 이유 보기&lt;/button&gt;&lt;button type="button" id="qualityRetryBtn" class="quality-retry-btn" onclick="retryLastTranslation()" aria-label="재번역"&gt;🔄 재번역&lt;/button&gt;&lt;/div&gt;
+        &lt;div class="quality-line translation-quality-line" aria-live="polite"&gt;&lt;div id="qualityBadge" class="quality-badge"&gt;&lt;/div&gt;&lt;button type="button" id="qualityReasonBtn" class="quality-reason-btn" onclick="openQualityReasonDialog()" aria-controls="qualityReasonDialog" aria-expanded="false"&gt;⚠️ 주의 이유 보기&lt;/button&gt;&lt;/div&gt;
         &lt;div id="qualityReasonDialog" class="quality-reason-overlay" hidden onclick="if(event.target===this)closeQualityReasonDialog()"&gt;
             &lt;div class="quality-reason-card" role="dialog" aria-modal="true" aria-labelledby="qualityReasonTitle"&gt;
                 &lt;div class="quality-reason-head"&gt;&lt;div id="qualityReasonTitle" class="quality-reason-title"&gt;번역 확인 사유&lt;/div&gt;&lt;button type="button" class="quality-reason-close" onclick="closeQualityReasonDialog()" aria-label="닫기"&gt;×&lt;/button&gt;&lt;/div&gt;
@@ -1029,7 +1028,7 @@ body.ui-result-focus .primary-result-section .btn-group-top button,body.ui-resul
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.118';
+const APP_VERSION='V3.61.119';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 const FAST_K2L_BASE=`Translate only the user's Korean text into natural Lao for a Korean husband speaking to his Lao wife. Preserve exact meaning, speaker/listener/third-party roles, who does what to whom, relationships, negation, permission/prohibition, requests, uncertainty, numbers, dates/times, names, places, brands, foods, and movement direction. ROLE LOCK: husband=speaker, wife=listener; Korean first person=husband. Spouse-use 자기 forms mean wife/listener unless clearly 자기 자신/자기 스스로 or a sleep-use from 자다. 여보/자기야/내 사랑 are listener-directed affection, not a literal wife noun. In ordinary couple context 우리 means husband+wife unless another group is explicit. Preserve SOURCE REGISTER: casual/banmal Korean -&gt; natural intimate everyday Lao; polite/respectful Korean -&gt; matching respectful Lao. Never normalize all messages to one politeness level. Never swap speaker/listener, actor/target, caller/receiver, mover/origin/destination; never add/omit/soften/intensify facts. Preserve sentence force/polarity: statement/realization/question/command and positive/negative/rhetorical direction must not flip. Never invent event, venue, setting, reason, or fact. Keep an implicit subject across linked clauses unless the source introduces a new actor. Preserve first/before/after/then/while distinctions. If wording is malformed or genuinely ambiguous, translate conservatively. Keep transport context consistent (bus staff must not become airplane staff). Use standard common Lao wording for ordinary nouns. Preserve unfamiliar names/transliterations by sound/form. Proofread Lao spelling/Unicode once without changing meaning. Output exactly ONE Lao translation: no slash A/B choices, parenthetical synonym alternatives, labels, or notes. HOMEWORK: 숙제 is school homework; 과제 is an assignment and is academic in study context. Use housework meaning only for explicit 집안일/가사/청소/설거지/빨래/요리 or clear household context.`;
@@ -1799,9 +1798,6 @@ window.addEventListener('message',function(ev){
 
     const COPY_DEFAULTS = Object.freeze({copyLaoBtn:'📋 번역본 복사',copyBackBtn:'📋 복사하기'});
     // V3.59: 남편앱 번역본 복사는 자동 역번역을 항상 함께 사용한다. 별도 토글/추가 요청은 없다.
-    function loadCopyBackTranslationSetting(){}
-    function renderCopyBackTranslationSetting(){}
-    function toggleCopyBackTranslation(){}
     function validPrimaryLaoText(){
         const el=document.getElementById('laoResult'),text=el?el.innerText.trim():'';
         if(!text||text.includes('처리 중')||text.includes('지연')||text.includes('중지')||text.includes('오류')||text.includes('실패')||text.startsWith('⚠️'))return'';
@@ -2662,7 +2658,7 @@ async function toggleKoreanVoiceInput(){if(voiceProcessing){cancelKoreanVoiceInp
                 }
             });
         }
-        updateInputCharCount(); renderTranslationHistory(); loadCopyBackTranslationSetting(); setTimeout(()=&gt;recoverTranslationHistoryIfMissing(),700);
+        updateInputCharCount(); renderTranslationHistory(); setTimeout(()=&gt;recoverTranslationHistoryIfMissing(),700);
     }
     window.addEventListener('load', initConvenienceUI);
 
@@ -3735,11 +3731,11 @@ function detectHardLatinResidueV36140(source,target,targetScript){
         function closeQualityReasonDialog(){const dlg=document.getElementById('qualityReasonDialog');if(!dlg)return;dlg.hidden=true;for(const id of ['qualityReasonBtn','backQualityReasonBtn']){const b=document.getElementById(id);if(b)b.setAttribute('aria-expanded','false')}try{document.body.style.overflow=document.body.dataset.qualityPrevOverflow||'';delete document.body.dataset.qualityPrevOverflow}catch(e){}}
         document.addEventListener('keydown',function(e){if(e.key==='Escape')closeQualityReasonDialog()});
         function updateQualityBadge(quality,sourceText='',targetText=''){
-            const el=document.getElementById('qualityBadge'),detail=document.getElementById('qualityDetail'),reasonBtn=document.getElementById('qualityReasonBtn'),qualityRetryBtn=document.getElementById('qualityRetryBtn');if(!el)return;
-            if(!quality){el.className='quality-badge';el.textContent='';if(detail){detail.className='quality-detail';detail.textContent=''}if(reasonBtn){reasonBtn.className='quality-reason-btn';reasonBtn.style.display='none';reasonBtn.dataset.reasonText='';reasonBtn.setAttribute('aria-expanded','false')}if(qualityRetryBtn){qualityRetryBtn.className='quality-retry-btn';qualityRetryBtn.style.display='none'}closeQualityReasonDialog();return;}
+            const el=document.getElementById('qualityBadge'),detail=document.getElementById('qualityDetail'),reasonBtn=document.getElementById('qualityReasonBtn');if(!el)return;
+            if(!quality){el.className='quality-badge';el.textContent='';if(detail){detail.className='quality-detail';detail.textContent=''}if(reasonBtn){reasonBtn.className='quality-reason-btn';reasonBtn.style.display='none';reasonBtn.dataset.reasonText='';reasonBtn.setAttribute('aria-expanded','false')}closeQualityReasonDialog();return;}
             el.className='quality-badge';el.textContent='';const unavailable=quality.backReviewUnavailable===true;const issues=Array.isArray(quality.issueDetails)&amp;&amp;quality.issueDetails.length?quality.issueDetails:buildConcreteIssuesK2L(sourceText,targetText,'',quality);const signals=[...(quality?.reasons||[]),...(quality?.softReasons||[]),...(quality?.criticalReasons||[]),...(quality?.backReviewReasons||[])];const showWarning=unavailable||issues.length&gt;0||signals.length&gt;0;
             if(reasonBtn){reasonBtn.textContent='⚠️ 주의 이유 보기';reasonBtn.dataset.reasonText=formatIssueDetailsKo(issues,unavailable);reasonBtn.className=showWarning?'quality-reason-btn show':'quality-reason-btn';reasonBtn.style.display=showWarning?'inline-flex':'none';if(!showWarning)reasonBtn.setAttribute('aria-expanded','false');}
-            if(qualityRetryBtn){qualityRetryBtn.className='quality-retry-btn';qualityRetryBtn.style.display='none';}
+            
             if(!showWarning)closeQualityReasonDialog();
         }
 
@@ -4326,17 +4322,6 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
         }
     }
 
-    function setBackTranslationButtonState(running) {
-        const btn = document.getElementById('backTransBtn');
-        if (!btn) return;
-        if (running) {
-            btn.innerText = "⏹️ 검증 중지";
-            btn.style.backgroundColor = "#d93025";
-        } else {
-            btn.innerText = "🔍 역번역 검증";
-            btn.style.backgroundColor = "#673ab7";
-        }
-    }
 
     function cancelBackTranslation(resetGuide = false) {
         backTranslationRunId++;
@@ -4346,7 +4331,6 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
         activeBackTransControllers.clear();
         isBackTranslating = false;
         isAutoBackTranslating = false;
-        setBackTranslationButtonState(false);
         if (resetGuide) {
             document.getElementById('backResult').innerHTML = DEFAULT_GUIDE_HTML;
             setBackResultState(false, false);
@@ -4615,11 +4599,10 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
         const myRunId = ++backTranslationRunId;
         isBackTranslating = true;
         isAutoBackTranslating = !!autoTriggered;
-        setBackTranslationButtonState(true);
         const backResultEl = document.getElementById('backResult');
         setBackResultState(true, false);
         updateBackQualityBadge(null, false);
-        backResultEl.innerText = "라오어를 한국어로 역번역(검증) 중... 필요하면 [검증 중지]를 눌러 취소할 수 있습니다.";
+        backResultEl.innerText = "자동 의미확인(역번역) 중...";
         const backStartedAt=performance.now();
 
         try {
@@ -4659,7 +4642,6 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
                 isBackTranslating = false;
                 isAutoBackTranslating = false;
                 activeBackTransControllers.clear();
-                setBackTranslationButtonState(false);
                 telemetryScheduleFinalize(120);
             }
         }
@@ -5196,7 +5178,7 @@ function queueMainAutoInterpretFromVoice(text,session){if(!mainAutoInterpretEnab
 
 &lt;/body&gt;
 &lt;/html&gt;
-</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="2539fd792972a7ea2478b7ac7f92e744f92ce4254122ef443e2332e04ce8b895">&lt;!DOCTYPE html&gt;
+</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="05c672930bb9b216484476af85a9282adc301acdf354a948accdb749afd949ab">&lt;!DOCTYPE html&gt;
 &lt;html lang="lo"&gt;
 &lt;head&gt;
 &lt;meta charset="UTF-8"&gt;
@@ -5568,7 +5550,7 @@ body.ui-result-focus .primary-result-section .btn-group-top button,body.ui-resul
     &lt;/div&gt;
     &lt;div class="result-box" id="koResult" lang="ko"&gt;&lt;/div&gt;
     
-    &lt;div class="quality-line translation-quality-line" aria-live="polite"&gt;&lt;div id="qualityBadge" class="quality-badge"&gt;&lt;/div&gt;&lt;button type="button" id="qualityReasonBtn" class="quality-reason-btn" onclick="openQualityReasonDialog()" aria-controls="qualityReasonDialog" aria-expanded="false"&gt;⚠️ ເບິ່ງເຫດຜົນທີ່ຄວນກວດ&lt;/button&gt;&lt;button type="button" id="qualityRetryBtn" class="quality-retry-btn" onclick="retryLastTranslation()" aria-label="ແປໃໝ່"&gt;🔄 ແປໃໝ່&lt;/button&gt;&lt;/div&gt;
+    &lt;div class="quality-line translation-quality-line" aria-live="polite"&gt;&lt;div id="qualityBadge" class="quality-badge"&gt;&lt;/div&gt;&lt;button type="button" id="qualityReasonBtn" class="quality-reason-btn" onclick="openQualityReasonDialog()" aria-controls="qualityReasonDialog" aria-expanded="false"&gt;⚠️ ເບິ່ງເຫດຜົນທີ່ຄວນກວດ&lt;/button&gt;&lt;/div&gt;
     &lt;div id="qualityReasonDialog" class="quality-reason-overlay" hidden onclick="if(event.target===this)closeQualityReasonDialog()"&gt;
       &lt;div class="quality-reason-card" role="dialog" aria-modal="true" aria-labelledby="qualityReasonTitle"&gt;
         &lt;div class="quality-reason-head"&gt;&lt;div id="qualityReasonTitle" class="quality-reason-title"&gt;ເຫດຜົນທີ່ຄວນກວດຄຳແປ&lt;/div&gt;&lt;button type="button" class="quality-reason-close" onclick="closeQualityReasonDialog()" aria-label="ປິດ"&gt;×&lt;/button&gt;&lt;/div&gt;
@@ -5706,7 +5688,7 @@ body.ui-result-focus .primary-result-section .btn-group-top button,body.ui-resul
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.118';
+const APP_VERSION='V3.61.119';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 const FAST_K2L_BASE=`Translate only the user's Korean text into natural Lao for a Korean husband speaking to his Lao wife. Preserve exact meaning, speaker/listener/third-party roles, who does what to whom, relationships, negation, permission/prohibition, requests, uncertainty, numbers, dates/times, names, places, brands, foods, and movement direction. ROLE LOCK: husband=speaker, wife=listener; Korean first person=husband. Spouse-use 자기 forms mean wife/listener unless clearly 자기 자신/자기 스스로 or a sleep-use from 자다. 여보/자기야/내 사랑 are listener-directed affection, not a literal wife noun. In ordinary couple context 우리 means husband+wife unless another group is explicit. Preserve SOURCE REGISTER: casual/banmal Korean -&gt; natural intimate everyday Lao; polite/respectful Korean -&gt; matching respectful Lao. Never normalize all messages to one politeness level. Never swap speaker/listener, actor/target, caller/receiver, mover/origin/destination; never add/omit/soften/intensify facts. Preserve sentence force/polarity: statement/realization/question/command and positive/negative/rhetorical direction must not flip. Never invent event, venue, setting, reason, or fact. Keep an implicit subject across linked clauses unless the source introduces a new actor. Preserve first/before/after/then/while distinctions. If wording is malformed or genuinely ambiguous, translate conservatively. Keep transport context consistent (bus staff must not become airplane staff). Use standard common Lao wording for ordinary nouns. Preserve unfamiliar names/transliterations by sound/form. Proofread Lao spelling/Unicode once without changing meaning. Output exactly ONE Lao translation: no slash A/B choices, parenthetical synonym alternatives, labels, or notes. HOMEWORK: 숙제 is school homework; 과제 is an assignment and is academic in study context. Use housework meaning only for explicit 집안일/가사/청소/설거지/빨래/요리 or clear household context.`;
@@ -7161,7 +7143,7 @@ function openQualityReasonDialog(){_openQualityWarningDialog('forward')}
 function openBackQualityReasonDialog(){_openQualityWarningDialog('back')}
 function closeQualityReasonDialog(){const dlg=document.getElementById('qualityReasonDialog');if(!dlg)return;dlg.hidden=true;for(const id of ['qualityReasonBtn','backQualityReasonBtn']){const b=document.getElementById(id);if(b)b.setAttribute('aria-expanded','false')}try{document.body.style.overflow=document.body.dataset.qualityPrevOverflow||'';delete document.body.dataset.qualityPrevOverflow}catch(e){}}
 document.addEventListener('keydown',e=&gt;{if(e.key==='Escape')closeQualityReasonDialog()});
-function updateQualityBadge(quality,sourceText='',targetText=''){const el=document.getElementById('qualityBadge'),detail=document.getElementById('qualityDetail'),reasonBtn=document.getElementById('qualityReasonBtn'),qualityRetryBtn=document.getElementById('qualityRetryBtn');if(!el)return;if(!quality){el.className='quality-badge';el.textContent='';if(detail){detail.className='quality-detail';detail.textContent=''}if(reasonBtn){reasonBtn.className='quality-reason-btn';reasonBtn.style.display='none';reasonBtn.dataset.reasonText='';reasonBtn.setAttribute('aria-expanded','false')}if(qualityRetryBtn){qualityRetryBtn.className='quality-retry-btn';qualityRetryBtn.style.display='none'}closeQualityReasonDialog();return}el.className='quality-badge';el.textContent='';const unavailable=quality.backReviewUnavailable===true;const issues=Array.isArray(quality.issueDetails)&amp;&amp;quality.issueDetails.length?quality.issueDetails:buildConcreteIssuesL2K(sourceText,targetText,'',quality);const signals=[...(quality?.reasons||[]),...(quality?.softReasons||[]),...(quality?.criticalReasons||[]),...(quality?.backReviewReasons||[])];const showWarning=unavailable||issues.length&gt;0||signals.length&gt;0;if(reasonBtn){reasonBtn.textContent='⚠️ ເບິ່ງເຫດຜົນທີ່ຄວນກວດ';reasonBtn.dataset.reasonText=formatIssueDetailsLao(issues,unavailable);reasonBtn.className=showWarning?'quality-reason-btn show':'quality-reason-btn';reasonBtn.style.display=showWarning?'inline-flex':'none';if(!showWarning)reasonBtn.setAttribute('aria-expanded','false')}if(qualityRetryBtn){qualityRetryBtn.className='quality-retry-btn';qualityRetryBtn.style.display='none'}if(!showWarning)closeQualityReasonDialog()}
+function updateQualityBadge(quality,sourceText='',targetText=''){const el=document.getElementById('qualityBadge'),detail=document.getElementById('qualityDetail'),reasonBtn=document.getElementById('qualityReasonBtn');if(!el)return;if(!quality){el.className='quality-badge';el.textContent='';if(detail){detail.className='quality-detail';detail.textContent=''}if(reasonBtn){reasonBtn.className='quality-reason-btn';reasonBtn.style.display='none';reasonBtn.dataset.reasonText='';reasonBtn.setAttribute('aria-expanded','false')}closeQualityReasonDialog();return}el.className='quality-badge';el.textContent='';const unavailable=quality.backReviewUnavailable===true;const issues=Array.isArray(quality.issueDetails)&amp;&amp;quality.issueDetails.length?quality.issueDetails:buildConcreteIssuesL2K(sourceText,targetText,'',quality);const signals=[...(quality?.reasons||[]),...(quality?.softReasons||[]),...(quality?.criticalReasons||[]),...(quality?.backReviewReasons||[])];const showWarning=unavailable||issues.length&gt;0||signals.length&gt;0;if(reasonBtn){reasonBtn.textContent='⚠️ ເບິ່ງເຫດຜົນທີ່ຄວນກວດ';reasonBtn.dataset.reasonText=formatIssueDetailsLao(issues,unavailable);reasonBtn.className=showWarning?'quality-reason-btn show':'quality-reason-btn';reasonBtn.style.display=showWarning?'inline-flex':'none';if(!showWarning)reasonBtn.setAttribute('aria-expanded','false')}if(!showWarning)closeQualityReasonDialog()}
 
 
 const PRESERVED_FOREIGN_MAX_CHARS = 32;
@@ -7966,8 +7948,7 @@ async function translateText(options={}){const forceTts=options?.forceTts===true
     stopTimer('ລົ້ມເຫຼວ');document.getElementById('koResult').textContent=errorMessageLao(e,records);telemetryCommitFailure({runId,direction:'L2K',sourceText:source,error:e,stage:'translation-failure',totalMs:Math.round(performance.now()-started),requestRecords:records});console.error('[WIFE TRANSLATION]',e,records);}
 }
 
-function setBackButton(running){const b=document.getElementById('backTransBtn');if(!b)return;b.textContent=running?'⏹️ ຢຸດການກວດ':'🔍 ກວດຄວາມໝາຍ';b.style.background=running?'#d93025':'#673ab7';}
-function cancelBackTranslation(reset=false){backTranslationRunId++;abortSet(backControllers);backControllers.clear();isBackTranslating=false;isAutoBackTranslating=false;setBackButton(false);if(reset){document.getElementById('backResult').innerHTML=DEFAULT_BACK_HTML;setBackResultState(false,false);}}
+function cancelBackTranslation(reset=false){backTranslationRunId++;abortSet(backControllers);backControllers.clear();isBackTranslating=false;isAutoBackTranslating=false;if(reset){document.getElementById('backResult').innerHTML=DEFAULT_BACK_HTML;setBackResultState(false,false);}}
 const BACK_LAO_RELATION_RECOVERY_SUFFIX=' The Korean source explicitly contains a third-person relationship term. Preserve every explicit relationship word in Lao. 동생 must remain ນ້ອງ, 친구 must remain ເພື່ອນ/ໝູ່, 어머니/엄마 must remain ແມ່, and 아버지/아빠 must remain ພໍ່. Never replace such a third person with first or second person. Do not add information that is not in the Korean source.';
 const BACK_LAO_SINGLE_RESULT_RECOVERY_SUFFIX=' The previous attempt returned multiple slash-separated or A/B alternatives. Return exactly ONE decided Lao back-translation. Do not output slash alternatives, parenthetical choices, labels, or explanations. If the Korean is ambiguous, preserve the ambiguity with one neutral Lao wording.';
 const BACK_LAO_TECHNICAL_RECOVERY_SUFFIX=' The previous back-translation contained a clear technical or severe factual corruption. Translate ONLY the Korean input shown in this request into one Lao sentence again. Preserve explicit people, relationships, core nouns, dates, times, numbers, negation/permission/prohibition, and action direction. Do not add debugging text, English instruction fragments, labels, alternatives, or explanations. Do not use any earlier original Lao message as a target or answer key.';
@@ -8083,7 +8064,6 @@ async function requestBackTranslation(autoTriggered=false){
   const runId=++backTranslationRunId;
   isBackTranslating=true;
   isAutoBackTranslating=!!autoTriggered;
-  setBackButton(true);
   const el=document.getElementById('backResult');
   setBackResultState(true,false);
   updateBackQualityBadge(null,false);
@@ -8109,7 +8089,7 @@ async function requestBackTranslation(autoTriggered=false){
     setBackResultState(true,false);
     console.warn('[WIFE BACK TRANSLATION]',e);
   }finally{
-    if(runId===backTranslationRunId){isBackTranslating=false;isAutoBackTranslating=false;backControllers.clear();setBackButton(false);telemetryScheduleFinalize(120)}
+    if(runId===backTranslationRunId){isBackTranslating=false;isAutoBackTranslating=false;backControllers.clear();telemetryScheduleFinalize(120)}
   }
 }
 
@@ -8453,7 +8433,7 @@ function queueMainAutoInterpretFromVoice(text,session){if(!mainAutoInterpretEnab
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const INTEGRATED_VERSION='V3.61.118';
+const INTEGRATED_VERSION='V3.61.119';
 const UNIFIED_HOST_SESSION_ID='host-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
 const UNIFIED_AZURE_REGION='koreacentral';
 const INTEGRATED_ARCHITECTURE='FastDirectText-OnePrimaryPassword-LocalStorage + DualRegionAudioSpeechRelay-SeoulBangkok + DirectFirstRelayFallback + V287QualityGateRestored + AutoBackTranslationParallelTTS + GoogleStreamingRealMic-BothApps + SafeAutoUpdate + InAppAdminAuth + S23UIParity + ResultFocusUIPolish';
@@ -8474,7 +8454,7 @@ try{syncUnifiedVersionMetadata()}catch(e){console.warn('[VERSION EARLY SYNC]',e)
 
 const PAYLOAD_IDS={husband:'payload-husband',wife:'payload-wife'};
 const EXTERNAL_DIAGNOSTIC_URL='diagnostic.html';
-const EXTERNAL_DIAGNOSTIC_SHA256='3c40b97e5acd32b181dbddef4422793a27d9a5f5af41afa55bce7999bd59f5ed';
+const EXTERNAL_DIAGNOSTIC_SHA256='7887de1d0d47cf5a703c3f982feec1d869a50eb976c0fd49edcdebc4dd73cc99';
 let externalDiagnosticSource='';
 const SHARED_RELAY_URL_STORAGE='unified_google_stt_relay_url';
 const SHARED_RELAY_TOKEN_STORAGE='unified_google_stt_relay_token';
@@ -9482,8 +9462,8 @@ async function getUnifiedRuntimeSafetyAudit(){
     const hs=h.indexOf('function _criticalHardOutputCorruptionK2L'),hd=h.indexOf('function detectCriticalMeaningRiskK2L');
     const ws=w.indexOf('function _criticalHardOutputCorruptionL2K'),wd=w.indexOf('function detectCriticalMeaningRiskL2K');
     const hDetect=hd>=0?h.slice(hd,hd+2800):'',wDetect=wd>=0?w.slice(wd,wd+2800):'';
-    const ht0=h.indexOf('async function translateText('),ht1=h.indexOf('function setBackTranslationButtonState',ht0);
-    const wt0=w.indexOf('async function translateText('),wt1=w.indexOf('function setBackButton',wt0);
+    const ht0=h.indexOf('async function translateText('),ht1=h.indexOf('function cancelBackTranslation',ht0);
+    const wt0=w.indexOf('async function translateText('),wt1=w.indexOf('function cancelBackTranslation',wt0);
     const hTranslate=ht0>=0?h.slice(ht0,ht1>ht0?ht1:undefined):'',wTranslate=wt0>=0?w.slice(wt0,wt1>wt0?wt1:undefined):'';
     const hBackStart=h.indexOf('async function runBackTranslationWithLanguageRecovery'),hBackEnd=h.indexOf('async function requestBackTranslation',hBackStart);
     const wBackStart=w.indexOf('async function runBackRaceWithRelationRecovery'),wBackEnd=w.indexOf('function backErrorMessageLao',wBackStart);
@@ -9575,7 +9555,7 @@ async function getUnifiedRuntimeSafetyAudit(){
     add('HARD_CORRUPTION_WIRED',hs>=0&&ws>=0&&h.includes('setTranslationOutputSafety')&&w.includes('setTranslationOutputSafety'));
     add('USER_CONTROL_NOT_LOCKED',h.includes('translationOutputLocked=false')&&w.includes('translationOutputLocked=false'));
     add('QUALITY_GUARD_REFERENCE_ONLY',h.includes('QualityGuard is warning-only')&&w.includes('QualityGuard is warning-only')&&!hTranslate.includes('QualityError')&&!wTranslate.includes('QualityError')&&!hTranslate.includes('requestGeminiWithHedge(')&&!wTranslate.includes('runForwardPolicy('));
-    add('RETRANSLATE_ALWAYS_AVAILABLE',h.includes('function retryLastTranslation()')&&w.includes('function retryLastTranslation()')&&h.includes('id="retryBtn"')&&w.includes('id="retryBtn"')&&h.includes('id="qualityRetryBtn"')&&w.includes('id="qualityRetryBtn"')&&h.includes('onclick="retryLastTranslation()"')&&w.includes('onclick="retryLastTranslation()"')&&h.includes('setRetryButtonVisibility(true)')&&(w.includes('setRetry(true)')||w.includes('setRetryButtonVisibility(true)')));
+    add('RETRANSLATE_ALWAYS_AVAILABLE',h.includes('function retryLastTranslation()')&&w.includes('function retryLastTranslation()')&&h.includes('id="retryBtn"')&&w.includes('id="retryBtn"')&&h.includes('id="retranslateBtn"')&&w.includes('id="retranslateBtn"')&&h.includes('id="retranslateBtn" class="btn-back-trans" onclick="retryLastTranslation()"')&&w.includes('id="retranslateBtn" class="mini-btn btn-back" type="button" onclick="retryLastTranslation()"')&&h.includes('setRetryButtonVisibility(true)')&&(w.includes('setRetry(true)')||w.includes('setRetryButtonVisibility(true)')));
     add('MISUNDERSTANDING_ONLY_CRITICAL_SCOPE',h.includes('wording-strength differences are reference-only')&&w.includes('wording-strength differences are reference-only')&&!h.includes('for(const x of prohibitionStrengthRisk(dir,s,t))push(r,x);')&&!w.includes('for(const x of prohibitionStrengthRisk(dir,s,t))push(r,x);'));
     add('QUALITY_GUARD_WARNING_ONLY',h.includes('const quality = analyzeMainTranslationQuality(normalizedText, krText);')&&w.includes('q=analyzeKoreanQuality(normalizedText,source)')&&h.includes('re-call Gemini because of a warning signal')&&w.includes('re-call Gemini because of a warning signal'));
     add('QUALITY_USER_DECISION_POLICY',h.includes('one forward generation is displayed immediately')&&w.includes('one forward generation is displayed immediately')&&h.includes('function retryLastTranslation()')&&w.includes('function retryLastTranslation()'));
@@ -9644,7 +9624,7 @@ async function getUnifiedRuntimeSafetyAudit(){
     add('DIAG_LOG_COPY_SAVE',diag.includes('로그 전체 복사')&&diag.includes('TXT 저장'));
     add('DIAG_LEGACY_EXPERIMENTS_REMOVED',!diag.includes('modelShootout')&&!diag.includes('compare3637')&&!diag.includes('lite38')&&!diag.includes('speedCause')&&!diag.includes('finalPromptAb')&&!diag.includes('internalDiagnosticMounts'));
     add('DIAG_EXACT_LIVE_FORWARD_BACK',typeof runUnifiedLivePathDiagnostic==='function'&&typeof runUnifiedLiveBackDiagnostic==='function'&&h.includes('__runLivePathDiagnosticK2L')&&w.includes('__runLivePathDiagnosticL2K')&&h.includes('__runLiveBackDiagnosticK2L')&&w.includes('__runLiveBackDiagnosticL2K'));
-    add('HUSBAND_WIFE_FEATURE_PARITY',h.includes('id="qualityRetryBtn"')&&w.includes('id="qualityRetryBtn"')&&h.includes('id="retranslateBtn"')&&w.includes('id="retranslateBtn"')&&h.includes('onclick="retryLastTranslation()"')&&w.includes('onclick="retryLastTranslation()"')&&h.includes('id="copyBackBtn"')&&w.includes('id="copyBackBtn"')&&h.includes('id="voiceInputBtn"')&&w.includes('id="voiceInputBtn"'));
+    add('HUSBAND_WIFE_FEATURE_PARITY',h.includes('id="retranslateBtn"')&&w.includes('id="retranslateBtn"')&&h.includes('id="copyBackBtn"')&&w.includes('id="copyBackBtn"')&&h.includes('id="voiceInputBtn"')&&w.includes('id="voiceInputBtn"')&&!h.includes('id="backTransBtn"')&&!w.includes('id="backTransBtn"'));
     add('MOBILE_KEYBOARD_GUARD',h.includes("installMobileKeyboardGuard('krInput','inputComposer')")&&w.includes("installMobileKeyboardGuard('loInput','inputComposer')"));
     add('INPUT_NOT_CLEARED_ON_FOCUS',!h.includes('clearTextOnFocus')&&!w.includes('clearTextOnFocus'));
     add('DIAGNOSTIC_EXTERNAL_LAZY',EXTERNAL_DIAGNOSTIC_URL==='diagnostic.html'&&!document.getElementById('payload-diagnostic'));
@@ -9779,16 +9759,16 @@ initializeUnifiedLogin();
 syncVisibleViewport();
 </script>
 
-<script id="release-notes-final-script-v361118">
+<script id="release-notes-final-script-v361119">
 (function(){
- const RELEASE_NOTICE_ID='service-major-refresh-v361118-rc128-from-v36195', RELEASE_NOTICE_SEEN_KEY='translator_release_notice_seen_service_v1';
+ const RELEASE_NOTICE_ID='service-cleanup-v361119-rc129-from-v361118', RELEASE_NOTICE_SEEN_KEY='translator_release_notice_seen_service_v1';
  function safeGet(k){try{return localStorage.getItem(k)}catch(_){return null}} function safeSet(k,v){try{localStorage.setItem(k,v)}catch(_){}}
  function releaseLang(){try{if(currentMode==='wife')return 'lo';if(currentMode==='husband')return 'ko';const st=typeof readUnifiedPersistentUiState==='function'?readUnifiedPersistentUiState():null;return st&&(st.currentMode==='wife'||st.view==='wife')?'lo':'ko'}catch(_){return 'ko'}} function initialReleaseNoticeLang(){try{const m=String(new URL(location.href).searchParams.get('mode')||'').toLowerCase();if(m==='wife')return 'lo';if(m==='husband')return 'ko'}catch(_){}return releaseLang()} const RELEASE_NOTICE_BOOT_LANG=initialReleaseNoticeLang();
- function setReleaseLang(lang){const lo=lang==='lo',ko=document.getElementById('releaseNoticeKo'),lp=document.getElementById('releaseNoticeLo'),ok=document.getElementById('releaseNoticeOk');if(ko)ko.hidden=lo;if(lp)lp.hidden=!lo;if(ok)ok.textContent=lo?'ປິດ':'닫기'}
+ function setReleaseLang(lang){const lo=lang==='lo',ko=document.getElementById('releaseNoticeKo'),lp=document.getElementById('releaseNoticeLo'),ok=document.getElementById('releaseNoticeOk'),ov=document.getElementById('releaseNoticeOverlay');if(ko)ko.hidden=lo;if(lp)lp.hidden=!lo;if(ok)ok.textContent=lo?'ປິດ':'닫기';if(ov)ov.setAttribute('aria-labelledby',lo?'releaseNoticeTitleLo':'releaseNoticeTitle')}
  function showReleaseNoticeOnce(){const ov=document.getElementById('releaseNoticeOverlay');if(!ov||safeGet(RELEASE_NOTICE_SEEN_KEY)===RELEASE_NOTICE_ID)return;setReleaseLang(RELEASE_NOTICE_BOOT_LANG||releaseLang());ov.hidden=false;setTimeout(()=>document.getElementById('releaseNoticeOk')?.focus(),30)}
  function closeReleaseNotice(){safeSet(RELEASE_NOTICE_SEEN_KEY,RELEASE_NOTICE_ID);const ov=document.getElementById('releaseNoticeOverlay');if(ov)ov.hidden=true}
  function syncReleaseHistoryVersion(){document.querySelectorAll('[data-release-current-version]').forEach(e=>e.textContent=typeof INTEGRATED_VERSION==='string'?INTEGRATED_VERSION:'-')}
- function openManualUpdateHistory(lang){syncReleaseHistoryVersion();const ov=document.getElementById('manualUpdateHistoryOverlay'),ko=document.getElementById('manualUpdateHistoryKo'),lo=document.getElementById('manualUpdateHistoryLo'),cl=document.getElementById('manualUpdateHistoryClose'),isLo=lang==='lo';if(!ov)return;if(ko)ko.hidden=isLo;if(lo)lo.hidden=!isLo;if(cl)cl.textContent=isLo?'ປິດ':'닫기';ov.hidden=false;const card=ov.querySelector('.release-history-card'),pane=isLo?lo:ko,heading=pane?.querySelector('h2');if(card)card.scrollTop=0;if(heading){heading.setAttribute('tabindex','-1');setTimeout(()=>{heading.focus({preventScroll:true});if(card)card.scrollTop=0},20)}}
+ function openManualUpdateHistory(lang){syncReleaseHistoryVersion();const ov=document.getElementById('manualUpdateHistoryOverlay'),ko=document.getElementById('manualUpdateHistoryKo'),lo=document.getElementById('manualUpdateHistoryLo'),cl=document.getElementById('manualUpdateHistoryClose'),isLo=lang==='lo';if(!ov)return;if(ko)ko.hidden=isLo;if(lo)lo.hidden=!isLo;if(cl)cl.textContent=isLo?'ປິດ':'닫기';ov.setAttribute('aria-labelledby',isLo?'manualUpdateHistoryTitleLo':'manualUpdateHistoryTitle');ov.hidden=false;const card=ov.querySelector('.release-history-card'),pane=isLo?lo:ko,heading=pane?.querySelector('h2');if(card)card.scrollTop=0;if(heading){heading.setAttribute('tabindex','-1');setTimeout(()=>{heading.focus({preventScroll:true});if(card)card.scrollTop=0},20)}}
  function closeManualUpdateHistory(){const ov=document.getElementById('manualUpdateHistoryOverlay');if(ov)ov.hidden=true}
  window.openManualUpdateHistory=openManualUpdateHistory;window.closeManualUpdateHistory=closeManualUpdateHistory;window.__showReleaseNoticePreview=showReleaseNoticeOnce;window.__closeReleaseNoticePreview=closeReleaseNotice;
  document.getElementById('releaseNoticeOk')?.addEventListener('click',closeReleaseNotice);document.getElementById('manualUpdateHistoryClose')?.addEventListener('click',closeManualUpdateHistory);
