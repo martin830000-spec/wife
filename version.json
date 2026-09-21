@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.125",
-  "build": "20260922-V3.61.125-SERVICE-MAIN-UX9",
-  "buildId": "20260922-V3.61.125-SERVICE-MAIN-UX9",
-  "notes": "SERVICE UX9. 업데이트/설명서 모달 구조 통합, 화면 복원 후 안내 팝업, 본앱/일반앱 seen-state 분리, 상세 업데이트 내역 및 버전 동기화."
+  "version": "V3.61.126",
+  "build": "20260922-V3.61.126-SERVICE-MAIN-UX10",
+  "buildId": "20260922-V3.61.126-SERVICE-MAIN-UX10",
+  "notes": "SERVICE UX10. 자동통역 first-click 동기화, 공통 업데이트 seen-state, 상세내역 우상단 팝업 미리보기, UI/UX 회귀검수 보강."
 }
