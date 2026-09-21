@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.124",
-  "build": "20260922-V3.61.124-SERVICE-MAIN-UX8",
-  "buildId": "20260922-V3.61.124-SERVICE-MAIN-UX8",
-  "notes": "SERVICE UX8. 전역 버튼 글자 자동맞춤, 전체 지우기 최근대화 접기+상단 이동, 본앱 STT 성공/실패 표시, 본앱 제목 정리, 버전별 업데이트 안내 복구."
+  "version": "V3.61.125",
+  "build": "20260922-V3.61.125-SERVICE-MAIN-UX9",
+  "buildId": "20260922-V3.61.125-SERVICE-MAIN-UX9",
+  "notes": "SERVICE UX9. 업데이트/설명서 모달 구조 통합, 화면 복원 후 안내 팝업, 본앱/일반앱 seen-state 분리, 상세 업데이트 내역 및 버전 동기화."
 }
