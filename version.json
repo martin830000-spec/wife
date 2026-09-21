@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.127",
-  "build": "20260922-V3.61.127-SERVICE-MAIN-UX11",
-  "buildId": "20260922-V3.61.127-SERVICE-MAIN-UX11",
-  "notes": "SERVICE UX11. 상단 음성출력/듣기 2분할, 긴 원문 전체 표시, 입력창 자동 높이, V3.61.126 회귀 기능 유지."
+  "version": "V3.61.128",
+  "build": "20260922-V3.61.128-SERVICE-MAIN-UX12",
+  "buildId": "20260922-V3.61.128-SERVICE-MAIN-UX12",
+  "notes": "SERVICE UX12. 일반앱 초기 빈 결과카드 숨김, 설명서 스크린샷 최신화, V3.61.127 기능 유지."
 }
