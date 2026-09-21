@@ -15,7 +15,7 @@
 </div><iframe id="generalFrame" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;border:0;opacity:0"></iframe>
 <script>
 'use strict';
-const DIAG_VERSION='V3.61.123'; const MODEL='gemini-3.8-flash'; const API_URL=`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+const DIAG_VERSION='V3.61.124'; const MODEL='gemini-3.8-flash'; const API_URL=`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 const GENERAL_ROUTE_STATS_KEY='korean_lao_general_network_stats_v1';
 const RUN_DB='korean_lao_diag_runs_service_v2', RUN_STORE='runs', RUN_KEY='last-quality';
 const $=id=>document.getElementById(id);let stopped=false,activeController=null,statsCache=null,qualityRows=[],qualityRun=null,qualityLogText='',recordText='',perfText='',deployText='',selfText='',fallbackRunSnapshot=null;

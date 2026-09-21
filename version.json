@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.123",
-  "build": "20260922-V3.61.123-SERVICE-MAIN-UX7",
-  "buildId": "20260922-V3.61.123-SERVICE-MAIN-UX7",
-  "notes": "SERVICE 승격. UX7의 앱 전환/복귀 자동통역 상태 재동기화와 FAST 문장기능 보존 보강을 포함하고, UX5/UX6의 단일언어 UI·상단 자동맞춤·전체지우기·키보드 UX·TTS One-Tap을 유지. 설명서를 현재 UI에 맞춤."
+  "version": "V3.61.124",
+  "build": "20260922-V3.61.124-SERVICE-MAIN-UX8",
+  "buildId": "20260922-V3.61.124-SERVICE-MAIN-UX8",
+  "notes": "SERVICE UX8. 전역 버튼 글자 자동맞춤, 전체 지우기 최근대화 접기+상단 이동, 본앱 STT 성공/실패 표시, 본앱 제목 정리, 버전별 업데이트 안내 복구."
 }

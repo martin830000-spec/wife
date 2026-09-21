@@ -24,7 +24,7 @@ button{font:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transp
 .mode-btn,.home-btn{min-height:40px;border:1px solid #ccd6e0;border-radius:8px;background:#fff;font-size:12px;font-weight:900;color:#4b5563;padding:7px 10px;white-space:nowrap}
 .mode-btn{min-width:82px}
 .mode-btn.active{background:#e8f0fe;border-color:#a8c1ee;color:var(--blue)}
-.home-btn{flex:0 0 58px;width:58px;padding:4px 3px;font-size:9px;line-height:1.08;display:flex;align-items:center;justify-content:center;gap:3px;white-space:normal}.home-btn .home-icon{font-size:14px;line-height:1}.home-btn .home-label{display:flex;flex-direction:column;align-items:flex-start;line-height:1.08}.home-btn .home-label small{font-size:7.5px;font-weight:850;color:#667085}
+.home-btn{flex:0 0 58px;width:58px;padding:3px 3px;font-size:9px;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;white-space:normal}.home-btn .home-icon{font-size:13px;line-height:1}.home-btn .home-label{display:block;width:100%;min-width:0;text-align:center;line-height:1.05;white-space:normal;overflow-wrap:anywhere;word-break:keep-all}.home-btn .home-label small{font-size:7.5px;font-weight:850;color:#667085}
 .stage{position:relative;flex:1 1 auto;min-height:0;width:100%;overflow:hidden}
 .mode-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#f3f6fa;display:none}
 .mode-frame.active{display:block}
@@ -276,7 +276,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 /* UX5: one-language shell in active husband/wife mode + measured text fit. */
 .shell-guide-label::after{content:none!important;display:none!important}
 .shell-guide-label,.home-btn .home-label,.mode-btn span{display:block!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;line-height:1.12!important}
-.home-btn .home-label{align-items:initial!important;text-align:center!important}
+.home-btn .home-label{align-items:initial!important;text-align:center!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:keep-all!important;line-height:1.05!important}
 .shell-guide-btn,.mode-btn,.home-btn,.shell-admin-gear{min-height:44px!important}
 .shell-guide-btn{min-width:42px;max-width:150px;display:flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;line-height:1!important}
 .shell-guide-icon{flex:0 0 auto;font-size:14px;line-height:1}
@@ -295,12 +295,12 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
   <div class="release-notice-card">
     <div id="releaseNoticeKo">
       <h2 id="releaseNoticeTitle">✨ 새 버전으로 업데이트되었습니다</h2>
-      <p class="release-notice-sub">V3.61.123 SERVICE는 모바일 UI와 앱 전환 안정성, 번역 의미 보존을 함께 정리했습니다.</p><ul class="release-notice-list"><li>남편 화면은 한국어 UI, 아내 화면은 라오어 UI만 표시하며 상단 버튼 글자는 화면 폭에 맞게 자동 조절됩니다.</li><li>하단 <b>↺ 전체 지우기</b>와 키보드 위 큰 <b>번역하기</b> 동작을 현재 UI 기준으로 반영했습니다.</li><li>본앱↔일반앱 전환/복귀 뒤에도 자동통역 저장 상태를 다시 동기화해 첫 탭부터 정확히 동작합니다.</li><li>자동 음성출력 OFF에서도 수동 듣기는 한 번에 재생되고 로딩 중 재탭은 취소로 동작합니다.</li><li>정번역은 기존 의미보존 규칙에 추측·공감·확인질문 등 문장 기능 보존을 보강했습니다.</li></ul>
+      <p class="release-notice-sub">V3.61.124 SERVICE는 버튼 가독성과 화면 흐름을 실제 사용 기준으로 다듬었습니다.</p><ul class="release-notice-list"><li>모든 주요 텍스트 버튼은 실제 버튼 폭에 맞춰 글자 크기를 자동으로 조절합니다.</li><li><b>↺ 전체 지우기</b>를 누르면 최근대화 패널을 접고 현재 화면을 상단으로 이동합니다. 최근 기록과 설정은 유지합니다.</li><li>음성입력 품질 표시는 숫자 점수 대신 <b>성공 / 실패</b>만 간단히 표시합니다.</li><li>본앱 메인 제목을 <b>부부 대화 번역</b>으로 정리하고 한국/라오스 상단 표시는 더 읽기 쉽게 조정했습니다.</li><li>업데이트 안내는 버전별 식별값으로 다시 표시되어 새 SERVICE 승격을 놓치지 않습니다.</li></ul>
       <div class="release-notice-guide">자세한 내용은 사용설명서의 ‘업데이트 내역’에서 확인하세요.</div>
     </div>
     <div id="releaseNoticeLo" hidden>
       <h2 id="releaseNoticeTitleLo">✨ ແອັບໄດ້ອັບເດດເປັນເວີຊັນໃໝ່ແລ້ວ</h2>
-      <p class="release-notice-sub">V3.61.123 SERVICE ປັບ UI ມືຖື, ຄວາມສະຖຽນໃນການສະຫຼັບແອັບ ແລະ ການຮັກສາຄວາມໝາຍ.</p><ul class="release-notice-list"><li>ໜ້າຜົວໃຊ້ UI ເກົາຫຼີເທົ່ານັ້ນ, ໜ້າພັນລະຍາໃຊ້ UI ລາວເທົ່ານັ້ນ ແລະ ຂະໜາດຕົວໜັງສືແຖບເທິງປັບຕາມຄວາມກວ້າງ.</li><li>ອັບເດດ <b>↺ ລ້າງທັງໝົດ</b> ແລະ ປຸ່ມແປຂະໜາດໃຫຍ່ເທິງແປ້ນພິມ.</li><li>ຫຼັງສະຫຼັບ/ກັບຄືນແອັບ ສະຖານະແປອັດຕະໂນມັດຈະຊິງຈາກຄ່າທີ່ບັນທຶກ.</li><li>ເມື່ອປິດສຽງອັດຕະໂນມັດ ການກົດຟັງຄັ້ງດຽວຈະເລີ່ມສຽງ; ກົດຊ້ຳຂະນະໂຫຼດເພື່ອຍົກເລີກ.</li><li>ການແປຫຼັກເພີ່ມກົດຮັກສາຮູບແບບຄວາມໝາຍ ເຊັ່ນ ການຄາດເດົາ, ຄວາມເຫັນໃຈ ແລະ ຄຳຖາມຢືນຢັນ.</li></ul>
+      <p class="release-notice-sub">V3.61.124 SERVICE ປັບຄວາມອ່ານງ່າຍຂອງປຸ່ມ ແລະ ການໃຊ້ໜ້າຈໍໃຫ້ເໝາະກັບການໃຊ້ຈິງ.</p><ul class="release-notice-list"><li>ປຸ່ມຂໍ້ຄວາມຫຼັກປັບຂະໜາດຕົວໜັງສືຕາມຄວາມກວ້າງຂອງປຸ່ມອັດຕະໂນມັດ.</li><li>ກົດ <b>↺ ລ້າງທັງໝົດ</b> ຈະພັບປະຫວັດລ່າສຸດ ແລະ ເລື່ອນໜ້າຈໍຂຶ້ນເທິງ ໂດຍບໍ່ລຶບປະຫວັດ ຫຼື ຄ່າຕັ້ງ.</li><li>ການຮັບສຽງສະແດງພຽງ <b>ສຳເລັດ / ລົ້ມເຫຼວ</b> ແທນຄະແນນ.</li><li>ຫົວຂໍ້ແອັບຫຼັກປ່ຽນເປັນການແປສົນທະນາຄູ່ສົມລົດ ແລະ ປັບຕົວໜັງສື ເກົາຫຼີ/ລາວ ໃຫ້ອ່ານງ່າຍ.</li><li>ແຈ້ງເຕືອນອັບເດດໃຊ້ ID ຕາມເວີຊັນ ເພື່ອສະແດງເມື່ອມີ SERVICE ໃໝ່.</li></ul>
       <div class="release-notice-guide">ເບິ່ງລາຍລະອຽດໃນ ‘ປະຫວັດອັບເດດ’ ຂອງຄູ່ມື.</div>
     </div>
     <button id="releaseNoticeOk" class="release-notice-ok" type="button">확인</button>
@@ -308,8 +308,9 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 </div>
 <div id="manualUpdateHistoryOverlay" class="release-history-overlay" role="dialog" aria-modal="true" aria-labelledby="manualUpdateHistoryTitle" hidden>
  <div class="release-history-card">
-  <div id="manualUpdateHistoryKo"><h2 id="manualUpdateHistoryTitle">🆕 업데이트 내역</h2><div class="release-history-version">현재 버전: <b data-release-version>--</b></div><h3>V3.61.123 주요 업데이트</h3><div class="release-history-section"><h3>UI·입력</h3><ul><li>남편 한국어 UI / 아내 라오어 UI로 정리하고 상단 버튼 글자를 실제 폭에 맞춰 자동 조절합니다.</li><li>하단의 텍스트입력을 ↺ 전체 지우기로 변경했고, 키보드가 열리면 키보드 위에 큰 번역하기 버튼을 표시합니다.</li></ul></div><div class="release-history-section"><h3>앱 전환·버튼</h3><ul><li>본앱↔일반앱 복귀 시 자동통역 저장 상태를 다시 동기화합니다.</li><li>수동 TTS는 첫 탭에 바로 재생하며 로딩 중 재탭은 취소만 합니다.</li></ul></div><div class="release-history-section"><h3>번역 의미 보존</h3><ul><li>기존 FAST 프롬프트의 문장 기능 보존 규칙에 추측·공감·확인질문·부탁·명령의 기능을 바꾸지 않도록 최소 보강했습니다.</li><li>역할·말투·고유명사·숫자·이동방향·역번역 코어는 기존 정책을 유지합니다.</li></ul></div></div><div id="manualUpdateHistoryLo" hidden><h2 id="manualUpdateHistoryTitleLo">🆕 ປະຫວັດອັບເດດ</h2><div class="release-history-version">ເວີຊັນປັດຈຸບັນ: <b data-release-version>--</b></div><h3>ການປັບປຸງຫຼັກ V3.61.123</h3><div class="release-history-section"><h3>UI · ການປ້ອນ</h3><ul><li>ໜ້າຜົວໃຊ້ UI ເກົາຫຼີ, ໜ້າພັນລະຍາໃຊ້ UI ລາວ ແລະ ຂະໜາດຕົວໜັງສືດ້ານເທິງປັບອັດຕະໂນມັດ.</li><li>ປ່ຽນປຸ່ມປ້ອນຂໍ້ຄວາມເປັນ ↺ ລ້າງທັງໝົດ ແລະ ສະແດງປຸ່ມແປໃຫຍ່ເທິງແປ້ນພິມ.</li></ul></div><div class="release-history-section"><h3>ສະຫຼັບແອັບ · ປຸ່ມ</h3><ul><li>ກັບຄືນຈາກອີກແອັບແລ້ວ ຈະຊິງຄ່າແປອັດຕະໂນມັດ.</li><li>TTS ກົດຄັ້ງດຽວເລີ່ມຫຼິ້ນ; ກົດຊ້ຳຂະນະໂຫຼດເພື່ອຍົກເລີກ.</li></ul></div><div class="release-history-section"><h3>ຮັກສາຄວາມໝາຍ</h3><ul><li>ເພີ່ມກົດບໍ່ໃຫ້ປ່ຽນການຄາດເດົາ, ຄວາມເຫັນໃຈ, ຄຳຖາມຢືນຢັນ, ຄຳຂໍ ແລະ ຄຳສັ່ງເປັນຮູບແບບອື່ນ.</li></ul></div></div>
-<button id="manualUpdateHistoryClose" class="release-history-close" type="button">닫기</button>
+  <div id="manualUpdateHistoryKo"><h2 id="manualUpdateHistoryTitle">🆕 업데이트 내역</h2><div class="release-history-version">현재 버전: <b data-release-version>--</b></div><h3>V3.61.124 주요 업데이트</h3><div class="release-history-section"><h3>UI·버튼</h3><ul><li>본앱·일반앱의 주요 텍스트 버튼은 버튼 안쪽 실제 가용 폭에 맞춰 글자 크기를 자동으로 조절합니다.</li><li>본앱 상단 한국/라오스 표시를 더 크게 보이도록 조정하고 메인 제목을 ‘부부 대화 번역’으로 정리했습니다.</li></ul></div><div class="release-history-section"><h3>전체 지우기·음성입력</h3><ul><li>전체 지우기는 최근대화 패널을 접고 화면을 상단으로 이동하지만 최근 기록·즐겨찾기·자동통역·음성출력 설정은 유지합니다.</li><li>음성입력 품질은 사용자 화면에서 숫자 점수를 숨기고 성공/실패만 표시하며 내부 진단 데이터는 유지합니다.</li></ul></div><div class="release-history-section"><h3>업데이트</h3><ul><li>새 SERVICE 승격 때 업데이트 안내 팝업이 버전별로 다시 표시되도록 식별값을 갱신했습니다.</li><li>번역·역번역 프롬프트, TTS/STT 코어, 네트워크·Cloudflare fallback은 V3.61.123 정책을 유지합니다.</li></ul></div></div><div id="manualUpdateHistoryLo" hidden><h2 id="manualUpdateHistoryTitleLo">🆕 ປະຫວັດອັບເດດ</h2><div class="release-history-version">ເວີຊັນປັດຈຸບັນ: <b data-release-version>--</b></div><h3>ການປັບປຸງຫຼັກ V3.61.124</h3><div class="release-history-section"><h3>UI · ປຸ່ມ</h3><ul><li>ປຸ່ມຂໍ້ຄວາມຫຼັກໃນແອັບຫຼັກ ແລະ ແອັບທົ່ວໄປ ປັບຂະໜາດຕົວໜັງສືຕາມພື້ນທີ່ຈິງຂອງປຸ່ມ.</li><li>ປັບຂໍ້ຄວາມ ເກົາຫຼີ/ລາວ ດ້ານເທິງໃຫ້ໃຫຍ່ຂຶ້ນ ແລະ ປ່ຽນຫົວຂໍ້ຫຼັກເປັນການແປສົນທະນາຄູ່ສົມລົດ.</li></ul></div><div class="release-history-section"><h3>ລ້າງ · ຮັບສຽງ</h3><ul><li>ລ້າງທັງໝົດຈະພັບປະຫວັດລ່າສຸດ ແລະ ເລື່ອນໄປດ້ານເທິງ ແຕ່ຮັກສາປະຫວັດ, ລາຍການທີ່ມັກ ແລະ ຄ່າຕັ້ງໄວ້.</li><li>ໜ້າຜູ້ໃຊ້ສະແດງການຮັບສຽງເປັນ ສຳເລັດ/ລົ້ມເຫຼວ ໂດຍບໍ່ສະແດງຄະແນນ.</li></ul></div><div class="release-history-section"><h3>ອັບເດດ</h3><ul><li>ອັບເດດ ID ການແຈ້ງເຕືອນຕາມເວີຊັນ ເພື່ອໃຫ້ສະແດງເມື່ອມີ SERVICE ໃໝ່.</li><li>ພຣອມປ໌ແປ/ແປກັບ, TTS/STT ແລະ ເຄືອຂ່າຍ/Cloudflare fallback ຍັງໃຊ້ນະໂຍບາຍ V3.61.123.</li></ul></div></div>
+  </div>
+  <button id="manualUpdateHistoryClose" class="release-history-close" type="button">닫기</button>
  </div>
 </div>
 
@@ -340,7 +341,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 <section class="manual-card"><div class="manual-kicker">화면 먼저 보기</div><h2>🧭 1. 처음 화면과 상단 버튼</h2><div class="manual-shot-grid"><figure class="manual-shot manual-topbar-shot"><img data-manual-shot="topbar" alt="본앱 상단 화면"><figcaption>상단에서 남편/아내 모드, 자세한 설명서, 처음 화면으로 이동할 수 있습니다.</figcaption></figure><figure class="manual-shot"><img data-manual-shot="husband" alt="남편용 번역 화면"><figcaption>남편용은 한국어를 입력해 라오어로 번역합니다.</figcaption></figure></div><div class="manual-steps"><div class="manual-step"><b>🇰🇷 한국</b>한국어로 말하거나 입력하는 남편용 화면입니다.</div><div class="manual-step"><b>🇱🇦 ລາວ</b>라오어로 말하거나 입력하는 아내용 화면입니다.</div><div class="manual-step"><b>🏠 처음</b>모드를 다시 선택하는 처음 화면으로 돌아갑니다.</div><div class="manual-step"><b>📖 자세한 설명서</b>지금 보고 있는 사용자용 설명서를 엽니다.</div></div></section>
 <section class="manual-card"><div class="manual-kicker">30초 빠른 시작</div><h2>🚀 2. 가장 쉬운 사용 순서</h2><div class="manual-steps"><div class="manual-step"><b>① 말하거나 입력</b>입력창에 직접 쓰거나 음성입력 버튼을 눌러 한 문장씩 말합니다.</div><div class="manual-step"><b>② 번역하기</b>원문을 한 번 확인한 뒤 번역하기를 누릅니다.</div><div class="manual-step"><b>③ 결과 + 의미확인</b>번역이 끝나면 입력창은 작아지고, 번역 결과·의미확인(역번역)·원문 요약 순서로 한눈에 확인합니다.</div><div class="manual-step"><b>④ 상대에게 전달</b>화면을 보여주거나 듣기로 재생하거나 복사해서 메신저로 보냅니다.</div></div><div class="manual-tip manual-danger"><b>팁:</b> 긴 말을 한 번에 넣는 것보다 1~2문장씩 나누면 음성인식과 번역 결과를 확인하기 쉽습니다.</div></section>
 <section class="manual-card"><div class="manual-kicker">음성입력</div><h2>🎙️ 3. 말해서 입력하기</h2><div class="manual-steps"><div class="manual-step"><b>마이크 준비</b>버튼을 누르면 마이크 권한과 음성 연결을 준비합니다.</div><div class="manual-step"><b>듣는 중</b>녹음 중에는 버튼이 바뀌고 시간이 표시됩니다. 말을 끝낸 뒤 다시 누르면 종료합니다.</div><div class="manual-step"><b>인식 중</b>말한 내용을 글자로 바꾸는 동안 상태가 표시됩니다. 필요하면 다시 눌러 취소할 수 있습니다.</div><div class="manual-step"><b>완료</b>인식된 원문이 입력창에 들어갑니다. 이름·숫자·주소는 번역 전에 눈으로 한 번 확인하세요.</div></div><div class="manual-warn manual-danger"><b>주변이 시끄러울 때:</b> 휴대폰을 조금 가까이 두고 짧고 또박또박 말하세요. 사람 이름, 지명, 브랜드, 가격, 날짜, 시간은 특히 확인하는 것이 좋습니다.</div></section>
-<section class="manual-card"><div class="manual-kicker">하단 고정 영역</div><h2>⚡ 4. 앱 전환바 + 빠른 기능</h2><div class="manual-feature-list"><div class="manual-step"><b>💑 부부대화 | 🌏 일반 통역</b>하단 고정 메뉴의 윗줄입니다. 본앱에서는 <b>부부대화</b>가 선택 상태로 표시되며 다시 눌러도 이동하지 않습니다. <b>일반 통역</b>을 누르면 여행·식당·쇼핑·택시·호텔·병원 등 다른 사람과 대화하는 일반 통역앱으로 이동합니다.</div><div class="manual-step"><b>자동통역</b>음성입력이 정상 완료되면 자동으로 번역하며, 음성출력이 켜져 있을 때만 상대 언어 음성을 재생합니다.</div><div class="manual-step"><b>↺ 전체 지우기</b>현재 입력문·번역·의미확인과 진행 상태를 한 번에 비웁니다. 최근 번역·즐겨찾기·자동통역·음성출력 설정은 지우지 않습니다.</div><div class="manual-step"><b>말하기</b>화면 안쪽 음성입력과 같은 기능이며, 준비/듣는 중/인식 중 상태가 하단에도 표시됩니다.</div><div class="manual-step"><b>번역하기</b>현재 입력된 문장을 바로 번역합니다. 휴대폰 키보드가 열린 동안에는 키보드 바로 위에 큰 번역하기 버튼 하나만 표시되어 입력 후 바로 번역할 수 있습니다.</div></div><div class="manual-tip manual-danger"><b>자동통역 참고:</b> 앱을 전환하거나 다시 돌아와도 저장된 자동통역 ON/OFF 상태를 다시 맞춥니다. 키보드로 직접 입력한 글은 자동으로 번역하지 않습니다. 자동통역이 ON이면 새 음성인식 문장이 입력창의 기존 문장을 교체한 뒤 자동번역됩니다. OFF에서는 기존 입력문 뒤에 새 음성인식 문장을 이어서 추가할 수 있습니다.</div></section>
+<section class="manual-card"><div class="manual-kicker">하단 고정 영역</div><h2>⚡ 4. 앱 전환바 + 빠른 기능</h2><div class="manual-feature-list"><div class="manual-step"><b>💑 부부대화 | 🌏 일반 통역</b>하단 고정 메뉴의 윗줄입니다. 본앱에서는 <b>부부대화</b>가 선택 상태로 표시되며 다시 눌러도 이동하지 않습니다. <b>일반 통역</b>을 누르면 여행·식당·쇼핑·택시·호텔·병원 등 다른 사람과 대화하는 일반 통역앱으로 이동합니다.</div><div class="manual-step"><b>자동통역</b>음성입력이 정상 완료되면 자동으로 번역하며, 음성출력이 켜져 있을 때만 상대 언어 음성을 재생합니다.</div><div class="manual-step"><b>↺ 전체 지우기</b>현재 입력문·번역·의미확인과 진행 상태를 한 번에 비우고, 최근대화 패널을 접은 뒤 화면을 상단으로 이동합니다. 최근 번역 기록·즐겨찾기·자동통역·음성출력 설정은 지우지 않습니다.</div><div class="manual-step"><b>말하기</b>화면 안쪽 음성입력과 같은 기능이며, 준비/듣는 중/인식 중 상태가 하단에도 표시됩니다.</div><div class="manual-step"><b>번역하기</b>현재 입력된 문장을 바로 번역합니다. 휴대폰 키보드가 열린 동안에는 키보드 바로 위에 큰 번역하기 버튼 하나만 표시되어 입력 후 바로 번역할 수 있습니다.</div></div><div class="manual-tip manual-danger"><b>자동통역 참고:</b> 앱을 전환하거나 다시 돌아와도 저장된 자동통역 ON/OFF 상태를 다시 맞춥니다. 키보드로 직접 입력한 글은 자동으로 번역하지 않습니다. 자동통역이 ON이면 새 음성인식 문장이 입력창의 기존 문장을 교체한 뒤 자동번역됩니다. OFF에서는 기존 입력문 뒤에 새 음성인식 문장을 이어서 추가할 수 있습니다.</div></section>
 <section class="manual-card"><div class="manual-kicker">번역과 검증</div><h2>🔍 5. 번역 결과와 의미확인</h2><div class="manual-steps"><div class="manual-step"><b>정번역</b>입력한 원문의 말투와 의미를 가능한 한 보존해 상대 언어로 번역합니다. 번역이 완료되면 번역문이 위쪽, 의미확인(역번역)이 그 아래, 원문 요약이 마지막에 표시되어 비교하기 쉽습니다.</div><div class="manual-step"><b>의미확인(역번역)</b>정번역이 끝나면 자동으로 실행됩니다. 별도의 검증 버튼을 누를 필요가 없으며, 재번역하면 새 번역 결과를 기준으로 의미확인도 다시 자동 실행됩니다.</div><div class="manual-step"><b>⚠️ 이상징후 경고</b>번역 결과에는 번역 품질 숫자를 표시하지 않습니다. 문자·형식 또는 의미 보존 검사에서 확인이 필요한 신호가 있을 때만 ⚠️ 경고와 구체적인 이유를 표시합니다. 경고는 번역이 틀렸다고 단정하는 판정이 아니므로 원문·번역·의미확인을 함께 확인하세요.</div><div class="manual-step"><b>재번역</b>결과 영역의 [🔄 재번역] 버튼을 누르면 같은 원문으로 정번역을 다시 실행하고 의미확인도 자동으로 다시 진행합니다. 필요하면 원문을 수정한 뒤 번역 버튼을 눌러도 됩니다.</div></div><div class="manual-warn manual-danger"><b>중요:</b> 의미확인은 100% 정답을 보증하는 기능이 아닙니다. 계약·의료·법률·송금·큰 금액·정확한 일정처럼 실수가 큰 영향을 줄 수 있는 내용은 사람 이름, 숫자, 날짜, 주소와 핵심 조건을 직접 다시 확인하세요.</div></section>
 <section class="manual-card"><div class="manual-kicker">결과 활용</div><h2>🔊 6. 듣기 · 복사 · 결과 확인</h2><div class="manual-feature-list"><div class="manual-step"><b>듣기</b>번역 결과를 상대방 언어 음성으로 들려줍니다. 자동 음성출력이 꺼져 있어도 한 번 누르면 바로 재생을 시작하며, 로딩 중 다시 누르면 요청을 취소합니다. 휴대폰 미디어 볼륨을 사용합니다.</div><div class="manual-step"><b>복사</b>번역 결과를 메신저에 붙여넣을 수 있습니다. 번역본과 자동 의미확인(역번역)이 준비되면 두 줄을 함께 복사합니다.</div><div class="manual-step"><b>원문 수정</b>번역 완료 후 결과 위의 원문 카드에서 <b>수정</b>을 누르면 기존 입력창이 다시 펼쳐집니다.</div><div class="manual-step"><b>입력 지우기</b>입력창의 원문만 비웁니다. 이미 표시된 번역 결과와 의미확인은 그대로 남습니다.</div><div class="manual-step"><b>결과 지우기</b>번역 결과와 의미확인만 비웁니다. 입력 원문은 남아 있어 수정하거나 다시 번역할 수 있습니다.</div><div class="manual-step"><b>음성출력 ON/OFF</b>원하지 않을 때 자동 음성출력을 끌 수 있습니다.</div></div></section>
 <section class="manual-card"><div class="manual-kicker">아내 화면</div><h2>🇱🇦 7. 아내용 라오어 화면</h2><div class="manual-shot-grid"><figure class="manual-shot"><img data-manual-shot="wife" alt="아내용 라오어 번역 화면"><figcaption>아내용은 라오어로 말하거나 입력하고 한국어 결과를 확인합니다.</figcaption></figure><figure class="manual-shot"><img data-manual-shot="husband" alt="남편용 한국어 번역 화면"><figcaption>남편용과 아내용의 주요 기능 배치는 가능한 한 같은 위치로 맞춰져 있습니다.</figcaption></figure></div><div class="manual-step">남편 화면은 한국어 UI만, 아내 화면은 라오어 UI만 표시하면서 버튼 위치와 사용 흐름은 최대한 같게 유지합니다. 상대방이 앱을 사용할 때는 자기 언어 화면을 선택하면 됩니다.</div></section>
@@ -354,7 +355,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 <section class="manual-card"><div class="manual-kicker">ເບິ່ງໜ້າຈໍກ່ອນ</div><h2>🧭 1. ໜ້າທຳອິດ ແລະ ໂໝດພາສາ</h2><div class="manual-shot-grid"><figure class="manual-shot manual-topbar-shot"><img data-manual-shot="topbar" alt="ແຖບເທິງ"><figcaption>ສາມາດເລືອກໂໝດຜົວ/ພັນລະຍາ, ເປີດຄູ່ມື ຫຼື ກັບໄປໜ້າທຳອິດ.</figcaption></figure><figure class="manual-shot"><img data-manual-shot="wife" alt="ໜ້າແປພາສາລາວ"><figcaption>ໂໝດພັນລະຍາໃຊ້ພາສາລາວ ແລະ ແປເປັນເກົາຫຼີ.</figcaption></figure></div><div class="manual-steps"><div class="manual-step"><b>🇰🇷 한국</b>ໂໝດຜົວ: ເກົາຫຼີ → ລາວ.</div><div class="manual-step"><b>🇱🇦 ລາວ</b>ໂໝດພັນລະຍາ: ລາວ → ເກົາຫຼີ.</div><div class="manual-step"><b>🏠 ໜ້າທຳອິດ</b>ກັບໄປເລືອກໂໝດອີກຄັ້ງ.</div><div class="manual-step"><b>📖 ຄູ່ມືລະອຽດ</b>ເປີດຄູ່ມືສຳລັບຜູ້ໃຊ້.</div></div></section>
 <section class="manual-card"><div class="manual-kicker">ເລີ່ມໃຊ້ໄວ</div><h2>🚀 2. ຂັ້ນຕອນທີ່ງ່າຍທີ່ສຸດ</h2><div class="manual-steps"><div class="manual-step"><b>① ເວົ້າ ຫຼື ພິມ</b>ເວົ້າເປັນປະໂຫຍກສັ້ນ ຫຼື ພິມໃສ່ຊ່ອງ.</div><div class="manual-step"><b>② ແປ</b>ກວດຕົ້ນສະບັບແລ້ວກົດແປ.</div><div class="manual-step"><b>③ ຜົນແປ + ກວດຄວາມໝາຍ</b>ຫຼັງແປ ຊ່ອງປ້ອນຈະຫຍໍ້ລົງ ແລະ ສາມາດເບິ່ງຜົນແປ, ການກວດຄວາມໝາຍ (ແປກັບ) ແລະ ຕົ້ນສະບັບ ຕາມລຳດັບໄດ້ໃນໜ້າດຽວ.</div><div class="manual-step"><b>④ ສົ່ງໃຫ້ອີກຝ່າຍ</b>ສະແດງໜ້າຈໍ, ຟັງສຽງ ຫຼື ຄັດລອກໄປຫາ Messenger.</div></div></section>
 <section class="manual-card"><div class="manual-kicker">ຮັບສຽງ</div><h2>🎙️ 3. ເວົ້າແທນການພິມ</h2><div class="manual-steps"><div class="manual-step"><b>ກຽມໄມໂຄຣໂຟນ</b>ກຳລັງກວດສິດ ແລະ ການເຊື່ອມຕໍ່.</div><div class="manual-step"><b>ກຳລັງຟັງ</b>ປຸ່ມຈະປ່ຽນສະຖານະ ແລະ ສະແດງເວລາ.</div><div class="manual-step"><b>ກຳລັງຮັບຮູ້</b>ກຳລັງປ່ຽນສຽງເປັນຂໍ້ຄວາມ; ສາມາດກົດເພື່ອຍົກເລີກ.</div><div class="manual-step"><b>ສຳເລັດ</b>ຂໍ້ຄວາມທີ່ຮັບໄດ້ຈະເຂົ້າໃນຊ່ອງປ້ອນ.</div></div><div class="manual-warn manual-danger"><b>ບ່ອນສຽງດັງ:</b> ເວົ້າສັ້ນໆ ແລະ ຊັດເຈນ. ກວດຊື່, ຕົວເລກ, ທີ່ຢູ່, ລາຄາ, ວັນທີ ແລະ ເວລາກ່ອນແປ.</div></section>
-<section class="manual-card"><div class="manual-kicker">ແຖບຄົງທີ່ດ້ານລຸ່ມ</div><h2>⚡ 4. ສະຫຼັບແອັບ + ປຸ່ມດ່ວນ</h2><div class="manual-feature-list"><div class="manual-step"><b>💑 ສົນທະນາຄູ່ສົມລົດ | 🌏 ລ່າມທົ່ວໄປ</b>ແຖວເທິງຂອງເມນູຄົງທີ່ດ້ານລຸ່ມ. ໃນແອັບຫຼັກ <b>ສົນທະນາຄູ່ສົມລົດ</b> ຈະຖືກເລືອກໄວ້. ກົດ <b>ລ່າມທົ່ວໄປ</b> ເພື່ອໄປໃຊ້ສຳລັບເດີນທາງ, ຮ້ານອາຫານ, ຊື້ເຄື່ອງ, ແທັກຊີ, ໂຮງແຮມ, ໂຮງໝໍ ຫຼື ສົນທະນາກັບຄົນອື່ນ.</div><div class="manual-step"><b>ແປອັດຕະໂນມັດ</b>ຫຼັງຮັບສຽງສຳເລັດ ຈະແປອັດຕະໂນມັດ; ຈະອ່ານສຽງສະເພາະເມື່ອເປີດການສົ່ງສຽງ.</div><div class="manual-step"><b>↺ ລ້າງທັງໝົດ</b>ລ້າງຂໍ້ຄວາມປ້ອນ, ຜົນແປ, ການກວດຄວາມໝາຍ ແລະ ສະຖານະກຳລັງເຮັດວຽກ. ບໍ່ລຶບປະຫວັດ, ລາຍການທີ່ມັກ, ຄ່າແປອັດຕະໂນມັດ ຫຼື ຄ່າສຽງ.</div><div class="manual-step"><b>ເວົ້າ</b>ປຸ່ມລຸ່ມຈະສະແດງສະຖານະ ກຽມ/ຟັງ/ຮັບຮູ້.</div><div class="manual-step"><b>ແປ</b>ແປຂໍ້ຄວາມທີ່ຢູ່ໃນຊ່ອງທັນທີ. ເມື່ອແປ້ນພິມມືຖືເປີດ ຈະສະແດງປຸ່ມແປຂະໜາດໃຫຍ່ອັນດຽວຢູ່ເທິງແປ້ນພິມ.</div></div><div class="manual-tip manual-danger"><b>ໝາຍເຫດ:</b> ເມື່ອສະຫຼັບແອັບ ຫຼື ກັບຄືນ ລະບົບຈະຊິງສະຖານະເປີດ/ປິດແປອັດຕະໂນມັດຈາກຄ່າທີ່ບັນທຶກ. ຂໍ້ຄວາມທີ່ພິມເອງຈະບໍ່ແປອັດຕະໂນມັດ. ເມື່ອເປີດແປອັດຕະໂນມັດ ຂໍ້ຄວາມຈາກສຽງຄັ້ງໃໝ່ຈະແທນຂໍ້ຄວາມເກົ່າໃນຊ່ອງປ້ອນ ແລ້ວແປທັນທີ. ເມື່ອປິດ ສາມາດເພີ່ມຂໍ້ຄວາມຈາກສຽງຕໍ່ຈາກຂໍ້ຄວາມເດີມໄດ້.</div></section>
+<section class="manual-card"><div class="manual-kicker">ແຖບຄົງທີ່ດ້ານລຸ່ມ</div><h2>⚡ 4. ສະຫຼັບແອັບ + ປຸ່ມດ່ວນ</h2><div class="manual-feature-list"><div class="manual-step"><b>💑 ສົນທະນາຄູ່ສົມລົດ | 🌏 ລ່າມທົ່ວໄປ</b>ແຖວເທິງຂອງເມນູຄົງທີ່ດ້ານລຸ່ມ. ໃນແອັບຫຼັກ <b>ສົນທະນາຄູ່ສົມລົດ</b> ຈະຖືກເລືອກໄວ້. ກົດ <b>ລ່າມທົ່ວໄປ</b> ເພື່ອໄປໃຊ້ສຳລັບເດີນທາງ, ຮ້ານອາຫານ, ຊື້ເຄື່ອງ, ແທັກຊີ, ໂຮງແຮມ, ໂຮງໝໍ ຫຼື ສົນທະນາກັບຄົນອື່ນ.</div><div class="manual-step"><b>ແປອັດຕະໂນມັດ</b>ຫຼັງຮັບສຽງສຳເລັດ ຈະແປອັດຕະໂນມັດ; ຈະອ່ານສຽງສະເພາະເມື່ອເປີດການສົ່ງສຽງ.</div><div class="manual-step"><b>↺ ລ້າງທັງໝົດ</b>ລ້າງຂໍ້ຄວາມປ້ອນ, ຜົນແປ, ການກວດຄວາມໝາຍ ແລະ ສະຖານະກຳລັງເຮັດວຽກ; ຈາກນັ້ນພັບປະຫວັດລ່າສຸດ ແລະ ເລື່ອນໜ້າຈໍຂຶ້ນເທິງ. ບໍ່ລຶບປະຫວັດ, ລາຍການທີ່ມັກ, ຄ່າແປອັດຕະໂນມັດ ຫຼື ຄ່າສຽງ.</div><div class="manual-step"><b>ເວົ້າ</b>ປຸ່ມລຸ່ມຈະສະແດງສະຖານະ ກຽມ/ຟັງ/ຮັບຮູ້.</div><div class="manual-step"><b>ແປ</b>ແປຂໍ້ຄວາມທີ່ຢູ່ໃນຊ່ອງທັນທີ. ເມື່ອແປ້ນພິມມືຖືເປີດ ຈະສະແດງປຸ່ມແປຂະໜາດໃຫຍ່ອັນດຽວຢູ່ເທິງແປ້ນພິມ.</div></div><div class="manual-tip manual-danger"><b>ໝາຍເຫດ:</b> ເມື່ອສະຫຼັບແອັບ ຫຼື ກັບຄືນ ລະບົບຈະຊິງສະຖານະເປີດ/ປິດແປອັດຕະໂນມັດຈາກຄ່າທີ່ບັນທຶກ. ຂໍ້ຄວາມທີ່ພິມເອງຈະບໍ່ແປອັດຕະໂນມັດ. ເມື່ອເປີດແປອັດຕະໂນມັດ ຂໍ້ຄວາມຈາກສຽງຄັ້ງໃໝ່ຈະແທນຂໍ້ຄວາມເກົ່າໃນຊ່ອງປ້ອນ ແລ້ວແປທັນທີ. ເມື່ອປິດ ສາມາດເພີ່ມຂໍ້ຄວາມຈາກສຽງຕໍ່ຈາກຂໍ້ຄວາມເດີມໄດ້.</div></section>
 <section class="manual-card"><div class="manual-kicker">ແປ ແລະ ກວດ</div><h2>🔍 5. ຜົນແປ ແລະ ກວດຄວາມໝາຍ</h2><div class="manual-steps"><div class="manual-step"><b>ຜົນແປຫຼັກ</b>ພະຍາຍາມຮັກສາຄວາມໝາຍ ແລະ ນ້ຳສຽງຂອງຕົ້ນສະບັບ.</div><div class="manual-step"><b>ກວດຄວາມໝາຍ</b>ຫຼັງຜົນແປຫຼັກສຳເລັດ ລະບົບຈະແປກັບອັດຕະໂນມັດ. ບໍ່ຕ້ອງກົດປຸ່ມກວດແຍກ; ເມື່ອກົດ [🔄 ແປໃໝ່] ຈະແປຫຼັກໃໝ່ ແລະ ກວດຄວາມໝາຍອີກຄັ້ງອັດຕະໂນມັດ.</div><div class="manual-step"><b>⚠️ ຄຳເຕືອນຈຸດທີ່ຄວນກວດ</b>ປົກກະຕິຜົນແປຈະບໍ່ສະແດງຄະແນນຄຸນນະພາບການແປ. ຈະສະແດງ ⚠️ ແລະ ເຫດຜົນສະເພາະເມື່ອການກວດຕົວອັກສອນ/ຮູບແບບ ຫຼື ຄວາມໝາຍພົບສັນຍານທີ່ຄວນກວດ. ຄຳເຕືອນບໍ່ໄດ້ຕັດສິນວ່າຄຳແປຜິດ; ກະລຸນາທຽບຕົ້ນສະບັບ, ຄຳແປ ແລະ ການກວດຄວາມໝາຍ.</div><div class="manual-step"><b>ແປໃໝ່</b>ຖ້າບໍ່ຊັດເຈນ ໃຫ້ຫຍໍ້ຕົ້ນສະບັບແລ້ວແປໃໝ່.</div></div><div class="manual-warn manual-danger"><b>ສຳຄັນ:</b> ການກວດຄວາມໝາຍບໍ່ໄດ້ຮັບປະກັນ 100%. ສັນຍາ, ການແພດ, ກົດໝາຍ, ການໂອນເງິນ, ຈຳນວນເງິນຫຼາຍ, ວັນທີ, ເວລາ ແລະ ທີ່ຢູ່ ຄວນກວດເອງອີກຄັ້ງ.</div></section>
 <section class="manual-card"><div class="manual-kicker">ໃຊ້ຜົນແປ</div><h2>🔊 6. ຟັງ · ຄັດລອກ · ກວດຜົນແປ</h2><div class="manual-feature-list"><div class="manual-step"><b>ຟັງ</b>ອ່ານຜົນແປໃຫ້ອີກຝ່າຍຟັງ. ເຖິງຈະປິດສຽງອັດຕະໂນມັດ ກົດຄັ້ງດຽວກໍເລີ່ມຫຼິ້ນ; ຖ້າກຳລັງໂຫຼດ ກົດອີກຄັ້ງເພື່ອຍົກເລີກ.</div><div class="manual-step"><b>ຄັດລອກ</b>ເມື່ອຜົນແປ ແລະ ການກວດຄວາມໝາຍ (ແປກັບ) ພ້ອມແລ້ວ ຈະຄັດລອກ 2 ແຖວໄປ Messenger ຫຼື ແອັບອື່ນ.</div><div class="manual-step"><b>ແກ້ໄຂຕົ້ນສະບັບ</b>ຫຼັງແປ ກົດ <b>ແກ້ໄຂ</b> ຢູ່ກາດຕົ້ນສະບັບເພື່ອເປີດຊ່ອງປ້ອນຄືນ.</div><div class="manual-step"><b>ລ້າງຊ່ອງປ້ອນ</b>ລ້າງສະເພາະຂໍ້ຄວາມໃນຊ່ອງປ້ອນ; ຜົນແປ ແລະ ການກວດຄວາມໝາຍທີ່ສະແດງຢູ່ຈະຍັງຄົງຢູ່.</div><div class="manual-step"><b>ລ້າງຜົນແປ</b>ລ້າງສະເພາະຜົນແປ ແລະ ການກວດຄວາມໝາຍ; ຕົ້ນສະບັບໃນຊ່ອງປ້ອນຈະຍັງຄົງຢູ່ເພື່ອແກ້ໄຂ ຫຼື ແປໃໝ່.</div><div class="manual-step"><b>ເປີດ/ປິດສຽງ</b>ສາມາດປິດສຽງອັດຕະໂນມັດໄດ້.</div></div></section>
 <section class="manual-card"><div class="manual-kicker">ສອງໜ້າຈໍ</div><h2>🇱🇦 7. ໂໝດຜົວ ແລະ ໂໝດພັນລະຍາ</h2><div class="manual-shot-grid"><figure class="manual-shot"><img data-manual-shot="wife" alt="ໂໝດພັນລະຍາ"><figcaption>ພັນລະຍາເວົ້າ/ພິມລາວ ແລະ ເບິ່ງຜົນເກົາຫຼີ.</figcaption></figure><figure class="manual-shot"><img data-manual-shot="husband" alt="ໂໝດຜົວ"><figcaption>ຕຳແໜ່ງປຸ່ມຫຼັກຖືກຈັດໃຫ້ຄ້າຍກັນເພື່ອໃຊ້ງ່າຍ.</figcaption></figure></div><div class="manual-step">ໜ້າຜົວສະແດງ UI ພາສາເກົາຫຼີເທົ່ານັ້ນ ແລະ ໜ້າພັນລະຍາສະແດງ UI ພາສາລາວເທົ່ານັ້ນ ໂດຍຮັກສາຕຳແໜ່ງປຸ່ມໃຫ້ຄ້າຍກັນ.</div></section>
@@ -369,7 +370,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div id="authScreen" class="auth-screen" role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="auth-card">
-    <span class="auth-corner-version" data-app-version aria-label="앱 버전">V3.61.123</span>
+    <span class="auth-corner-version" data-app-version aria-label="앱 버전">V3.61.124</span>
     <div class="auth-icon">🇰🇷 ↔ 🇱🇦</div>
     <div class="auth-head-row">
       <h1 id="authTitle" class="auth-title">한↔라오 번역기<span class="auth-title-lo">ແອັບແປພາສາ ເກົາຫຼີ ↔ ລາວ</span></h1>
@@ -389,8 +390,8 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
       <button id="forceRefreshBtn" class="auth-version-btn" type="button" onclick="forceUnifiedFreshReload()">⬇️ 최신파일 다시받기
 ໂຫຼດໄຟລ໌ລ່າສຸດໃໝ່</button>
     </div>
-    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.123</span> · 최신 버전을 확인할 수 있습니다.
-ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.123</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
+    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.124</span> · 최신 버전을 확인할 수 있습니다.
+ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.124</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
     <div id="authStartStatus" class="auth-start-status">앱을 준비하고 있습니다.
 ກຳລັງກຽມແອັບໃຫ້ພ້ອມໃຊ້ງານ.</div>
     <button class="manual-btn" type="button" onclick="requestManualLanguageChoice()">📖 자세한 사용설명서 · ຄູ່ມືລະອຽດ</button>
@@ -428,7 +429,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div class="shell">
   <div id="shellSwitchbar" class="switchbar" role="navigation" aria-label="번역기 모드 선택">
-    <div class="shell-version-tools"><span class="shell-version" data-app-version>V3.61.123</span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ"><span class="shell-guide-icon" aria-hidden="true">📖</span><span id="shellGuideLabel" class="shell-guide-label">자세한 설명서 · ຄູ່ມື</span></button></div>
+    <div class="shell-version-tools"><span class="shell-version" data-app-version>V3.61.124</span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ"><span class="shell-guide-icon" aria-hidden="true">📖</span><span id="shellGuideLabel" class="shell-guide-label">자세한 설명서 · ຄູ່ມື</span></button></div>
     <div class="mode-buttons">
       <button id="husbandModeBtn" class="mode-btn" type="button" onclick="selectMode('husband')"><span id="husbandModeLabel">🇰🇷 한국</span></button>
       <button id="wifeModeBtn" class="mode-btn" type="button" onclick="selectMode('wife')"><span id="wifeModeLabel">🇱🇦 ລາວ</span></button>
@@ -455,7 +456,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 </div>
 
 
-<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="21619b5aea594b587bb58ac99ac7e43088ee371907dc66afab8320ba62e0a653">&lt;!DOCTYPE html&gt;
+<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="a7d6a457fbff69bbba53ab5d2e4aa8a592499ee95478c532b9d2d844782763d3">&lt;!DOCTYPE html&gt;
 &lt;html lang="ko"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
@@ -894,10 +895,10 @@ body.mobile-keyboard-open #inputComposer{scroll-margin-bottom:82px}
                 &lt;button type="button" class="shutdown-btn" onclick="shutdownApp()"&gt;앱 종료 🛑&lt;/button&gt;
                 &lt;span class="version-tag" data-local-version&gt;--&lt;/span&gt;
             &lt;/div&gt;
-            &lt;h2&gt;🇰🇷 ➔ 🇱🇦 한-라오 AI 번역기&lt;/h2&gt;
+            &lt;h2&gt;💑 부부 대화 번역&lt;/h2&gt;
         &lt;/div&gt;
         &lt;div class="model-row"&gt;
-            &lt;div class="model-info"&gt;🤖 빠른 번역 모드 · 남편용&lt;/div&gt;
+            &lt;div class="model-info"&gt;아내와의 대화를 자연스럽게 번역합니다&lt;/div&gt;
             &lt;div class="wife-signature"&gt;For my wife, Muay ❤️ &lt;span class="signature-divider"&gt;|&lt;/span&gt; Made by &lt;b&gt;Martin.Yang&lt;/b&gt;&lt;/div&gt;
         &lt;/div&gt;
 
@@ -1063,7 +1064,7 @@ body.mobile-keyboard-open #inputComposer{scroll-margin-bottom:82px}
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.123';
+const APP_VERSION='V3.61.124';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 const FAST_K2L_BASE=`Translate only the user's Korean text into natural Lao for a Korean husband speaking to his Lao wife. Preserve exact meaning, speaker/listener/third-party roles, who does what to whom, relationships, negation, permission/prohibition, requests, uncertainty, numbers, dates/times, names, places, brands, foods, and movement direction. ROLE LOCK: husband=speaker, wife=listener; Korean first person=husband. Spouse-use 자기 forms mean wife/listener unless clearly 자기 자신/자기 스스로 or a sleep-use from 자다. 여보/자기야/내 사랑 are listener-directed affection, not a literal wife noun. In ordinary couple context 우리 means husband+wife unless another group is explicit. Preserve SOURCE REGISTER: casual/banmal Korean -&gt; natural intimate everyday Lao; polite/respectful Korean -&gt; matching respectful Lao. Never normalize all messages to one politeness level. Never swap speaker/listener, actor/target, caller/receiver, mover/origin/destination; never add/omit/soften/intensify facts. Preserve sentence force/polarity and epistemic/interpersonal force: statement, realization, inference/assumption, empathy, confirmation question, ordinary question, suggestion, request, and command must not flip; positive/negative/rhetorical direction must not flip. In particular, Korean speculative/empathic endings such as ~겠다/~겠네/~나 보다/~것 같아 must not be converted into a yes/no confirmation question unless the source itself is asking one. Never invent event, venue, setting, reason, or fact. Keep an implicit subject across linked clauses unless the source introduces a new actor. Preserve first/before/after/then/while distinctions. If wording is malformed or genuinely ambiguous, translate conservatively. Keep transport context consistent (bus staff must not become airplane staff). Use standard common Lao wording for ordinary nouns. Preserve unfamiliar names/transliterations by sound/form. Proofread Lao spelling/Unicode once without changing meaning. Output exactly ONE Lao translation: no slash A/B choices, parenthetical synonym alternatives, labels, or notes. HOMEWORK: 숙제 is school homework; 과제 is an assignment and is academic in study context. Use housework meaning only for explicit 집안일/가사/청소/설거지/빨래/요리 or clear household context.`;
@@ -2674,7 +2675,7 @@ function voiceRecognitionScoreFromAssessment(a,usedFallback=false){a=a||{level:'
 function closeVoiceScoreReasonDialog(){const dlg=document.getElementById('voiceScoreReasonDialog'),btn=document.getElementById('voiceScoreReasonBtn');if(!dlg)return;dlg.hidden=true;if(btn)btn.setAttribute('aria-expanded','false')}
 function openVoiceScoreReasonDialog(){const dlg=document.getElementById('voiceScoreReasonDialog'),btn=document.getElementById('voiceScoreReasonBtn');if(!dlg||!btn||!btn.classList.contains('show'))return;dlg.hidden=false;btn.setAttribute('aria-expanded','true')}
 function clearVoiceScore(){const badge=document.getElementById('voiceScoreBadge'),btn=document.getElementById('voiceScoreReasonBtn'),detail=document.getElementById('voiceScoreDetail');if(badge){badge.className='quality-badge';badge.textContent=''}if(btn){btn.className='quality-reason-btn';btn.style.display='none';btn.setAttribute('aria-expanded','false')}if(detail){detail.className='quality-detail';detail.textContent=''}closeVoiceScoreReasonDialog()}
-function updateVoiceScore(assessment,usedFallback=false){const badge=document.getElementById('voiceScoreBadge'),btn=document.getElementById('voiceScoreReasonBtn'),detail=document.getElementById('voiceScoreDetail');if(!badge)return;const r=voiceRecognitionScoreFromAssessment(assessment,usedFallback),score=r.score;let cls='ok',icon='✅',label='정상',dc='quality-detail info';if(score&lt;70){cls='bad';icon='⛔';label='비정상';dc='quality-detail bad'}else if(score&lt;85){cls='warn';icon='⚠️';label='확인 권장';dc='quality-detail warn'}badge.className='quality-badge '+cls;badge.textContent=`${icon} 음성인식 점수: ${score}/100 · ${label}`;if(detail){detail.textContent=(r.details.length?r.details:['결과에서 뚜렷한 이상 신호를 찾지 못했습니다.']).map(x=&gt;'• '+x).join('\n');detail.className=dc}if(btn){const show=score&lt;100;btn.className=show?'quality-reason-btn show '+(score&lt;70?'bad':score&lt;85?'warn':''):'quality-reason-btn';btn.style.display=show?'inline-flex':'none';btn.textContent=show?`ℹ️ ${score}점 이유`:'ℹ️ 이유'}if(score===100)closeVoiceScoreReasonDialog()}
+function updateVoiceScore(assessment,usedFallback=false){const badge=document.getElementById('voiceScoreBadge'),btn=document.getElementById('voiceScoreReasonBtn'),detail=document.getElementById('voiceScoreDetail');if(!badge)return;const r=voiceRecognitionScoreFromAssessment(assessment,usedFallback),failed=(assessment?.level==='hard'||r.score&lt;70);badge.className='quality-badge '+(failed?'bad':'ok');badge.textContent=failed?'⛔ 음성인식 실패':'✅ 음성인식 성공';if(detail){detail.textContent=(r.details.length?r.details:['내부 이상 신호 없음']).map(x=&gt;'• '+x).join('\n');detail.className=failed?'quality-detail bad':'quality-detail info'}if(btn){btn.className='quality-reason-btn';btn.style.display='none';btn.setAttribute('aria-expanded','false')}closeVoiceScoreReasonDialog()}
 async function VOICE_POSTPROCESS_TRANSCRIPT(transcript,allPcm,languageCode,usedFallback,session){
   let t=String(transcript||'').trim(),assessment=assessKoreanVoiceTranscript(t),retried=!!usedFallback;
   if(assessment.level==='hard'&amp;&amp;!usedFallback){try{t=VOICE_CLEAN_TRANSCRIPT(await voiceRecoveryTranscribe(allPcm,languageCode,session));retried=true;assessment=assessKoreanVoiceTranscript(t)}catch(e){console.warn('[HUSBAND STT RECOVERY FAILED]',e)}}
@@ -5207,6 +5208,8 @@ function clearAllCurrentView(){
   document.body.classList.remove('ui-result-focus','mobile-keyboard-open');
   try{const a=document.activeElement;if(a&amp;&amp;a!==document.body&amp;&amp;typeof a.blur==='function')a.blur()}catch(e){}
   try{window.__keyboardTranslateUi?.sync?.()}catch(e){}
+  try{const h=document.getElementById('localHistoryBox');if(h)h.open=false}catch(e){}
+  try{const se=document.scrollingElement||document.documentElement;se?.scrollTo?.({top:0,left:0,behavior:'smooth'});window.scrollTo?.({top:0,left:0,behavior:'smooth'})}catch(e){try{window.scrollTo(0,0)}catch(_){}}
 }
 
 function queueMainAutoInterpretFromVoice(text,session){if(!mainAutoInterpretEnabled)return;const expected=String(text||'').trim();if(!expected)return;setTimeout(()=&gt;{if(!mainAutoInterpretEnabled||session!==voiceSessionId||voiceRecording||voiceProcessing||isTranslating)return;const input=document.getElementById('krInput');if(!input||String(input.value||'').trim()!==expected)return;try{if(currentTtsKey)unlockSafariAudio()}catch(e){}void translateText({forceTts:true,autoInterpret:true})},0)}
@@ -5279,9 +5282,51 @@ function syncMainAutoInterpretFromStorage(){mainAutoInterpretEnabled=mainQuickSt
   window.__keyboardTranslateUi={sync,commit,isOpen:()=&gt;document.body.classList.contains('mobile-keyboard-open')};sync();
 })();
 &lt;/script&gt;
+
+&lt;script id="universal-button-autofit-v361124"&gt;
+(function installUniversalButtonAutofit(){
+  if(window.__universalButtonAutofitV361124)return;window.__universalButtonAutofitV361124=true;
+  const EXCLUDE='.quality-reason-close,.manual-close,.fs-close,.settings-mini,.admin-mini,.shell-admin-gear';
+  let raf=0;
+  function visibleText(btn){return String(btn?.textContent||'').replace(/\s+/g,' ').trim()}
+  function meaningful(btn){return /[\p{L}\p{N}]/u.test(visibleText(btn))}
+  function pickTarget(btn){
+    return btn.querySelector('.qmain,.qko,.qlo,.home-label,.shell-guide-label,.text-icon,[id$="BtnText"],[id$="LabelText"],[id$="Label"]')||btn;
+  }
+  function fit(btn){
+    if(!btn||btn.matches(EXCLUDE)||btn.offsetWidth&lt;24||btn.offsetHeight&lt;20||!meaningful(btn))return;
+    const target=pickTarget(btn),direct=target===btn;
+    const tcs=getComputedStyle(target),bcs=getComputedStyle(btn);
+    if(!target.dataset.autofitBasePx){const base=parseFloat(tcs.fontSize)||13;target.dataset.autofitBasePx=String(base)}
+    let max=parseFloat(target.dataset.autofitBasePx)||13;
+    if(btn.matches('.main-quick-btn,.quick-btn,.general-mode-tab,.main-mode-tab'))max=Math.max(max,12.5);
+    let min=/[\u0E80-\u0EFF]/u.test(visibleText(btn))?8.5:9;
+    if(max&lt;min)min=max;
+    target.style.fontSize=max+'px';
+    let size=max,guard=28;
+    const padX=(parseFloat(bcs.paddingLeft)||0)+(parseFloat(bcs.paddingRight)||0);
+    const padY=(parseFloat(bcs.paddingTop)||0)+(parseFloat(bcs.paddingBottom)||0);
+    const children=[...btn.children].filter(x=&gt;x!==target&amp;&amp;getComputedStyle(x).display!=='none');
+    const otherW=children.reduce((a,x)=&gt;a+x.getBoundingClientRect().width+(parseFloat(getComputedStyle(x).marginLeft)||0)+(parseFloat(getComputedStyle(x).marginRight)||0),0);
+    const gap=parseFloat(bcs.columnGap||bcs.gap)||0;
+    const availW=Math.max(8,btn.clientWidth-padX-otherW-(children.length?gap:0));
+    const availH=Math.max(8,btn.clientHeight-padY);
+    const overflow=()=&gt;direct?(btn.scrollWidth&gt;btn.clientWidth+1||btn.scrollHeight&gt;btn.clientHeight+2):(target.scrollWidth&gt;availW+1||target.scrollHeight&gt;availH+2);
+    while(guard--&gt;0&amp;&amp;size&gt;min&amp;&amp;overflow()){size=Math.max(min,size-.5);target.style.fontSize=size+'px'}
+  }
+  function run(){raf=0;document.querySelectorAll('button').forEach(fit)}
+  function schedule(){if(raf)return;raf=requestAnimationFrame(run)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
+  window.addEventListener('resize',schedule,{passive:true});window.addEventListener('orientationchange',()=&gt;setTimeout(schedule,180),{passive:true});
+  window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+  try{new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true})}catch(_){ }
+  window.__fitAllButtonTextV361124=schedule;
+})();
+&lt;/script&gt;
+
 &lt;/body&gt;
 &lt;/html&gt;
-</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="3de921b8b1b59d7aa05a5015c4ad217a07215c8f4824762961c756474f35dc02">&lt;!DOCTYPE html&gt;
+</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="528d55d7b6e7b82a3726e0be4975d55e3cdf9a710aecfc3488071ce19cf39283">&lt;!DOCTYPE html&gt;
 &lt;html lang="lo"&gt;
 &lt;head&gt;
 &lt;meta charset="UTF-8"&gt;
@@ -5671,10 +5716,10 @@ body.mobile-keyboard-open #inputComposer{scroll-margin-bottom:82px}
         &lt;button class="shutdown-btn" type="button" onclick="shutdownApp()"&gt;ອອກຈາກແອັບ 🛑&lt;/button&gt;
         &lt;span class="version-tag" data-local-version&gt;--&lt;/span&gt;
       &lt;/div&gt;
-      &lt;h1&gt;🇱🇦 ➜ 🇰🇷 ແອັບແປພາສາ ລາວ-ເກົາຫຼີ AI&lt;/h1&gt;
+      &lt;h1&gt;💑 ແປການສົນທະນາຄູ່ສົມລົດ&lt;/h1&gt;
     &lt;/div&gt;
     &lt;div class="model-row"&gt;
-      &lt;div class="model-info"&gt;🤖 ໂໝດແປໄວ · ສຳລັບພັນລະຍາ&lt;/div&gt;
+      &lt;div class="model-info"&gt;ແປການສົນທະນາກັບສາມີໃຫ້ເປັນທຳມະຊາດ&lt;/div&gt;
       &lt;div class="signature"&gt;For my wife, Muay ❤️ &lt;span&gt;│&lt;/span&gt; Made by &lt;b&gt;Martin.Yang&lt;/b&gt;&lt;/div&gt;
     &lt;/div&gt;
 
@@ -5829,7 +5874,7 @@ body.mobile-keyboard-open #inputComposer{scroll-margin-bottom:82px}
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.123';
+const APP_VERSION='V3.61.124';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 const FAST_K2L_BASE=`Translate only the user's Korean text into natural Lao for a Korean husband speaking to his Lao wife. Preserve exact meaning, speaker/listener/third-party roles, who does what to whom, relationships, negation, permission/prohibition, requests, uncertainty, numbers, dates/times, names, places, brands, foods, and movement direction. ROLE LOCK: husband=speaker, wife=listener; Korean first person=husband. Spouse-use 자기 forms mean wife/listener unless clearly 자기 자신/자기 스스로 or a sleep-use from 자다. 여보/자기야/내 사랑 are listener-directed affection, not a literal wife noun. In ordinary couple context 우리 means husband+wife unless another group is explicit. Preserve SOURCE REGISTER: casual/banmal Korean -&gt; natural intimate everyday Lao; polite/respectful Korean -&gt; matching respectful Lao. Never normalize all messages to one politeness level. Never swap speaker/listener, actor/target, caller/receiver, mover/origin/destination; never add/omit/soften/intensify facts. Preserve sentence force/polarity and epistemic/interpersonal force: statement, realization, inference/assumption, empathy, confirmation question, ordinary question, suggestion, request, and command must not flip; positive/negative/rhetorical direction must not flip. In particular, Korean speculative/empathic endings such as ~겠다/~겠네/~나 보다/~것 같아 must not be converted into a yes/no confirmation question unless the source itself is asking one. Never invent event, venue, setting, reason, or fact. Keep an implicit subject across linked clauses unless the source introduces a new actor. Preserve first/before/after/then/while distinctions. If wording is malformed or genuinely ambiguous, translate conservatively. Keep transport context consistent (bus staff must not become airplane staff). Use standard common Lao wording for ordinary nouns. Preserve unfamiliar names/transliterations by sound/form. Proofread Lao spelling/Unicode once without changing meaning. Output exactly ONE Lao translation: no slash A/B choices, parenthetical synonym alternatives, labels, or notes. HOMEWORK: 숙제 is school homework; 과제 is an assignment and is academic in study context. Use housework meaning only for explicit 집안일/가사/청소/설거지/빨래/요리 or clear household context.`;
@@ -6724,11 +6769,10 @@ function openVoiceScoreReasonDialog(){const dlg=document.getElementById('voiceSc
 function clearVoiceScore(){const badge=document.getElementById('voiceScoreBadge'),btn=document.getElementById('voiceScoreReasonBtn'),detail=document.getElementById('voiceScoreDetail');if(badge){badge.className='quality-badge';badge.textContent=''}if(btn){btn.className='quality-reason-btn';btn.style.display='none';btn.setAttribute('aria-expanded','false')}if(detail){detail.className='quality-detail';detail.textContent=''}closeVoiceScoreReasonDialog()}
 function updateVoiceScore(assessment,retried=false){
   const badge=document.getElementById('voiceScoreBadge'),btn=document.getElementById('voiceScoreReasonBtn'),detail=document.getElementById('voiceScoreDetail');if(!badge)return;
-  const r=voiceInputScoreFromAssessment(assessment,retried),score=r.score;let cls='ok',icon='✅',label='ປົກກະຕິ',detailClass='quality-detail info';
-  if(score&lt;70){cls='bad';icon='⛔';label='ຜິດປົກກະຕິ';detailClass='quality-detail bad'}else if(score&lt;85){cls='warn';icon='⚠️';label='ຄວນກວດ';detailClass='quality-detail warn'}
-  badge.className='quality-badge '+cls;badge.textContent=`${icon} ຄະແນນການຮັບຮູ້ສຽງ: ${label} (${score}/100)`;
-  const lines=r.details.length?r.details:['ບໍ່ພົບສັນຍານຮູບແບບຜິດປົກກະຕິທີ່ກວດໄດ້ໃນເຄື່ອງ.'];if(detail){detail.textContent=lines.map(x=&gt;'• '+x).join('\n');detail.className=detailClass}
-  if(btn){const show=score&lt;100;btn.className=show?'quality-reason-btn show '+(score&lt;70?'bad':score&lt;85?'warn':''):'quality-reason-btn';btn.style.display=show?'inline-flex':'none';btn.textContent=show?`ℹ️ ${score}/100 ເຫດຜົນ`:'ℹ️ ເຫດຜົນ'}if(score===100)closeVoiceScoreReasonDialog();
+  const r=voiceInputScoreFromAssessment(assessment,retried),failed=(assessment?.level==='hard'||r.score&lt;70);
+  badge.className='quality-badge '+(failed?'bad':'ok');badge.textContent=failed?'⛔ ຮັບສຽງລົ້ມເຫຼວ':'✅ ຮັບສຽງສຳເລັດ';
+  if(detail){detail.textContent=(r.details.length?r.details:['ບໍ່ພົບສັນຍານຜິດປົກກະຕິພາຍໃນ']).map(x=&gt;'• '+x).join('\n');detail.className=failed?'quality-detail bad':'quality-detail info'}
+  if(btn){btn.className='quality-reason-btn';btn.style.display='none';btn.setAttribute('aria-expanded','false')}closeVoiceScoreReasonDialog();
 }
 function revealVoiceInputText(inputId='loInput',composerId='inputComposer'){
   const input=document.getElementById(inputId),composer=document.getElementById(composerId);if(!input||!composer)return;
@@ -8490,6 +8534,8 @@ function clearAllCurrentView(){
   document.body.classList.remove('ui-result-focus','mobile-keyboard-open');
   try{const a=document.activeElement;if(a&amp;&amp;a!==document.body&amp;&amp;typeof a.blur==='function')a.blur()}catch(e){}
   try{window.__keyboardTranslateUi?.sync?.()}catch(e){}
+  try{const h=document.getElementById('localHistoryBox');if(h)h.open=false}catch(e){}
+  try{const se=document.scrollingElement||document.documentElement;se?.scrollTo?.({top:0,left:0,behavior:'smooth'});window.scrollTo?.({top:0,left:0,behavior:'smooth'})}catch(e){try{window.scrollTo(0,0)}catch(_){}}
 }
 
 function queueMainAutoInterpretFromVoice(text,session){if(!mainAutoInterpretEnabled)return;const expected=String(text||'').trim();if(!expected)return;setTimeout(()=&gt;{if(!mainAutoInterpretEnabled||session!==voiceSessionId||voiceRecording||voiceProcessing||isTranslating)return;const input=document.getElementById('loInput');if(!input||String(input.value||'').trim()!==expected)return;try{if(currentTtsKey)unlockSafariAudio()}catch(e){}void translateText({forceTts:true,autoInterpret:true})},0)}
@@ -8562,6 +8608,48 @@ function syncMainAutoInterpretFromStorage(){mainAutoInterpretEnabled=mainQuickSt
   window.__keyboardTranslateUi={sync,commit,isOpen:()=&gt;document.body.classList.contains('mobile-keyboard-open')};sync();
 })();
 &lt;/script&gt;
+
+&lt;script id="universal-button-autofit-v361124"&gt;
+(function installUniversalButtonAutofit(){
+  if(window.__universalButtonAutofitV361124)return;window.__universalButtonAutofitV361124=true;
+  const EXCLUDE='.quality-reason-close,.manual-close,.fs-close,.settings-mini,.admin-mini,.shell-admin-gear';
+  let raf=0;
+  function visibleText(btn){return String(btn?.textContent||'').replace(/\s+/g,' ').trim()}
+  function meaningful(btn){return /[\p{L}\p{N}]/u.test(visibleText(btn))}
+  function pickTarget(btn){
+    return btn.querySelector('.qmain,.qko,.qlo,.home-label,.shell-guide-label,.text-icon,[id$="BtnText"],[id$="LabelText"],[id$="Label"]')||btn;
+  }
+  function fit(btn){
+    if(!btn||btn.matches(EXCLUDE)||btn.offsetWidth&lt;24||btn.offsetHeight&lt;20||!meaningful(btn))return;
+    const target=pickTarget(btn),direct=target===btn;
+    const tcs=getComputedStyle(target),bcs=getComputedStyle(btn);
+    if(!target.dataset.autofitBasePx){const base=parseFloat(tcs.fontSize)||13;target.dataset.autofitBasePx=String(base)}
+    let max=parseFloat(target.dataset.autofitBasePx)||13;
+    if(btn.matches('.main-quick-btn,.quick-btn,.general-mode-tab,.main-mode-tab'))max=Math.max(max,12.5);
+    let min=/[\u0E80-\u0EFF]/u.test(visibleText(btn))?8.5:9;
+    if(max&lt;min)min=max;
+    target.style.fontSize=max+'px';
+    let size=max,guard=28;
+    const padX=(parseFloat(bcs.paddingLeft)||0)+(parseFloat(bcs.paddingRight)||0);
+    const padY=(parseFloat(bcs.paddingTop)||0)+(parseFloat(bcs.paddingBottom)||0);
+    const children=[...btn.children].filter(x=&gt;x!==target&amp;&amp;getComputedStyle(x).display!=='none');
+    const otherW=children.reduce((a,x)=&gt;a+x.getBoundingClientRect().width+(parseFloat(getComputedStyle(x).marginLeft)||0)+(parseFloat(getComputedStyle(x).marginRight)||0),0);
+    const gap=parseFloat(bcs.columnGap||bcs.gap)||0;
+    const availW=Math.max(8,btn.clientWidth-padX-otherW-(children.length?gap:0));
+    const availH=Math.max(8,btn.clientHeight-padY);
+    const overflow=()=&gt;direct?(btn.scrollWidth&gt;btn.clientWidth+1||btn.scrollHeight&gt;btn.clientHeight+2):(target.scrollWidth&gt;availW+1||target.scrollHeight&gt;availH+2);
+    while(guard--&gt;0&amp;&amp;size&gt;min&amp;&amp;overflow()){size=Math.max(min,size-.5);target.style.fontSize=size+'px'}
+  }
+  function run(){raf=0;document.querySelectorAll('button').forEach(fit)}
+  function schedule(){if(raf)return;raf=requestAnimationFrame(run)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
+  window.addEventListener('resize',schedule,{passive:true});window.addEventListener('orientationchange',()=&gt;setTimeout(schedule,180),{passive:true});
+  window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+  try{new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true})}catch(_){ }
+  window.__fitAllButtonTextV361124=schedule;
+})();
+&lt;/script&gt;
+
 &lt;/body&gt;
 &lt;/html&gt;
 </textarea>
@@ -8625,7 +8713,7 @@ function syncMainAutoInterpretFromStorage(){mainAutoInterpretEnabled=mainQuickSt
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const INTEGRATED_VERSION='V3.61.123';
+const INTEGRATED_VERSION='V3.61.124';
 const UNIFIED_HOST_SESSION_ID='host-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
 const UNIFIED_AZURE_REGION='koreacentral';
 const INTEGRATED_ARCHITECTURE='FastDirectText-OnePrimaryPassword-LocalStorage + DualRegionAudioSpeechRelay-SeoulBangkok + DirectFirstRelayFallback + V287QualityGateRestored + AutoBackTranslationParallelTTS + GoogleStreamingRealMic-BothApps + SafeAutoUpdate + InAppAdminAuth + S23UIParity + ResultFocusUIPolish';
@@ -8646,7 +8734,7 @@ try{syncUnifiedVersionMetadata()}catch(e){console.warn('[VERSION EARLY SYNC]',e)
 
 const PAYLOAD_IDS={husband:'payload-husband',wife:'payload-wife'};
 const EXTERNAL_DIAGNOSTIC_URL='diagnostic.html';
-const EXTERNAL_DIAGNOSTIC_SHA256='5c13cc7001f97b3a7b60dd2bcd3e774e1c0963ee55020ee6755fec773ba059e5';
+const EXTERNAL_DIAGNOSTIC_SHA256='c70b888a58c597088427eb1caf0db2b5f6fec5372f8098d8733ccf5137cce9e3';
 let externalDiagnosticSource='';
 const SHARED_RELAY_URL_STORAGE='unified_google_stt_relay_url';
 const SHARED_RELAY_TOKEN_STORAGE='unified_google_stt_relay_token';
@@ -9093,10 +9181,10 @@ function fitShellText(button,textEl,maxPx,minPx){
 }
 function fitShellTopbar(){
   requestAnimationFrame(()=>{
-    fitShellText(document.getElementById('husbandModeBtn'),document.getElementById('husbandModeLabel'),13,9);
-    fitShellText(document.getElementById('wifeModeBtn'),document.getElementById('wifeModeLabel'),13,8.5);
-    fitShellText(document.querySelector('.shell-guide-btn'),document.getElementById('shellGuideLabel'),12.5,8);
-    fitShellText(document.getElementById('firstScreenBtn'),document.getElementById('homeLabelText'),11.5,8);
+    fitShellText(document.getElementById('husbandModeBtn'),document.getElementById('husbandModeLabel'),15,9.5);
+    fitShellText(document.getElementById('wifeModeBtn'),document.getElementById('wifeModeLabel'),15,9);
+    fitShellText(document.querySelector('.shell-guide-btn'),document.getElementById('shellGuideLabel'),13.5,8.5);
+    fitShellText(document.getElementById('firstScreenBtn'),document.getElementById('homeLabelText'),13,6);
   });
 }
 function applyShellLanguage(mode){
@@ -9995,7 +10083,7 @@ syncVisibleViewport();
 
 <script id="release-notes-final-script-v361119">
 (function(){
- const RELEASE_NOTICE_ID='service-ui-v361121-rc131-manual-topbar', RELEASE_NOTICE_SEEN_KEY='translator_release_notice_seen_service_v1';
+ const RELEASE_NOTICE_ID='service-ui-v361124-ux8', RELEASE_NOTICE_SEEN_KEY='translator_release_notice_seen_service_v1';
  function safeGet(k){try{return localStorage.getItem(k)}catch(_){return null}} function safeSet(k,v){try{localStorage.setItem(k,v)}catch(_){}}
  function releaseLang(){try{if(currentMode==='wife')return 'lo';if(currentMode==='husband')return 'ko';const st=typeof readUnifiedPersistentUiState==='function'?readUnifiedPersistentUiState():null;return st&&(st.currentMode==='wife'||st.view==='wife')?'lo':'ko'}catch(_){return 'ko'}} function initialReleaseNoticeLang(){try{const m=String(new URL(location.href).searchParams.get('mode')||'').toLowerCase();if(m==='wife')return 'lo';if(m==='husband')return 'ko'}catch(_){}return releaseLang()} const RELEASE_NOTICE_BOOT_LANG=initialReleaseNoticeLang();
  function setReleaseLang(lang){const lo=lang==='lo',ko=document.getElementById('releaseNoticeKo'),lp=document.getElementById('releaseNoticeLo'),ok=document.getElementById('releaseNoticeOk'),ov=document.getElementById('releaseNoticeOverlay');if(ko)ko.hidden=lo;if(lp)lp.hidden=!lo;if(ok)ok.textContent=lo?'ຕົກລົງ':'확인';if(ov)ov.setAttribute('aria-labelledby',lo?'releaseNoticeTitleLo':'releaseNoticeTitle')}
