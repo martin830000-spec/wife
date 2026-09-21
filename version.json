@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.126",
-  "build": "20260922-V3.61.126-SERVICE-MAIN-UX10",
-  "buildId": "20260922-V3.61.126-SERVICE-MAIN-UX10",
-  "notes": "SERVICE UX10. 자동통역 first-click 동기화, 공통 업데이트 seen-state, 상세내역 우상단 팝업 미리보기, UI/UX 회귀검수 보강."
+  "version": "V3.61.127",
+  "build": "20260922-V3.61.127-SERVICE-MAIN-UX11",
+  "buildId": "20260922-V3.61.127-SERVICE-MAIN-UX11",
+  "notes": "SERVICE UX11. 상단 음성출력/듣기 2분할, 긴 원문 전체 표시, 입력창 자동 높이, V3.61.126 회귀 기능 유지."
 }
