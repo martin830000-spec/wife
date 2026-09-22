@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.130",
-  "build": "20260922-V3.61.130-SERVICE-MAIN-UX14",
-  "buildId": "20260922-V3.61.130-SERVICE-MAIN-UX14",
-  "notes": "SERVICE UX14. 일반앱 입력 지우기 버튼 위치만 정리. 본앱 및 번역/STT/TTS/크게보기 코어는 V3.61.129 유지."
+  "version": "V3.61.131",
+  "build": "20260922-V3.61.131-SERVICE-MAIN-UX15",
+  "buildId": "20260922-V3.61.131-SERVICE-MAIN-UX15",
+  "notes": "SERVICE UX15. 본앱·일반앱 사용설명서 리뉴얼 및 현재 SERVICE 화면 캡처 반영. 번역/STT/TTS/네트워크 코어는 V3.61.130 유지."
 }
