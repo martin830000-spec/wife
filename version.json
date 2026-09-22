@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.131",
-  "build": "20260922-V3.61.131-SERVICE-MAIN-UX15",
-  "buildId": "20260922-V3.61.131-SERVICE-MAIN-UX15",
-  "notes": "SERVICE UX15. 본앱·일반앱 사용설명서 리뉴얼 및 현재 SERVICE 화면 캡처 반영. 번역/STT/TTS/네트워크 코어는 V3.61.130 유지."
+  "version": "V3.61.132",
+  "build": "20260922-V3.61.132-SERVICE-MAIN-UX16",
+  "buildId": "20260922-V3.61.132-SERVICE-MAIN-UX16",
+  "notes": "SERVICE UX16. 본앱 남편/아내 텍스트 입력 지우기 버튼을 입력창 바로 위 우측 정렬로 이동. 기능 코어와 설명서는 V3.61.131 유지."
 }
