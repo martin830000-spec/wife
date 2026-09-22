@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.133",
-  "build": "20260922-V3.61.133-SERVICE-MAIN-UX17",
-  "buildId": "20260922-V3.61.133-SERVICE-MAIN-UX17",
-  "notes": "SERVICE UX17. 본앱 입력 제목/지우기 버튼을 모바일에서 더 촘촘하게 정리. 기능 코어는 V3.61.132 유지."
+  "version": "V3.61.142",
+  "build": "20260923-V3.61.142-SERVICE-MAIN-BACKTIME-M1",
+  "buildId": "20260923-V3.61.142-SERVICE-MAIN-BACKTIME-M1",
+  "notes": "V3.61.142 SERVICE: promoted from validated TEST V3.61.142. Main app shows meaning-check/back-translation elapsed time; SERVICE app switching/manual/release metadata synchronized. Translation/STT/TTS/Relay core unchanged; Cloud Run 3.7.17 unchanged."
 }
