@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.142",
-  "build": "20260923-V3.61.142-SERVICE-MAIN-BACKTIME-M1",
-  "buildId": "20260923-V3.61.142-SERVICE-MAIN-BACKTIME-M1",
-  "notes": "V3.61.142 SERVICE: promoted from validated TEST V3.61.142. Main app shows meaning-check/back-translation elapsed time; SERVICE app switching/manual/release metadata synchronized. Translation/STT/TTS/Relay core unchanged; Cloud Run 3.7.17 unchanged."
+  "version": "V3.61.165",
+  "build": "20260924-V3.61.165-SERVICE-USER-RETRY-POLICY",
+  "buildId": "20260924-V3.61.165-SERVICE-USER-RETRY-POLICY",
+  "notes": "V3.61.165 SERVICE: promoted from the validated V3.61.165 TEST build without translation-feature changes. User-triggered retranslation policy and wife bottom-bar parity are unchanged. P154A/G148A prompt files, STT/TTS, Cloud Run/relay/fallback, general keyboard translate and couple large view remain unchanged."
 }
