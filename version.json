@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.165",
-  "build": "20260924-V3.61.165-SERVICE-USER-RETRY-POLICY",
-  "buildId": "20260924-V3.61.165-SERVICE-USER-RETRY-POLICY",
-  "notes": "V3.61.165 SERVICE: promoted from the validated V3.61.165 TEST build without translation-feature changes. User-triggered retranslation policy and wife bottom-bar parity are unchanged. P154A/G148A prompt files, STT/TTS, Cloud Run/relay/fallback, general keyboard translate and couple large view remain unchanged."
+  "version": "V3.61.177",
+  "build": "20260926-V3.61.177-SERVICE-SEMANTIC-FIDELITY-R5",
+  "buildId": "20260926-V3.61.177-SERVICE-SEMANTIC-FIDELITY-R5",
+  "notes": "V3.61.177 SERVICE: validated V3.61.177 TEST promoted without translation-feature changes. Couple P159A and General G151A are preserved; only SERVICE version/navigation/storage/release metadata differ. STT/TTS, network, Cloud Run 3.7.18 and Firestore are unchanged."
 }
