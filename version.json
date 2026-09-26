@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.177",
-  "build": "20260926-V3.61.177-SERVICE-SEMANTIC-FIDELITY-R5",
-  "buildId": "20260926-V3.61.177-SERVICE-SEMANTIC-FIDELITY-R5",
-  "notes": "V3.61.177 SERVICE: validated V3.61.177 TEST promoted without translation-feature changes. Couple P159A and General G151A are preserved; only SERVICE version/navigation/storage/release metadata differ. STT/TTS, network, Cloud Run 3.7.18 and Firestore are unchanged."
+  "version": "V3.61.178",
+  "build": "20260926-V3.61.178-SERVICE-STT-TTS-TELEMETRY-R1",
+  "buildId": "20260926-V3.61.178-SERVICE-STT-TTS-TELEMETRY-R1",
+  "notes": "V3.61.178 SERVICE: STT/TTS telemetry-only R1 promoted for real-use observability. P159A/G151A, STT provider/fallback order, timeout/hedge values, TTS behavior, relay/network and Cloud Run 3.7.18 are unchanged."
 }
