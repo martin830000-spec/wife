@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.179",
-  "build": "20260927-V3.61.179-SERVICE-DIAGNOSTIC-OPS-R2",
-  "buildId": "20260927-V3.61.179-SERVICE-DIAGNOSTIC-OPS-R2",
-  "notes": "V3.61.179 SERVICE: diagnostic operations R2. Usage dashboard/activity filtering, feature status + estimated E2E view, multilang General stress diagnostics and stale bulk-isolation self-test fix. Live translation/STT/TTS behavior and P159A/G151A are unchanged."
+  "version": "V3.61.180",
+  "build": "20260927-V3.61.180-TEST-STT-DIAGNOSTIC-R1",
+  "buildId": "20260927-V3.61.180-TEST-STT-DIAGNOSTIC-R1",
+  "notes": "V3.61.180 TEST: diagnostic-only STT/disfluency regression R1. Adds automated text disfluency baseline and synthetic TTS→actual STT pipeline tests. P159A/G151A and normal live translation/STT/TTS behavior are unchanged."
 }

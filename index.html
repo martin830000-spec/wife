@@ -468,7 +468,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 </div>
 
 
-<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="aebccb9edacc1c984035c2cd2651d95b823ce83becbc896edc93d55acb9295bf">&lt;!DOCTYPE html&gt;
+<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="ad9c60b32557e874f28d424c359014e9c3adf04f06d35a6ca01dec7bf3565b1d">&lt;!DOCTYPE html&gt;
 &lt;html lang="ko"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
@@ -1169,7 +1169,7 @@ body #appScreen #primaryResultSection&gt;.result-header:first-child .btn-group-t
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.179';
+const APP_VERSION='V3.61.180';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 // V3.61.161 TEST: package synchronization for general-app prompt split; P154A and selective semantic guard behavior are unchanged.
@@ -1897,7 +1897,7 @@ async function telemetryPostBatch(records){
 function telemetryScheduleFlush(delay=1200){clearTimeout(liveTelemetryFlushTimer);liveTelemetryFlushTimer=setTimeout(()=&gt;{void telemetryFlushQueue()},Math.max(100,Number(delay)||1200))}
 async function telemetryFlushQueue(){if(liveTelemetryFlushInFlight)return;if(telemetryBusy()){telemetryScheduleFlush(1800);return}liveTelemetryFlushInFlight=true;try{const local=telemetryQueueRead(),idb=await telemetryIdbRead(60),map=new Map();for(const x of [...idb,...local])if(x?.eventId)map.set(String(x.eventId),x);const batch=[...map.values()].sort((a,b)=&gt;(Number(a.clientCreatedAtMs)||0)-(Number(b.clientCreatedAtMs)||0)).slice(0,20);if(!batch.length)return;const data=await telemetryPostBatch(batch),accepted=new Set((data?.acceptedIds||[]).map(String));if(!accepted.size)throw new Error('TELEMETRY_NOT_ACCEPTED');telemetryQueueWrite(telemetryQueueRead().filter(x=&gt;!accepted.has(String(x.eventId))));void telemetryIdbDelete([...accepted]);if(map.size&gt;accepted.size)telemetryScheduleFlush(900)}catch(e){telemetryScheduleFlush(15000)}finally{liveTelemetryFlushInFlight=false}}
 window.addEventListener('online',()=&gt;telemetryScheduleFlush(500));document.addEventListener('visibilitychange',()=&gt;{if(document.visibilityState==='visible')telemetryScheduleFlush(1200)});window.addEventListener('load',()=&gt;telemetryScheduleFlush(3500));
-// V3.61.179 telemetry: no raw audio is stored; bounded STT transcript text is included for diagnosis.
+// V3.61.180 telemetry: no raw audio is stored; bounded STT transcript text is included for diagnosis.
 function telemetrySafeErrorText(e){return(String(e?.name||'Error')+':'+String(e?.message||e||'')).replace(/[\r\n]+/g,' ').slice(0,180)}
 function telemetryBuildOperationRecord(kind,status,summary={},detail={}){const clean={kind:String(kind||'UNKNOWN').slice(0,32),status:String(status||'UNKNOWN').slice(0,16),sessionId:LIVE_SESSION_ID,appVersion:APP_VERSION,mode:INTEGRATED_MODE,at:Date.now(),route:String(summary.route||'').slice(0,100),via:String(summary.via||'').slice(0,24),region:String(summary.region||'').slice(0,32),fallback:summary.fallback===true,totalMs:Number.isFinite(Number(summary.totalMs))?Math.round(Number(summary.totalMs)):null,providerMs:Number.isFinite(Number(summary.providerMs))?Math.round(Number(summary.providerMs)):null,attempts:Number.isFinite(Number(summary.attempts))?Number(summary.attempts):null,recoveryStage:String(summary.recoveryStage||'').slice(0,40),error:String(summary.error||'').slice(0,180),detail:detail&amp;&amp;typeof detail==='object'?detail:{}};const ok=clean.status==='SUCCESS',eventId=telemetryMakeId('ops'),traceId=telemetryMakeId('ops-trace');return{schemaVersion:2,installId:LIVE_INSTALL_ID,osFamily:LIVE_OS_FAMILY,clientEnv:{...LIVE_CLIENT_ENV,physicalDeviceId:LIVE_PHYSICAL_DEVICE_ID||LIVE_CLIENT_ENV.physicalDeviceId||'',deviceModel:LIVE_DEVICE_MODEL||LIVE_CLIENT_ENV.deviceModel||''},deviceKey:LIVE_CLIENT_ENV.deviceKey,physicalDeviceId:LIVE_PHYSICAL_DEVICE_ID||LIVE_CLIENT_ENV.physicalDeviceId||'',deviceModel:LIVE_DEVICE_MODEL||LIVE_CLIENT_ENV.deviceModel||'',eventId,traceId,parentTraceId:'',sessionId:LIVE_SESSION_ID,sourceType:'OPERATION',direction:'K2L',mode:INTEGRATED_MODE,appVersion:APP_VERSION,status:ok?'SUCCESS':clean.status==='WARNING'?'WARNING':'FAILED',sourceRegisterHint:'operation-log-v2',sourceText:'OPERATION_LOG '+JSON.stringify(clean),targetText:'OPERATION_LOG',backText:'',clientCreatedAtMs:clean.at,quality:{score:null,pass:ok,reasons:ok?[]:[('OPS_'+clean.kind+'_'+(clean.error||clean.status)).slice(0,120)],softReasons:[]},failure:ok?null:{stage:clean.kind.toLowerCase(),error:clean.error||clean.status,httpStatus:null},runtime:{totalMs:clean.totalMs||0,winner:clean.route||clean.via||clean.kind,hedged:false,rescued:clean.fallback||!!clean.recoveryStage,tailRescued:false,directToServerFallback:clean.fallback,routeSummary:clean.route,requestCount:clean.attempts||0,semanticRepaired:false,semanticRepairFailed:false,brokenCharAutoRetried:false,outputLocked:false,userRetry:false,sessionId:LIVE_SESSION_ID,operationKind:clean.kind,requestRecords:[]}}}
 function telemetryLogOperation(kind,status,summary={},detail={}){try{const commit=()=&gt;{try{telemetryQueuePush(telemetryBuildOperationRecord(kind,status,summary,detail))}catch(e){}};if(telemetryPhysicalDeviceIdValid(LIVE_PHYSICAL_DEVICE_ID||LIVE_CLIENT_ENV.physicalDeviceId))commit();else void Promise.resolve(LIVE_DEVICE_ID_READY).then(commit).catch(()=&gt;commit())}catch(e){}}
@@ -5574,7 +5574,7 @@ window.addEventListener('pagehide',()=&gt;{if(document.getElementById('coupleFul
 &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="d945a10908716cf357f763c4efe1c78580d55f15822693661036837fb8a00551">&lt;!DOCTYPE html&gt;
+</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="c8492786ab48f951a0a7084ee548cc52635cf9b1d8493e9eb6ba5424f2c9932c">&lt;!DOCTYPE html&gt;
 &lt;html lang="lo"&gt;
 &lt;head&gt;
 &lt;meta charset="UTF-8"&gt;
@@ -6220,7 +6220,7 @@ body #appScreen #primaryResultSection&gt;.section-head:first-child .actions butt
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.179';
+const APP_VERSION='V3.61.180';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 // V3.61.161 TEST: package synchronization for general-app prompt split; P154A and selective semantic guard behavior are unchanged.
@@ -6939,7 +6939,7 @@ function telemetryScheduleFlush(delay=1200){clearTimeout(liveTelemetryFlushTimer
 async function telemetryFlushQueue(){if(liveTelemetryFlushInFlight)return;if(telemetryBusy()){telemetryScheduleFlush(1800);return}liveTelemetryFlushInFlight=true;try{const local=telemetryQueueRead(),idb=await telemetryIdbRead(60),map=new Map();for(const x of [...idb,...local])if(x?.eventId)map.set(String(x.eventId),x);const batch=[...map.values()].sort((a,b)=&gt;(Number(a.clientCreatedAtMs)||0)-(Number(b.clientCreatedAtMs)||0)).slice(0,20);if(!batch.length)return;const data=await telemetryPostBatch(batch),accepted=new Set((data?.acceptedIds||[]).map(String));if(!accepted.size)throw new Error('TELEMETRY_NOT_ACCEPTED');telemetryQueueWrite(telemetryQueueRead().filter(x=&gt;!accepted.has(String(x.eventId))));void telemetryIdbDelete([...accepted]);if(map.size&gt;accepted.size)telemetryScheduleFlush(900)}catch(e){telemetryScheduleFlush(15000)}finally{liveTelemetryFlushInFlight=false}}
 window.addEventListener('online',()=&gt;telemetryScheduleFlush(500));document.addEventListener('visibilitychange',()=&gt;{if(document.visibilityState==='visible')telemetryScheduleFlush(1200)});window.addEventListener('load',()=&gt;telemetryScheduleFlush(3500));
 
-// V3.61.179 telemetry: no raw audio is stored; bounded STT transcript text is included for diagnosis.
+// V3.61.180 telemetry: no raw audio is stored; bounded STT transcript text is included for diagnosis.
 function telemetrySafeErrorText(e){return(String(e?.name||'Error')+':'+String(e?.message||e||'')).replace(/[\r\n]+/g,' ').slice(0,180)}
 function telemetryBuildOperationRecord(kind,status,summary={},detail={}){
   const clean={kind:String(kind||'UNKNOWN').slice(0,32),status:String(status||'UNKNOWN').slice(0,16),sessionId:LIVE_SESSION_ID,appVersion:APP_VERSION,mode:INTEGRATED_MODE,at:Date.now(),route:String(summary.route||'').slice(0,100),via:String(summary.via||'').slice(0,24),region:String(summary.region||'').slice(0,32),fallback:summary.fallback===true,totalMs:Number.isFinite(Number(summary.totalMs))?Math.round(Number(summary.totalMs)):null,providerMs:Number.isFinite(Number(summary.providerMs))?Math.round(Number(summary.providerMs)):null,attempts:Number.isFinite(Number(summary.attempts))?Number(summary.attempts):null,recoveryStage:String(summary.recoveryStage||'').slice(0,40),error:String(summary.error||'').slice(0,180),detail:detail&amp;&amp;typeof detail==='object'?detail:{}};
@@ -9141,7 +9141,7 @@ window.addEventListener('pagehide',()=&gt;{if(document.getElementById('coupleFul
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const INTEGRATED_VERSION='V3.61.179';
+const INTEGRATED_VERSION='V3.61.180';
 const UNIFIED_HOST_SESSION_ID='host-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
 const UNIFIED_AZURE_REGION='koreacentral';
 const INTEGRATED_ARCHITECTURE='FastDirectText-OnePrimaryPassword-LocalStorage + DualRegionAudioSpeechRelay-SeoulBangkok + DirectFirstRelayFallback + V287QualityGateRestored + AutoBackTranslationParallelTTS + GoogleStreamingRealMic-BothApps + SafeAutoUpdate + InAppAdminAuth + S23UIParity + ResultFocusUIPolish';
@@ -9162,7 +9162,7 @@ try{syncUnifiedVersionMetadata()}catch(e){console.warn('[VERSION EARLY SYNC]',e)
 
 const PAYLOAD_IDS={husband:'payload-husband',wife:'payload-wife'};
 const EXTERNAL_DIAGNOSTIC_URL='diagnostic.html';
-const EXTERNAL_DIAGNOSTIC_SHA256='51c204950480854eade91aa853b46107fed11f7b2cdeccb51c4623ed6406c3f0';
+const EXTERNAL_DIAGNOSTIC_SHA256='5087f40cf3105f13c947172752b6342833c4c2919116e11dee8a8a58c7ea957c';
 let externalDiagnosticSource='';
 const SHARED_RELAY_URL_STORAGE='unified_google_stt_relay_url';
 const SHARED_RELAY_TOKEN_STORAGE='unified_google_stt_relay_token';
@@ -9199,10 +9199,10 @@ async function sha256HexText(text){
 const COUPLE_PROMPT_CONFIG_URL='prompt-config.json';
 const COUPLE_PROMPT_SCHEMA_VERSION=1;
 const COUPLE_PROMPT_CHANNEL='TEST';
-// V3.61.179: STT/TTS telemetry-only R1; P159A/G151A and live translation/STT/TTS/network/Cloud Run behavior remain unchanged.
+// V3.61.180: STT/TTS telemetry-only R1; P159A/G151A and live translation/STT/TTS/network/Cloud Run behavior remain unchanged.
 // Newer externally deployed prompt revisions remain allowed, so prompt-config.json stays independently updatable.
 const COUPLE_PROMPT_MIN_REVISION='P159A';
-const COUPLE_PROMPT_LKG_STORAGE='translator_service_prompt_config_lkg_v1';
+const COUPLE_PROMPT_LKG_STORAGE='translator_test_prompt_config_lkg_v1';
 let unifiedPromptConfig=null,unifiedPromptConfigSource='none',unifiedPromptConfigError='',unifiedPromptConfigPromise=null,unifiedPromptRemotePromise=null,unifiedPromptSessionLocked=false;
 function couplePromptRevisionRank(v){
   const m=/^P(\d+)([A-Z]?)$/i.exec(String(v||'').trim());
@@ -10319,7 +10319,7 @@ function getUnifiedDiagnosticSessionId(){return UNIFIED_HOST_SESSION_ID;}
 window.getUnifiedDiagnosticSessionId=getUnifiedDiagnosticSessionId;
 function getUnifiedLivePromptSnapshot(){const c=unifiedPromptConfig||{};return{version:INTEGRATED_VERSION,sessionId:UNIFIED_HOST_SESSION_ID,source:unifiedPromptConfigSource,schemaVersion:Number(c.schemaVersion)||0,channel:String(c.channel||''),promptRevision:String(c.promptRevision||''),promptSha256:String(c.promptSha256||''),k2lForward:String(c.forward?.k2l||''),l2kForward:String(c.forward?.l2k||''),smartK2lSelf:String(c.smart?.k2lSelf||''),smartK2lHome:String(c.smart?.k2lHome||''),smartL2kElder:String(c.smart?.l2kElder||''),smartK2lSpeechAct:String(c.smart?.k2lSpeechAct||''),smartL2kSpeechAct:String(c.smart?.l2kSpeechAct||''),smartK2lRelation:String(c.smart?.k2lRelation||''),smartL2kRelation:String(c.smart?.l2kRelation||''),smartL2kReadability:String(c.smart?.l2kReadability||''),husbandBack:String(c.back?.husband||''),wifeBack:String(c.back?.wife||''),husbandRecovery:String(c.back?.husbandRecovery||''),wifeRecovery:String(c.back?.wifeRecovery||'')}}
 window.getUnifiedLivePromptSnapshot=getUnifiedLivePromptSnapshot;
-function getUnifiedBuildFingerprint(){const h=document.getElementById('payload-husband'),w=document.getElementById('payload-wife'),p=getUnifiedPromptConfigStatus();return{version:INTEGRATED_VERSION,husbandPayloadSha256:String(h?.dataset?.sha256||''),wifePayloadSha256:String(w?.dataset?.sha256||''),diagnosticSha256:EXTERNAL_DIAGNOSTIC_SHA256,diagnosticSchema:'QUALITY-OPS-17-MULTILANG-DIAG-R2',promptRevision:p.promptRevision,promptSha256:p.promptSha256,promptSource:p.source};}
+function getUnifiedBuildFingerprint(){const h=document.getElementById('payload-husband'),w=document.getElementById('payload-wife'),p=getUnifiedPromptConfigStatus();return{version:INTEGRATED_VERSION,husbandPayloadSha256:String(h?.dataset?.sha256||''),wifePayloadSha256:String(w?.dataset?.sha256||''),diagnosticSha256:EXTERNAL_DIAGNOSTIC_SHA256,diagnosticSchema:'QUALITY-OPS-18-STT-AUTO-DIAG-R1',promptRevision:p.promptRevision,promptSha256:p.promptSha256,promptSource:p.source};}
 window.getUnifiedBuildFingerprint=getUnifiedBuildFingerprint;
 
 async function getUnifiedRuntimeSafetyAudit(){
@@ -10613,8 +10613,8 @@ window.addEventListener('message',function(ev){
     sessionStorageSetSafe('general_main_bridge_v1',JSON.stringify({source:'wife',version:INTEGRATED_VERSION,mode:sourceMode,at:Date.now()}));
     const path=String(location.pathname||'/');
     const target=/\/(?:wife|laos-translator)(?:\/|$)/i.test(path)
-      ? path.replace(/\/(?:wife|laos-translator)(?:\/.*)?$/i,'/korean-lao-general/')
-      : '/korean-lao-general/';
+      ? path.replace(/\/(?:wife|laos-translator)(?:\/.*)?$/i,'/korean-lao-general-test/')
+      : '/korean-lao-general-test/';
     location.href=target+'?mode='+encodeURIComponent(sourceMode)+'&from=main';return;
   }
   if(d.type==='integrated-home'){showSelector();return}
@@ -10641,7 +10641,7 @@ syncVisibleViewport();
 
 <script id="release-notes-final-script-v361157">
 (function(){
- const RELEASE_DATA=Object.freeze({"version":"V3.61.179","id":"service-v361178-stt-tts-telemetry-r1","seenKey":"translator_release_notice_seen_service_v361178","ko":{"sub":"V3.61.179 SERVICE는 STT/TTS 동작을 바꾸지 않고 실사용 계측만 강화한 운영 빌드입니다.","summary":["STT 세션별 Streaming→REST→Gemini 복구 단계, 정지 후 결과시간, 음량·fallback·앱 복귀 직후 여부를 기록합니다.","짧은 간격의 연속 STT 사용을 재시도 후보로 표시하되 오인식으로 자동 판정하지 않습니다.","TTS는 요청→HTTP 응답→오디오 blob 준비→실제 재생 시작 시간을 분리 기록합니다. P159A/G151A와 timeout·fallback 순서는 그대로입니다."],"sections":[["계측만 추가",["STT/TTS provider, timeout, hedge, fallback 순서와 음성 처리 로직은 변경하지 않았습니다.","원본 음성 파일은 저장하지 않고 수치와 전사 텍스트만 operation telemetry에 남깁니다."]],["진단기",["연결·성능 로그에 최근 STT/TTS 건별 상세 타임라인을 함께 출력합니다."]]],"previous":"V3.61.177 TEST / Semantic Fidelity R5."},"lo":{"sub":"V3.61.179 SERVICE ເພີ່ມສະເພາະ telemetry ຂອງ STT/TTS ໂດຍບໍ່ປ່ຽນລຳດັບ fallback.","summary":["ບັນທຶກເວລາ Streaming, REST, Gemini, ເວລາຫຼັງກົດຢຸດ, ລະດັບສຽງ ແລະ app resume.","P159A/G151A, timeout, network ແລະ Cloud Run 3.7.18 ຄົງເດີມ."]}});
+ const RELEASE_DATA=Object.freeze({"version":"V3.61.180","id":"service-v361178-stt-tts-telemetry-r1","seenKey":"translator_release_notice_seen_service_v361178","ko":{"sub":"V3.61.180 SERVICE는 STT/TTS 동작을 바꾸지 않고 실사용 계측만 강화한 운영 빌드입니다.","summary":["STT 세션별 Streaming→REST→Gemini 복구 단계, 정지 후 결과시간, 음량·fallback·앱 복귀 직후 여부를 기록합니다.","짧은 간격의 연속 STT 사용을 재시도 후보로 표시하되 오인식으로 자동 판정하지 않습니다.","TTS는 요청→HTTP 응답→오디오 blob 준비→실제 재생 시작 시간을 분리 기록합니다. P159A/G151A와 timeout·fallback 순서는 그대로입니다."],"sections":[["계측만 추가",["STT/TTS provider, timeout, hedge, fallback 순서와 음성 처리 로직은 변경하지 않았습니다.","원본 음성 파일은 저장하지 않고 수치와 전사 텍스트만 operation telemetry에 남깁니다."]],["진단기",["연결·성능 로그에 최근 STT/TTS 건별 상세 타임라인을 함께 출력합니다."]]],"previous":"V3.61.177 TEST / Semantic Fidelity R5."},"lo":{"sub":"V3.61.180 SERVICE ເພີ່ມສະເພາະ telemetry ຂອງ STT/TTS ໂດຍບໍ່ປ່ຽນລຳດັບ fallback.","summary":["ບັນທຶກເວລາ Streaming, REST, Gemini, ເວລາຫຼັງກົດຢຸດ, ລະດັບສຽງ ແລະ app resume.","P159A/G151A, timeout, network ແລະ Cloud Run 3.7.18 ຄົງເດີມ."]}});
  function safeGet(k){try{return localStorage.getItem(k)}catch(_){return null}} function safeSet(k,v){try{localStorage.setItem(k,v)}catch(_){} }
  function esc(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
  function releaseLang(){try{if(currentMode==='wife')return 'lo';if(currentMode==='husband')return 'ko';const st=typeof readUnifiedPersistentUiState==='function'?readUnifiedPersistentUiState():null;return st&&(st.currentMode==='wife'||st.view==='wife')?'lo':'ko'}catch(_){return 'ko'}}
