@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.201",
-  "build": "20260930-V3.61.201-SERVICE-PRE-SERVICE-CLEANUP-R1",
-  "buildId": "20260930-V3.61.201-SERVICE-PRE-SERVICE-CLEANUP-R1",
-  "notes": "V3.61.201 SERVICE: exact functional promotion of validated V3.61.201 TEST PRE-SERVICE CLEANUP R1. P160A/G158A, translation/back-translation/SMART, STT/TTS, Relay/Cloudflare/Cloud Run, retranslation telemetry and UI behavior are unchanged. Only existing SERVICE URL routing, SERVICE prompt-LKG namespaces and SERVICE build/release metadata differ from TEST."
+  "version": "V3.61.202",
+  "build": "20260930-V3.61.202-SERVICE-ENV-MANUAL-SYNC-R1",
+  "buildId": "20260930-V3.61.202-SERVICE-ENV-MANUAL-SYNC-R1",
+  "notes": "V3.61.202 SERVICE ENV/MANUAL SYNC R1: based on V3.61.201. Version headers now show version + deployment channel on two centered lines. General deployment label/telemetry derive from the build channel instead of hardcoded TEST. General manual wording and screenshot are synchronized to the current 통역 언어 UI; Couple manual documents large-view and 180-degree rotation. Legacy visible version fallbacks are removed. Translation/back-translation/SMART, P160A/G158A, STT/TTS, Relay/Cloudflare/Cloud Run and retranslation behavior are unchanged."
 }
