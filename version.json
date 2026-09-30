@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.193",
-  "build": "20260928-V3.61.193-SERVICE-STABILIZATION-R1",
-  "buildId": "20260928-V3.61.193-SERVICE-STABILIZATION-R1",
-  "notes": "V3.61.193 SERVICE: exact functional promotion of the user-validated V3.61.193 TEST stabilization baseline. P159A/G157A, translation/back-translation, STT/TTS, Relay/Cloudflare/Cloud Run routes, critical-output user-review policy and UI/UX are unchanged. Only SERVICE URL routing, SERVICE prompt-LKG namespaces and SERVICE build/release metadata differ from TEST."
+  "version": "V3.61.201",
+  "build": "20260930-V3.61.201-SERVICE-PRE-SERVICE-CLEANUP-R1",
+  "buildId": "20260930-V3.61.201-SERVICE-PRE-SERVICE-CLEANUP-R1",
+  "notes": "V3.61.201 SERVICE: exact functional promotion of validated V3.61.201 TEST PRE-SERVICE CLEANUP R1. P160A/G158A, translation/back-translation/SMART, STT/TTS, Relay/Cloudflare/Cloud Run, retranslation telemetry and UI behavior are unchanged. Only existing SERVICE URL routing, SERVICE prompt-LKG namespaces and SERVICE build/release metadata differ from TEST."
 }
