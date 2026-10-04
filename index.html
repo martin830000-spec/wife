@@ -398,7 +398,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div id="authScreen" class="auth-screen" role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="auth-card">
-    <span class="auth-corner-version" data-app-version data-channel="SERVICE" aria-label="앱 버전"><span data-version-number>V3.61.207</span><small data-version-channel>SERVICE</small></span>
+    <span class="auth-corner-version" data-app-version data-channel="SERVICE" aria-label="앱 버전"><span data-version-number>V3.61.208</span><small data-version-channel>SERVICE</small></span>
     <div class="auth-icon">🇰🇷 ↔ 🇱🇦</div>
     <div class="auth-head-row">
       <h1 id="authTitle" class="auth-title">한↔라오 번역기<span class="auth-title-lo">ແອັບແປພາສາ ເກົາຫຼີ ↔ ລາວ</span></h1>
@@ -418,8 +418,8 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
       <button id="forceRefreshBtn" class="auth-version-btn" type="button" onclick="forceUnifiedFreshReload()">⬇️ 최신파일 다시받기
 ໂຫຼດໄຟລ໌ລ່າສຸດໃໝ່</button>
     </div>
-    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.207 · SERVICE</span> · 최신 버전을 확인할 수 있습니다.
-ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.207 · SERVICE</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
+    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.208 · SERVICE</span> · 최신 버전을 확인할 수 있습니다.
+ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.208 · SERVICE</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
     <div id="authStartStatus" class="auth-start-status">앱을 준비하고 있습니다.
 ກຳລັງກຽມແອັບໃຫ້ພ້ອມໃຊ້ງານ.</div>
     <button class="manual-btn" type="button" onclick="requestManualLanguageChoice()">📖 자세한 사용설명서 · ຄູ່ມືລະອຽດ</button>
@@ -457,7 +457,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div class="shell">
   <div id="shellSwitchbar" class="switchbar" role="navigation" aria-label="번역기 모드 선택">
-    <div class="shell-version-tools"><span class="shell-version" data-app-version data-channel="SERVICE"><span class="shell-version-number" data-version-number>V3.61.207</span><span class="shell-version-channel" data-version-channel>SERVICE</span></span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ"><span class="shell-guide-icon" aria-hidden="true">📖</span><span id="shellGuideLabel" class="shell-guide-label">자세한 설명서 · ຄູ່ມື</span></button></div>
+    <div class="shell-version-tools"><span class="shell-version" data-app-version data-channel="SERVICE"><span class="shell-version-number" data-version-number>V3.61.208</span><span class="shell-version-channel" data-version-channel>SERVICE</span></span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ"><span class="shell-guide-icon" aria-hidden="true">📖</span><span id="shellGuideLabel" class="shell-guide-label">자세한 설명서 · ຄູ່ມື</span></button></div>
     <div class="mode-buttons">
       <button id="husbandModeBtn" class="mode-btn" type="button" onclick="selectMode('husband')"><span id="husbandModeLabel">🇰🇷 한국</span></button>
       <button id="wifeModeBtn" class="mode-btn" type="button" onclick="selectMode('wife')"><span id="wifeModeLabel">🇱🇦 ລາວ</span></button>
@@ -484,7 +484,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 </div>
 
 
-<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="9dfddc495dcfe9f602252126186f4746b7f88fde248321b3ef0a960c1e75b0d5">&lt;!DOCTYPE html&gt;
+<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="522204633a06e819a107fbabe823cc43a1f0b87515ffdd54a978f5de41e348f3">&lt;!DOCTYPE html&gt;
 &lt;html lang="ko"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
@@ -1210,7 +1210,7 @@ body #appScreen #primaryResultSection&gt;.result-header:first-child .btn-group-t
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.207';
+const APP_VERSION='V3.61.208';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 // V3.61.161 TEST: package synchronization for general-app prompt split; P154A and selective semantic guard behavior are unchanged.
@@ -5655,7 +5655,7 @@ window.addEventListener('pagehide',()=&gt;{if(document.getElementById('coupleFul
 &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="143ec83a22cbfae7f323c87f0842b22c582f517febd2cbe51314bd0d6b261bd6">&lt;!DOCTYPE html&gt;
+</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="b0809b2f0cdf6fef5aafe414604b182f720c96e8b4164ddbc0aaf13cbc1cce75">&lt;!DOCTYPE html&gt;
 &lt;html lang="lo"&gt;
 &lt;head&gt;
 &lt;meta charset="UTF-8"&gt;
@@ -6326,7 +6326,7 @@ body #appScreen #primaryResultSection&gt;.section-head:first-child .actions butt
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.207';
+const APP_VERSION='V3.61.208';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 // V3.61.161 TEST: package synchronization for general-app prompt split; P154A and selective semantic guard behavior are unchanged.
@@ -9279,7 +9279,7 @@ window.addEventListener('pagehide',()=&gt;{if(document.getElementById('coupleFul
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const INTEGRATED_VERSION='V3.61.207';
+const INTEGRATED_VERSION='V3.61.208';
 const INTEGRATED_CHANNEL='SERVICE';
 function unifiedAlert(message){let o=document.getElementById('unifiedCustomDialog');if(!o){o=document.createElement('div');o.id='unifiedCustomDialog';o.className='unified-dialog';o.hidden=true;o.setAttribute('role','alertdialog');o.setAttribute('aria-modal','true');o.innerHTML='<div class="unified-dialog-card"><div class="unified-dialog-message" id="unifiedCustomDialogMessage"></div><div class="unified-dialog-actions"><button type="button" id="unifiedCustomDialogOk">확인 · ຕົກລົງ</button></div></div>';document.body.appendChild(o);o.querySelector('#unifiedCustomDialogOk').onclick=()=>{o.hidden=true};}o.querySelector('#unifiedCustomDialogMessage').textContent=String(message??'');o.hidden=false;return false;}
 
@@ -9347,9 +9347,9 @@ async function sha256HexText(text){
 const COUPLE_PROMPT_CONFIG_URL='prompt-config.json';
 const COUPLE_PROMPT_SCHEMA_VERSION=1;
 const COUPLE_PROMPT_CHANNEL='TEST';
-// V3.61.207: P160A meaning-invariant prompt; STT/TTS/network contracts remain unchanged.
+// V3.61.208: P168A naturalness-preserving meaning guard; STT/TTS/network contracts remain unchanged.
 // Newer externally deployed prompt revisions remain allowed, so prompt-config.json stays independently updatable.
-const COUPLE_PROMPT_MIN_REVISION='P161A';
+const COUPLE_PROMPT_MIN_REVISION='P168A';
 const COUPLE_PROMPT_LKG_STORAGE='translator_service_prompt_config_lkg_v1';
 let unifiedPromptConfig=null,unifiedPromptConfigSource='none',unifiedPromptConfigError='',unifiedPromptConfigPromise=null,unifiedPromptRemotePromise=null,unifiedPromptSessionLocked=false;
 function couplePromptRevisionRank(v){
@@ -10794,7 +10794,7 @@ syncVisibleViewport();
 
 <script id="release-notes-final-script-v361157">
 (function(){
- const RELEASE_DATA=Object.freeze({"version":"V3.61.207","id":"service-v361207-meaning-fidelity-r1","seenKey":"translator_release_notice_seen_service_v361207_meaning_fidelity_r1","ko":{"sub":"V3.61.207 SERVICE · 의미보존 R1","summary":["부부앱 프롬프트를 P161A로 올려 비자·혼인·서류 같은 행정/절차 용어의 종류와 상태가 다른 의미로 바뀌지 않도록 보강했습니다.","‘바쁘다’처럼 넓은 표현에 원문에 없는 업무·원인 등을 임의로 붙이지 않도록 의미 범위 보존을 강화했습니다.","역번역에서 우리↔나, 사진을 얻다↔닮다처럼 주체·행위가 바뀌는 오류를 줄이고, 명백한 이상문자 오염에만 1회 복구를 허용했습니다."],"sections":[["성능 보존",["대화 문맥 저장/전송 기능은 추가하지 않았습니다.","정상 번역은 기존처럼 1회 요청이며, 추가 요청은 명백한 깨진 문자·비정상 외국문자·모델 메타 영문 오염이 검출될 때만 최대 1회 발생합니다.","G158A 일반앱, Chirp 3 STT, TTS, Relay/Cloudflare/Cloud Run은 변경하지 않았습니다."]]],"previous":"V3.61.202 SERVICE · ENV/MANUAL SYNC R1 기준."},"lo":{"sub":"V3.61.207 SERVICE · ຮັກສາຄວາມໝາຍ R1","summary":["ປັບ prompt ແອັບຄູ່ສົມລົດເປັນ P161A ເພື່ອຮັກສາປະເພດ ແລະ ສະຖານະຂອງວີຊາ/ແຕ່ງງານ/ເອກະສານໃຫ້ກົງກັບຕົ້ນສະບັບ.","ຄຳທີ່ມີຄວາມໝາຍກວ້າງ ເຊັ່ນ “ຫຍຸ້ງ” ຈະບໍ່ຖືກຕີຄວາມເພີ່ມເປັນວຽກ ຫຼື ເຫດຜົນອື່ນໂດຍບໍ່ມີໃນຕົ້ນສະບັບ.","ການແປກັບຮັກສາຜູ້ກະທຳ/ຈຳນວນ/ການກະທຳໃຫ້ດີຂຶ້ນ ແລະ ຈະກູ້ຄືນ 1 ຄັ້ງສະເພາະເມື່ອພົບຕົວອັກສອນຜິດປົກກະຕິຊັດເຈນ."],"sections":[["ຮັກສາຄວາມໄວ",["ບໍ່ໄດ້ເພີ່ມການສົ່ງປະຫວັດສົນທະນາ.","ການແປປົກກະຕິຍັງຮ້ອງຂໍ 1 ຄັ້ງ; ຮ້ອງຂໍເພີ່ມສູງສຸດ 1 ຄັ້ງສະເພາະຄວາມເສຍຫາຍທາງອັກສອນທີ່ຊັດເຈນ.","G158A, Chirp 3 STT, TTS, Relay/Cloudflare/Cloud Run ບໍ່ປ່ຽນ."]]],"previous":"ອີງໃສ່ V3.61.202 SERVICE · ENV/MANUAL SYNC R1."}})
+ const RELEASE_DATA=Object.freeze({"version":"V3.61.208","id":"service-v361208-p168a-r8","seenKey":"translator_release_notice_seen_service_v361208_p168a_r8","ko":{"sub":"V3.61.208 SERVICE · P168A R8","summary":["부부앱 프롬프트를 실사용 검증을 마친 P168A R8로 승격했습니다. P160 계열의 자연스러운 읽기감을 유지하면서 의미보존을 보강했습니다.","졸업식 역할, 원문 없는 업무 원인, 완료→전체범위, 직접 허용질문→전언처럼 실제 이해가 달라질 수 있는 정번역 편차를 줄이는 방향으로 조정했습니다.","실사용 DB 50건과 회귀+Holdout 18문장×3 검증을 오류 없이 완료했으며, 일반앱·STT·TTS·Relay/Cloudflare/Cloud Run은 변경하지 않았습니다."],"sections":[["승격 범위",["P168A R8은 검증한 후보를 그대로 SERVICE로 올렸으며 승격 단계에서 새 번역 규칙이나 기능을 추가하지 않았습니다.","SMART와 역번역/복구 프롬프트는 P160A 기준을 유지하고, 정번역의 목표언어 자연스러움과 실용적인 의미보존 균형을 우선합니다.","정상 번역 요청 구조와 G158A 일반앱, Chirp 3 STT, TTS, 네트워크 경로는 그대로입니다."]]],"previous":"V3.61.207 SERVICE · MEANING FIDELITY R1 기준."},"lo":{"sub":"V3.61.208 SERVICE · P168A R8","summary":["ປັບ prompt ແອັບຄູ່ສົມລົດເປັນ P168A R8 ທີ່ຜ່ານການທົດສອບການໃຊ້ງານແລ້ວ ໂດຍຮັກສາຄວາມເປັນທຳມະຊາດຂອງພາສາ ແລະ ຮັກສາຄວາມໝາຍໃຫ້ດີຂຶ້ນ.","ຫຼຸດການປ່ຽນຄວາມໝາຍທີ່ອາດເພີ່ມສາເຫດເລື່ອງວຽກ, ເພີ່ມຄວາມໝາຍວ່າທັງໝົດ, ປ່ຽນບົດບາດໃນງານ ຫຼື ປ່ຽນຄຳຖາມການອະນຸຍາດເປັນຄຳເວົ້າອ້າງອີງ.","ການທົດສອບ DB 50 ລາຍການ ແລະ 18 ປະໂຫຍກ × 3 ຮອບສຳເລັດໂດຍບໍ່ມີ error; ແອັບທົ່ວໄປ, STT, TTS ແລະເສັ້ນທາງເຄືອຂ່າຍບໍ່ໄດ້ປ່ຽນ."],"sections":[["ຂອບເຂດການອັບເດດ",["ນຳ P168A R8 ທີ່ທົດສອບແລ້ວຂຶ້ນ SERVICE ໂດຍບໍ່ເພີ່ມກົດ ຫຼື ຟັງຊັນໃໝ່ໃນຂັ້ນຕອນອັບເດດ.","SMART ແລະ prompt ແປກັບ/ກູ້ຄືນ ຍັງໃຊ້ຖານ P160A ແລະໃຫ້ຄວາມສຳຄັນກັບຄວາມໝາຍກັບຄວາມເປັນທຳມະຊາດ.","G158A, Chirp 3 STT, TTS, Relay/Cloudflare/Cloud Run ບໍ່ປ່ຽນ."]]],"previous":"ອີງໃສ່ V3.61.207 SERVICE · MEANING FIDELITY R1."}})
  function safeGet(k){try{return localStorage.getItem(k)}catch(_){return null}} function safeSet(k,v){try{localStorage.setItem(k,v)}catch(_){} }
  function esc(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
  function releaseLang(){try{if(currentMode==='wife')return 'lo';if(currentMode==='husband')return 'ko';const st=typeof readUnifiedPersistentUiState==='function'?readUnifiedPersistentUiState():null;return st&&(st.currentMode==='wife'||st.view==='wife')?'lo':'ko'}catch(_){return 'ko'}}
