@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>V3.61.208 · P168A SAME-PROMPT R7 TEST</title>
+<title>V3.61.208 · GPT ↔ Gemini 통합 최종검증 R8</title>
 <style>
 :root{--bg:#f4f6fa;--card:#fff;--line:#d9e1ec;--text:#172033;--muted:#667085;--blue:#2f56b3;--green:#137333;--red:#b42318;--amber:#8a5a00}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans KR","Noto Sans Lao",sans-serif}.wrap{width:min(100%,1000px);margin:auto;padding:12px 10px 70px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:9px 0}h1{font-size:20px;margin:0 0 5px}h2{font-size:15px;margin:0 0 8px}.sub,.note{font-size:11px;color:var(--muted);line-height:1.55}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px}.metric{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fafcff}.metric span{font-size:10px;color:var(--muted)}.metric b{display:block;font-size:17px;margin-top:2px}.row{display:flex;gap:7px;flex-wrap:wrap}.row button{flex:1;min-width:130px}label{font-size:11px;font-weight:800;color:#475467}select,input,button{font:inherit}select,input{width:100%;min-height:42px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;padding:8px 9px}input[type=password]{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}button{border:0;border-radius:10px;min-height:42px;padding:9px 11px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}button.secondary{background:#e9edf5;color:#293751}button.danger{background:var(--red)}button:disabled{opacity:.5}.status{white-space:pre-wrap;border-radius:10px;padding:10px;font-size:11px;line-height:1.55;background:#eef3ff;margin-top:8px}.status.ok{background:#eaf7ee;color:var(--green)}.status.err{background:#fff0ef;color:var(--red)}.status.warn{background:#fff6e5;color:var(--amber)}.out{white-space:pre-wrap;word-break:break-word;background:#101828;color:#f2f4f7;border-radius:11px;padding:11px;min-height:180px;max-height:620px;overflow:auto;font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.warnbox{font-size:11px;line-height:1.55;padding:9px;border:1px solid #efd59b;border-radius:10px;background:#fff9e9;color:#694b00}.progress{height:22px;background:#e5eaf3;border-radius:999px;overflow:hidden;position:relative;margin-top:9px}.progress i{position:absolute;inset:0 auto 0 0;width:0;background:#5676d8;transition:width .15s}.progress em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:900}@media(min-width:720px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics{grid-template-columns:repeat(6,minmax(0,1fr))}}
@@ -13,15 +13,21 @@
 <body>
 <div class="wrap">
 <div class="card">
-<h1>⚖️ Gemini + Astra + Sol + Luna · P168A 동일 프롬프트 비교</h1>
-<div class="sub">20261004-V361208-P168A-SAME-PROMPT-R7 · TEST ONLY</div>
-<div class="warnbox" style="margin-top:9px"><b>실사용 SERVICE는 변경하지 않습니다.</b> 최근 번역 원문을 한 번만 읽어 같은 고정 표본을 Gemini/Astra/Sol/Luna 모두에 적용합니다. <b>GPT도 Gemini SERVICE와 동일한 P168A prompt-config.json의 forward/back 문구와 동일 SMART 선택 규칙을 그대로 사용</b>합니다. GPT는 Responses API streaming으로 첫 텍스트(TTFT)와 완료시간을 분리 기록하고, Gemini도 진단 함수 호출 전체 wall time을 별도로 측정합니다. GPT 스트림은 response.completed가 실제 수신되어야만 성공으로 인정합니다. SERVICE는 변경하지 않습니다.</div>
+<h1>🧪 GPT ↔ Gemini · 통합 최종검증</h1>
+<div class="sub">20261004-V361208-GPT-GEMINI-INTEGRATED-R8 · TEST/DIAGNOSTIC ONLY</div>
+<div class="warnbox" style="margin-top:9px"><b>SERVICE V3.61.208 / P168A는 변경하지 않습니다.</b> 이 URL 하나에서 최초 1회 실사용 DB 후보 추출 → ChatGPT 승인 예문 등록 후 → 동일 평가표본으로 Gemini SERVICE / Gemini+Few-shot / Astra+Few-shot / Sol+Few-shot / Luna+Few-shot을 자동 비교합니다. 진단기는 의미 우승자를 자동 판정하지 않고 최종 상세 로그만 만듭니다.</div>
 </div>
 
 <div class="card">
 <h2>사전점검</h2>
 <div id="preflight" class="status">SERVICE runtime 확인 전…</div>
 <div id="fingerprint" class="out" style="min-height:100px;max-height:250px">대기 중</div>
+</div>
+
+<div class="card">
+<h2>통합 자동화 상태</h2>
+<div id="automationState" class="status warn">승인 예문셋 확인 중…</div>
+<div class="note" style="margin-top:7px">최초 1회에는 DB 후보 200건을 자동 추출해 JSON 하나를 내려받습니다. 그 파일을 ChatGPT에 보내면 승인 예문셋을 이 진단기용 파일로 등록합니다. 이후에는 같은 URL에서 통합진단 시작 한 번으로 최종 비교 로그까지 생성합니다.</div>
 </div>
 
 <div class="card">
@@ -38,12 +44,12 @@
 <div class="card">
 <h2>실사용 기록 비교</h2>
 <div class="grid">
-<div><label>최근 실사용 건수</label><select id="count"><option value="20" selected>20건 · 빠른 확인</option><option value="50">50건 · 기본 비교</option><option value="100">100건 · 최종 검증</option></select></div>
+<div><label>최종 평가 실사용 건수</label><select id="count"><option value="20">20건 · 빠른 확인</option><option value="50" selected>50건 · 기본 최종비교</option><option value="100">100건 · 확대 검증</option></select></div>
 <div><label>방향</label><select id="dir"><option value="ALL" selected>양방향 균형</option><option value="K2L">K→L</option><option value="L2K">L→K</option></select></div>
 <div><label>역번역</label><select id="back"><option value="on" selected>포함</option><option value="off">정번역만</option></select></div>
 <div><label>호출 간 휴지</label><select id="gap"><option value="150">150 ms</option><option value="300" selected>300 ms</option><option value="600">600 ms</option></select></div>
 </div>
-<div class="row" style="margin-top:9px"><button id="start" disabled>▶ 4모델 동일표본 비교 시작</button><button id="stop" class="danger" disabled>■ 중지</button><button id="copy" class="secondary" disabled>📋 로그 복사</button><button id="save" class="secondary" disabled>💾 TXT 저장</button></div>
+<div class="row" style="margin-top:9px"><button id="start" disabled>▶ 통합진단 시작</button><button id="stop" class="danger" disabled>■ 중지</button><button id="copy" class="secondary" disabled>📋 결과 복사</button><button id="save" class="secondary" disabled>💾 결과 저장</button></div>
 <div class="progress"><i id="bar"></i><em id="pct">0%</em></div>
 <div class="metrics">
 <div class="metric"><span>완료 호출</span><b id="mDone">0</b></div>
@@ -53,7 +59,7 @@
 <div class="metric"><span>L→K</span><b id="mL2K">0</b></div>
 <div class="metric"><span>단계</span><b id="mPhase">-</b></div>
 </div>
-<div id="status" class="status">사전점검과 OpenAI 키 저장 후 실행할 수 있습니다.</div>
+<div id="status" class="status">사전점검 중입니다. 최초 준비 단계면 OpenAI 키 없이 DB 후보 추출만 실행합니다.</div>
 <div id="out" class="out" style="margin-top:8px">아직 실행하지 않았습니다.</div>
 </div>
 </div>
@@ -62,7 +68,7 @@
 
 <script>
 'use strict';
-const BUILD_ID='20261004-V361208-P168A-SAME-PROMPT-R7';
+const BUILD_ID='20261004-V361208-GPT-GEMINI-INTEGRATED-R8';
 const STREAM_MODE='RESPONSES_SSE';
 const EXPECTED_SERVICE_VERSION='V3.61.208';
 const EXPECTED_PROMPT_REVISION='P168A';
@@ -70,19 +76,25 @@ const EXPECTED_PROMPT_SHA='7d28766e1f9938a531fed5870585cb4a3afe735e2c41cc25b511f
 const EXPECTED_GPT_PROMPT_REVISION='P168A';
 const OPENAI_URL='https://api.openai.com/v1/responses';
 const OPENAI_KEY_STORAGE='translator_openai_compare_key_v1';
+const GEMINI_KEY_STORAGE='translator_primary_password';
+const GEMINI_MODEL='gemini-3.8-flash';
+const APPROVED_EXAMPLES_URL='./approved-examples.json';
+const BOOTSTRAP_COUNT=200;
+const FEWSHOT_K=4;
 const GPT_MODELS=['gpt-6-astra','gpt-6.1-sol','gpt-6-luna'];
 const $=id=>document.getElementById(id);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const clean=v=>String(v==null?'':v).trim();
 const now=()=>new Date().toLocaleString('ko-KR',{hour12:false});
-let serviceHost=null,currentCfg=null,gptCfg=null,preflightOk=false,running=false,stopped=false,activeOpenAiAbort=null,dbFetchAbort=null,visibleAdminHost=null,runGeneration=0,done=0,total=0,errors=0,k2lCount=0,l2kCount=0,logText='';
+let serviceHost=null,currentCfg=null,gptCfg=null,preflightOk=false,running=false,stopped=false,activeOpenAiAbort=null,activeGeminiAbort=null,dbFetchAbort=null,visibleAdminHost=null,runGeneration=0,done=0,total=0,errors=0,k2lCount=0,l2kCount=0,logText='',artifactText='',artifactName='',artifactMime='text/plain;charset=utf-8';
+let approvedExamples=[],approvedRevision='',approvedMode='loading',approvedLoadError='';
 
 function setStatus(id,text,kind=''){const e=$(id);e.textContent=text;e.className='status'+(kind?' '+kind:'')}
 function updateMetrics(phase='-'){ $('mDone').textContent=done;$('mTotal').textContent=total;$('mErr').textContent=errors;$('mK2L').textContent=k2lCount;$('mL2K').textContent=l2kCount;$('mPhase').textContent=phase;const p=total?Math.min(100,Math.round(done/total*100)):0;$('bar').style.width=p+'%';$('pct').textContent=p+'%'}
 function currentKey(){try{return clean(localStorage.getItem(OPENAI_KEY_STORAGE))}catch(_){return''}}
 function maskKey(k){return k?('저장됨 · …'+k.slice(-4)):'미저장'}
 function refreshKeyUi(){const k=currentKey();$('keyState').value=maskKey(k);updateStartEnabled()}
-function updateStartEnabled(){$('start').disabled=running||!preflightOk||!currentKey()}
+function updateStartEnabled(){const needsOpenAI=approvedMode==='ready';$('start').disabled=running||!preflightOk||approvedMode==='loading'||!!approvedLoadError||(needsOpenAI&&!currentKey());if(!running){$('start').textContent=approvedMode==='bootstrap'?'▶ 최초 DB 후보 자동 추출':'▶ 통합진단 시작'}}
 function saveKey(){const k=clean($('openaiKey').value);if(!k){setStatus('keyStatus','키를 입력하세요.','err');return}try{localStorage.setItem(OPENAI_KEY_STORAGE,k)}catch(e){setStatus('keyStatus','브라우저 저장 실패 · '+e.message,'err');return}$('openaiKey').value='';refreshKeyUi();setStatus('keyStatus','저장 완료 · 키 본문은 화면/로그에 표시하지 않습니다.','ok')}
 function clearKey(){try{localStorage.removeItem(OPENAI_KEY_STORAGE)}catch(_){}$('openaiKey').value='';refreshKeyUi();setStatus('keyStatus','저장된 OpenAI 키를 삭제했습니다.','ok')}
 
@@ -156,11 +168,42 @@ async function preflight(){
       ...checks.map(x=>(x[1]?'PASS':'FAIL')+' · '+x[0]+' · '+x[2])
     ].join('\n');
     if(!checks.every(x=>x[1]))throw new Error('PREFLIGHT_MISMATCH');
-    preflightOk=true;setStatus('preflight','PASS · Gemini/GPT 모두 P168A 동일 프롬프트 정책 연결 완료','ok');updateStartEnabled()
+    preflightOk=true;setStatus('preflight','PASS · Gemini/GPT 모두 P168A 동일 프롬프트 정책 연결 완료','ok');await loadApprovedExamples();updateStartEnabled()
   }catch(e){
     setStatus('preflight','FAIL · '+clean(e?.message||e)+'\nSERVICE 앱의 1차 비밀번호 연결 상태와 prompt-config.json을 확인한 뒤 새로고침하세요.','err');
     $('fingerprint').textContent+='\nERROR='+clean(e?.stack||e)
   }
+}
+
+
+async function loadApprovedExamples(){
+  approvedExamples=[];approvedRevision='';approvedLoadError='';approvedMode='loading';updateStartEnabled();
+  setStatus('automationState','승인 예문셋 확인 중…','warn');
+  const ctrl=new AbortController(),tm=setTimeout(()=>ctrl.abort(),7000);
+  try{
+    const r=await fetch(APPROVED_EXAMPLES_URL+'?integrated='+Date.now(),{cache:'no-store',signal:ctrl.signal});
+    if(r.status===404){
+      approvedMode='bootstrap';
+      setStatus('automationState','최초 준비 단계 · 승인 예문셋 없음\n통합진단 시작을 누르면 실사용 DB 후보 '+BOOTSTRAP_COUNT+'건을 읽기 전용으로 추출하고 JSON 1개를 자동 저장합니다. 그 파일만 ChatGPT에 보내주세요.','warn');
+      updateStartEnabled();return;
+    }
+    if(!r.ok)throw new Error('APPROVED_HTTP_'+r.status);
+    const d=await r.json(),arr=Array.isArray(d?.examples)?d.examples:[];
+    const good=[],seen=new Set();
+    for(const raw of arr){
+      const direction=normalizeDir(raw?.direction),source=clean(raw?.source),target=clean(raw?.target);
+      if(!direction||!source||!target)continue;
+      const key=direction+'|'+normSource(source);if(seen.has(key))continue;seen.add(key);
+      good.push({id:clean(raw?.id)||('EX'+String(good.length+1).padStart(3,'0')),direction,source,target,back:clean(raw?.back),tags:Array.isArray(raw?.tags)?raw.tags.map(clean).filter(Boolean):[]});
+    }
+    const k=good.filter(x=>x.direction==='K2L').length,l=good.filter(x=>x.direction==='L2K').length;
+    if(k<FEWSHOT_K||l<FEWSHOT_K)throw new Error('APPROVED_TOO_SMALL K2L='+k+' L2K='+l+' need_each='+FEWSHOT_K);
+    approvedExamples=good;approvedRevision=clean(d?.revision)||clean(d?.approvedRevision)||'APPROVED-UNKNOWN';approvedMode='ready';
+    setStatus('automationState','PASS · 승인 예문 '+good.length+'쌍 로드 · '+approvedRevision+'\nK→L '+k+' / L→K '+l+' · 평가 원문과 겹치는 예문은 자동 제외합니다.','ok');
+  }catch(e){
+    if(e?.name==='AbortError')approvedLoadError='APPROVED_LOAD_TIMEOUT';else approvedLoadError=clean(e?.message||e);
+    setStatus('automationState','FAIL · 승인 예문셋 확인 오류 · '+approvedLoadError,'err');
+  }finally{clearTimeout(tm);updateStartEnabled()}
 }
 
 function sameOriginWindow(w){try{return !!(w&&!w.closed&&w.location.origin===location.origin)}catch(_){return false}}
@@ -190,15 +233,22 @@ async function ensureAdminSession(h,gen,force=false){
 }
 async function adminFetch(path,gen){
   const h=await ensureAdminHost(gen),cfg=h.getUnifiedDiagnosticRelayConfig?.()||{};if(!cfg?.token)throw new Error('RELAY_CONFIG_MISSING');
-  let session=await ensureAdminSession(h,gen,false),reauth=false,last;
-  for(const base of [cfg.primary?.url,cfg.backup?.url].filter(Boolean)){
-    try{
-      if(stopped||gen!==runGeneration)throw new Error('DB_CANCELLED');
-      const c=new AbortController();dbFetchAbort=c;const tm=setTimeout(()=>c.abort(),60000);let r;
-      try{r=await fetch(String(base).replace(/\/$/,'')+path,{headers:{'X-App-Token':cfg.token,'X-Admin-Session':session,'Accept':'application/json'},cache:'no-store',signal:c.signal})}finally{clearTimeout(tm);if(dbFetchAbort===c)dbFetchAbort=null}
-      if((r.status===401||r.status===403)&&!reauth){reauth=true;session=await ensureAdminSession(h,gen,true);return adminFetch(path,gen)}
-      if(!r.ok)throw new Error('HTTP_'+r.status);const d=await r.json();d._relay=base;return d
-    }catch(e){last=e}
+  let session=await ensureAdminSession(h,gen,false),last=null;
+  for(let authTry=0;authTry<2;authTry++){
+    let authFailure=false;
+    for(const base of [cfg.primary?.url,cfg.backup?.url].filter(Boolean)){
+      try{
+        if(stopped||gen!==runGeneration)throw new Error('DB_CANCELLED');
+        const ctrl=new AbortController();dbFetchAbort=ctrl;const tm=setTimeout(()=>ctrl.abort(),60000);let r;
+        try{r=await fetch(String(base).replace(/\/$/,'')+path,{headers:{'X-App-Token':cfg.token,'X-Admin-Session':session,'Accept':'application/json'},cache:'no-store',signal:ctrl.signal})}
+        finally{clearTimeout(tm);if(dbFetchAbort===ctrl)dbFetchAbort=null}
+        if(r.status===401||r.status===403){authFailure=true;last=new Error('HTTP_'+r.status);break}
+        if(!r.ok)throw new Error('HTTP_'+r.status);
+        const d=await r.json();d._relay=base;return d
+      }catch(e){last=e;if(/DB_CANCELLED/.test(String(e?.message||e)))throw e}
+    }
+    if(authFailure&&authTry===0){session=await ensureAdminSession(h,gen,true);continue}
+    break
   }
   throw last||new Error('ADMIN_FETCH_FAILED')
 }
@@ -216,6 +266,25 @@ async function fetchRecent(count,dir,gen){
   const sorted=(Array.isArray(d.records)?d.records:[]).filter(isTranslationRecord).filter(r=>storedApp(r)==='couple').filter(r=>!retryRecord(r)).sort((a,b)=>recordTs(b)-recordTs(a));
   const seen=new Set(),u=[];for(const r of sorted){const rd=normalizeDir(r.direction),key=rd+'|'+normSource(r.sourceText);if(!rd||!normSource(r.sourceText)||seen.has(key))continue;seen.add(key);u.push(Object.assign({},r,{__key:key,__relay:d._relay||''}))}
   return balance(u,n,dir)
+}
+
+async function fetchCandidatePool(count,dir,gen){
+  const n=Math.max(1,Math.min(500,Number(count)||BOOTSTRAP_COUNT)),limit=Math.min(1000,Math.max(300,n*6));
+  setStatus('status','Firestore/telemetry 실사용 기록 후보 조회 중…','warn');
+  const d=await adminFetch('/telemetry/sample?kind=recent&scope=translations&direction='+encodeURIComponent(dir)+'&app=couple&limit='+limit+'&scan=6000',gen);
+  const sorted=(Array.isArray(d.records)?d.records:[]).filter(isTranslationRecord).filter(r=>storedApp(r)==='couple').filter(r=>!retryRecord(r)).sort((a,b)=>recordTs(b)-recordTs(a));
+  const seen=new Set(),u=[];
+  for(const r of sorted){
+    const rd=normalizeDir(r.direction),ns=normSource(r.sourceText),key=rd+'|'+ns;
+    if(!rd||!ns||seen.has(key))continue;seen.add(key);u.push(Object.assign({},r,{__key:key,__relay:d._relay||''}))
+  }
+  return balance(u,n,dir)
+}
+function approvedSourceKeys(){return new Set(approvedExamples.map(x=>x.direction+'|'+normSource(x.source)))}
+async function fetchEvaluationRows(count,dir,gen){
+  const n=Math.max(1,Math.min(100,Number(count)||50)),pool=await fetchCandidatePool(Math.min(500,Math.max(n*4,n+40)),dir,gen),blocked=approvedSourceKeys();
+  const filtered=pool.filter(r=>!blocked.has(normalizeDir(r.direction)+'|'+normSource(r.sourceText)));
+  return balance(filtered,n,dir)
 }
 
 function smartK2L(source){
@@ -319,23 +388,77 @@ async function openAiStreamCall(model,instructions,input,maxTokens=1024){
     return{text:clean(textOut),firstMs,totalMs,firstSource:firstMs<totalMs?'output_text.delta':'completion_fallback',usage,responseMeta,instructionChars:[...instructionText].length,inputChars:[...inputText].length,id:clean(completed?.id||''),model:clean(completed?.model||model),streamEvents}
   }finally{clearTimeout(tm);if(activeOpenAiAbort===c)activeOpenAiAbort=null}
 }
-async function runGpt(model,dir,source,doBack){
-  const fPrompt=gptForwardPrompt(dir,source),promptRevision=String(currentCfg?.promptRevision||EXPECTED_GPT_PROMPT_REVISION),smartIds=dir==='K2L'?smartK2L(source):smartL2K(source);
+
+function riskTags(text,dir){
+  const s=String(text||''),tags=[];
+  if(dir==='K2L'){
+    if(/(?:안|못|없|아니|말고|금지|하지\s*마)/u.test(s))tags.push('NEG');
+    if(/(?:했|먹었|왔|갔|끝났|됐|버렸|였|이었다|았어|었어|했네|됐네)/u.test(s))tags.push('COMPLETED');
+    if(/(?:할|갈|올|먹을|겠|려고|예정|나중|이따|내일)/u.test(s))tags.push('FUTURE');
+    if(/(?:면|다면|라면|경우|했으면|였다면)/u.test(s))tags.push('COND');
+    if(/(?:자기|여보|내\s*사랑|나|내가|나는|너|당신)/u.test(s))tags.push('ROLE');
+    if(/\d/u.test(s))tags.push('NUMBER');
+  }else{
+    if(/(?:ບໍ່|ຢ່າ|ບໍ່ໄດ້|ບໍ່ມີ)/u.test(s))tags.push('NEG');
+    if(/(?:ແລ້ວ|ໝົດ|ຈົນໝົດ)/u.test(s))tags.push('COMPLETED');
+    if(/(?:ຈະ|ຊິ|ກຳລັງຈະ)/u.test(s))tags.push('FUTURE');
+    if(/(?:ຖ້າ|ຫາກ|ຄົງຈະ)/u.test(s))tags.push('COND');
+    if(/(?:ທີ່ຮັກ|ຂ້ອຍ|ເຈົ້າ|ອ້າຍ|ນ້ອງ)/u.test(s))tags.push('ROLE');
+    if(/\d/u.test(s))tags.push('NUMBER');
+  }
+  return [...new Set(tags)]
+}
+function ngramSet(text,n=2){const s=normSource(text),out=new Set();if(!s)return out;if(s.length<=n){out.add(s);return out}for(let i=0;i<=s.length-n;i++)out.add(s.slice(i,i+n));return out}
+function jaccard(a,b){if(!a.size||!b.size)return 0;let hit=0;for(const x of a)if(b.has(x))hit++;return hit/(a.size+b.size-hit)}
+function exampleScore(source,ex,dir){
+  const a=ngramSet(source,2),b=ngramSet(ex.source,2),lex=jaccard(a,b),la=Math.max(1,normSource(source).length),lb=Math.max(1,normSource(ex.source).length),len=1-Math.min(1,Math.abs(la-lb)/Math.max(la,lb));
+  const q=new Set(riskTags(source,dir)),et=new Set([...(ex.tags||[]).map(x=>String(x).toUpperCase()),...riskTags(ex.source,dir)]);let tagHit=0;for(const t of q)if(et.has(t))tagHit++;
+  const tag=q.size?tagHit/q.size:0;return lex*0.72+len*0.08+tag*0.20
+}
+function pickExamples(dir,source,k=FEWSHOT_K){return approvedExamples.filter(x=>x.direction===dir&&normSource(x.source)!==normSource(source)).map(x=>({x,score:exampleScore(source,x,dir)})).sort((a,b)=>b.score-a.score).slice(0,k).map(o=>o.x)}
+function fewShotSection(dir,examples){
+  if(!examples?.length)return'';
+  const srcName=dir==='K2L'?'Korean':'Lao',dstName=dir==='K2L'?'Lao':'Korean',lines=['VERIFIED TRANSLATION EXAMPLES. Use them only as semantic/style references. Do not copy facts from an example into the new source. Preserve the new source exactly.'];
+  examples.forEach((e,i)=>{lines.push('EXAMPLE '+(i+1)+' '+srcName+': '+e.source);lines.push('EXAMPLE '+(i+1)+' '+dstName+': '+e.target)});
+  lines.push('Now translate only the NEW SOURCE below. Output only its '+dstName+' translation.');return '\n\n'+lines.join('\n')
+}
+function fewShotForwardPrompt(dir,source,examples){return gptForwardPrompt(dir,source)+fewShotSection(dir,examples)}
+function geminiKey(){try{return clean(localStorage.getItem(GEMINI_KEY_STORAGE))}catch(_){return''}}
+function geminiExtractText(d){const parts=d?.candidates?.[0]?.content?.parts||[];let out='';for(const p of parts){if(p?.thought===true)continue;if(typeof p?.text==='string')out+=p.text}return clean(out)}
+function geminiUsage(d){const u=d?.usageMetadata||{};return{input:Number(u.promptTokenCount)||0,output:Number(u.candidatesTokenCount)||0,thoughts:Number(u.thoughtsTokenCount)||0,total:Number(u.totalTokenCount)||0}}
+async function geminiDirectCall(instructions,input,maxTokens=1024){
+  const key=geminiKey();if(!key)throw new Error('GEMINI_PRIMARY_KEY_MISSING');
+  const ctrl=new AbortController();activeGeminiAbort=ctrl;const tm=setTimeout(()=>ctrl.abort(),90000),started=performance.now();
+  try{
+    const url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(GEMINI_MODEL)+':generateContent';
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key,'Accept':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:String(instructions||'')}]},contents:[{role:'user',parts:[{text:String(input||'')}]}],generationConfig:{maxOutputTokens:maxTokens,thinkingConfig:{thinkingLevel:'low',includeThoughts:false}}}),cache:'no-store',signal:ctrl.signal});
+    let d={};try{d=await r.json()}catch(_){}
+    if(!r.ok)throw new Error('GEMINI_HTTP_'+r.status+' '+clean(d?.error?.message||''));
+    const text=geminiExtractText(d),finish=clean(d?.candidates?.[0]?.finishReason||'');if(!text)throw new Error('GEMINI_EMPTY_OUTPUT finish='+finish);
+    return{text,totalMs:performance.now()-started,finishReason:finish,usage:geminiUsage(d),instructionChars:[...String(instructions||'')].length,inputChars:[...String(input||'')].length}
+  }finally{clearTimeout(tm);if(activeGeminiAbort===ctrl)activeGeminiAbort=null}
+}
+async function runGeminiFewShot(dir,source,examples,doBack){
+  const f=await geminiDirectCall(fewShotForwardPrompt(dir,source,examples),source);
+  let back=null;if(doBack)back=await geminiDirectCall(gptBackPrompt(dir,f.text,false),f.text);
+  return{forward:f,back,smartIds:dir==='K2L'?smartK2L(source):smartL2K(source),forwardScriptOk:scriptOk(f.text,expectedScript(dir,false)),backScriptOk:doBack&&back?scriptOk(back.text,expectedScript(dir,true)):null}
+}
+
+async function runGpt(model,dir,source,doBack,examples){
+  const fPrompt=fewShotForwardPrompt(dir,source,examples),promptRevision=String(currentCfg?.promptRevision||EXPECTED_GPT_PROMPT_REVISION),smartIds=dir==='K2L'?smartK2L(source):smartL2K(source);
   const f=await openAiStreamCall(model,fPrompt,source);
   let back=null;if(doBack)back=await openAiStreamCall(model,gptBackPrompt(dir,f.text,false),f.text);
   return{model,forward:f,back,promptRevision,smartIds,forwardScriptOk:scriptOk(f.text,expectedScript(dir,false)),backScriptOk:doBack&&back?scriptOk(back.text,expectedScript(dir,true)):null}
 }
 function rotatedModels(caseIndex){const n=GPT_MODELS.length,k=caseIndex%n;return GPT_MODELS.slice(k).concat(GPT_MODELS.slice(0,k))}
-async function runGptBlock(dir,source,doBack,caseIndex){
+async function runGptBlock(dir,source,doBack,caseIndex,examples){
   const order=rotatedModels(caseIndex),results={};
   for(const model of order){
     if(stopped)break;
-    try{results[model]={status:'fulfilled',value:await runGpt(model,dir,source,doBack)}}
-    catch(e){results[model]={status:'rejected',reason:e}}
+    try{results[model]={status:'fulfilled',value:await runGpt(model,dir,source,doBack,examples)}}catch(e){results[model]={status:'rejected',reason:e}}
   }
   return{order,results}
 }
-
 async function runGemini(dir,source,doBack){
   const f0=performance.now();
   const f=await serviceHost.runUnifiedLivePathDiagnostic(dir,source);
@@ -352,86 +475,86 @@ async function runGemini(dir,source,doBack){
 }
 function arrStat(a){const x=(a||[]).map(Number).filter(v=>Number.isFinite(v)&&v>=0).sort((p,q)=>p-q);if(!x.length)return{n:0,avg:0,median:0,p95:0,max:0};const m=Math.floor(x.length/2);return{n:x.length,avg:Math.round(x.reduce((p,q)=>p+q,0)/x.length),median:Math.round(x.length%2?x[m]:(x[m-1]+x[m])/2),p95:Math.round(x[Math.min(x.length-1,Math.ceil(x.length*.95)-1)]),max:Math.round(x[x.length-1])}}
 function statLine(name,a){const s=arrStat(a);return name+' n='+s.n+' avg='+s.avg+' median='+s.median+' p95='+s.p95+' max='+s.max}
-function saveText(name,text){const b=new Blob([text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function saveText(name,text,mime='text/plain;charset=utf-8'){const b=new Blob([text],{type:mime}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function setArtifact(name,text,mime='text/plain;charset=utf-8'){artifactName=name;artifactText=text;artifactMime=mime;logText=text;$('copy').disabled=!text;$('save').disabled=!text}
 async function copyText(t){try{await navigator.clipboard.writeText(t);return true}catch(_){return false}}
 
-async function runCompare(){
-  if(running)return;if(!preflightOk){setStatus('status','사전점검 PASS가 필요합니다.','err');return}if(!currentKey()){setStatus('status','OpenAI 키를 먼저 저장하세요.','err');return}
-  running=true;stopped=false;done=0;errors=0;k2lCount=0;l2kCount=0;logText='';const gen=++runGeneration;
-  const n=Number($('count').value)||20,dir=$('dir').value,doBack=$('back').value==='on',gap=Number($('gap').value)||300,lines=[];
-  const gFF=[],gFT=[],gBF=[],gBT=[],caseWall=[];
-  const stats={};for(const m of GPT_MODELS)stats[m]={fFirst:[],fTotal:[],bFirst:[],bTotal:[],fReason:[],bReason:[],fVisible:[],bVisible:[],scriptWarn:0};
-  total=0;updateMetrics('DB 조회');$('start').disabled=true;$('stop').disabled=false;$('copy').disabled=true;$('save').disabled=true;
+async function runBootstrap(){
+  if(running)return;if(!preflightOk){setStatus('status','사전점검 PASS가 필요합니다.','err');return}
+  running=true;stopped=false;done=0;errors=0;k2lCount=0;l2kCount=0;artifactText='';artifactName='';logText='';const gen=++runGeneration;
+  total=1;updateMetrics('DB 후보 추출');$('start').disabled=true;$('stop').disabled=false;$('copy').disabled=true;$('save').disabled=true;
   try{
-    const rows=await fetchRecent(n,dir,gen);if(!rows.length)throw new Error('NO_REAL_USE_RECORDS');
+    const rows=await fetchCandidatePool(BOOTSTRAP_COUNT,'ALL',gen);if(!rows.length)throw new Error('NO_REAL_USE_RECORDS');
     k2lCount=rows.filter(r=>normalizeDir(r.direction)==='K2L').length;l2kCount=rows.filter(r=>normalizeDir(r.direction)==='L2K').length;
-    total=rows.length*(1+GPT_MODELS.length)*(doBack?2:1);updateMetrics('고정 표본 준비');
-    lines.push('MODEL_COMPARE '+BUILD_ID,'generated='+now(),'service=V3.61.208/P168A','promptSha='+EXPECTED_PROMPT_SHA,'gptModels='+GPT_MODELS.join(','),'gptPromptRevision='+String(currentCfg?.promptRevision||'-'),'gptPromptSource=EXACT_SERVICE_PROMPT_CONFIG','sampleSource=SERVER_REAL_USE_READ_ONLY app=couple requested='+n+' fetched='+rows.length+' direction='+dir,'sampleCounts K2L='+k2lCount+' L2K='+l2kCount,'sampleFrozenOnce=true','samplePolicy=exclude failed/retranslate/duplicate-source; balance K2L/L2K when possible','geminiPath=EXACT_SERVICE_DIAGNOSTIC_RUNTIME','gptPath=BROWSER_DIRECT_OPENAI_RESPONSES_STREAMING','gptStreaming=true','gptKeyStored=LOCAL_BROWSER_ONLY_NOT_LOGGED','diagnosticWritesLiveHistory=false','back='+doBack,'parallelMode=GEMINI_LANE || SEQUENTIAL_ROTATING_GPT_BLOCK','gptReasoningEffort=low','promptParity=P168A_FORWARD_BACK_SMART_SAME_CONFIG','gptMaxOutputTokens=1024','');
+    const payload={schemaVersion:1,kind:'GPT_GEMINI_FEWSHOT_BOOTSTRAP',build:BUILD_ID,generatedAt:new Date().toISOString(),service:{version:EXPECTED_SERVICE_VERSION,promptRevision:EXPECTED_PROMPT_REVISION,promptSha256:EXPECTED_PROMPT_SHA},source:'SERVER_REAL_USE_READ_ONLY',policy:'failed/retranslate/duplicate-source excluded; balanced K2L/L2K when possible; no AI quality judgment in diagnostic',requested:BOOTSTRAP_COUNT,fetched:rows.length,counts:{K2L:k2lCount,L2K:l2kCount},records:rows.map((r,i)=>({index:i+1,direction:normalizeDir(r.direction),recordedAtMs:recordTs(r)||null,appVersion:clean(r.appVersion||''),source:clean(r.sourceText),translation:clean(r.targetText),back:clean(r.backText)}))};
+    const json=JSON.stringify(payload,null,2),name='GPT_GEMINI_BOOTSTRAP_REALDB_'+rows.length+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';
+    done=1;setArtifact(name,json,'application/json;charset=utf-8');$('out').textContent='BOOTSTRAP 완료\n실사용 DB 후보 '+rows.length+'건 · K→L '+k2lCount+' / L→K '+l2kCount+'\n\n자동 저장되는 JSON 파일 하나만 ChatGPT에 보내주세요.\n진단기는 의미 품질을 판정하지 않았습니다.';
+    saveText(name,json,'application/json;charset=utf-8');setStatus('status','최초 준비 완료 · JSON 1개 자동 저장됨\n이 파일만 ChatGPT에 보내주세요. 승인 예문셋 등록 후에는 같은 URL에서 통합진단 한 번으로 끝납니다.','ok')
+  }catch(e){errors++;const msg='BOOTSTRAP_FATAL='+clean(e?.stack||e);setArtifact('GPT_GEMINI_BOOTSTRAP_ERROR_'+new Date().toISOString().replace(/[:.]/g,'-')+'.txt',msg);$('out').textContent=msg;setStatus('status','DB 후보 추출 실패 · '+clean(e?.message||e),'err')}
+  finally{running=false;$('stop').disabled=true;updateStartEnabled();updateMetrics('최초 준비 완료')}
+}
+
+async function runCompare(){
+  if(running)return;if(!preflightOk){setStatus('status','사전점검 PASS가 필요합니다.','err');return}
+  if(approvedMode!=='ready')return runBootstrap();
+  if(!currentKey()){setStatus('status','최종 비교에는 OpenAI 키가 필요합니다. 먼저 저장하세요.','err');return}
+  if(!geminiKey()){setStatus('status','Gemini SERVICE 1차 비밀번호(API 키)가 이 브라우저에 없습니다. SERVICE 연결 후 다시 실행하세요.','err');return}
+  running=true;stopped=false;done=0;errors=0;k2lCount=0;l2kCount=0;artifactText='';artifactName='';logText='';const gen=++runGeneration;
+  const n=Number($('count').value)||50,dir=$('dir').value,doBack=$('back').value==='on',gap=Number($('gap').value)||300,lines=[];
+  const base={fFirst:[],fTotal:[],bFirst:[],bTotal:[]},gf={fTotal:[],bTotal:[],scriptWarn:0},caseWall=[];
+  const stats={};for(const m of GPT_MODELS)stats[m]={fFirst:[],fTotal:[],bFirst:[],bTotal:[],fReason:[],bReason:[],fVisible:[],bVisible:[],scriptWarn:0};
+  total=0;updateMetrics('DB 평가표본 조회');$('start').disabled=true;$('stop').disabled=false;$('copy').disabled=true;$('save').disabled=true;
+  try{
+    const rows=await fetchEvaluationRows(n,dir,gen);if(!rows.length)throw new Error('NO_EVALUATION_RECORDS_AFTER_EXAMPLE_EXCLUSION');
+    k2lCount=rows.filter(r=>normalizeDir(r.direction)==='K2L').length;l2kCount=rows.filter(r=>normalizeDir(r.direction)==='L2K').length;
+    total=rows.length*(2+GPT_MODELS.length)*(doBack?2:1);updateMetrics('고정 평가표본 준비');
+    lines.push('INTEGRATED_MODEL_COMPARE '+BUILD_ID,'generated='+now(),'service='+EXPECTED_SERVICE_VERSION+'/'+EXPECTED_PROMPT_REVISION,'promptSha='+EXPECTED_PROMPT_SHA,'approvedRevision='+approvedRevision,'approvedExamples='+approvedExamples.length,'fewShotK='+FEWSHOT_K,'evaluationOverlapExcluded=true','gptModels='+GPT_MODELS.join(','),'sampleSource=SERVER_REAL_USE_READ_ONLY app=couple requested='+n+' fetched='+rows.length+' direction='+dir,'sampleCounts K2L='+k2lCount+' L2K='+l2kCount,'sampleFrozenOnce=true','samplePolicy=exclude failed/retranslate/duplicate-source/approved-example-source; balance K2L/L2K when possible','lane1=GEMINI_SERVICE_P168A_EXACT_RUNTIME','lane2=GEMINI_'+GEMINI_MODEL+'_P168A_PLUS_IDENTICAL_FEWSHOT','lane3plus=GPT_P168A_PLUS_IDENTICAL_FEWSHOT','fewShotSelector=DETERMINISTIC_BIGRAM_LENGTH_RISK_TAG_SIMILARITY_NO_AI_JUDGMENT','gptPath=BROWSER_DIRECT_OPENAI_RESPONSES_STREAMING','geminiFewShotPath=BROWSER_DIRECT_GOOGLE_GENERATECONTENT','keysStored=LOCAL_BROWSER_ONLY_NOT_LOGGED','diagnosticWritesLiveHistory=false','back='+doBack,'parallelMode=GEMINI_SERVICE || GEMINI_FEWSHOT || SEQUENTIAL_ROTATING_GPT_BLOCK','gptReasoningEffort=low','gptMaxOutputTokens=1024','geminiThinkingLevel=low','NO_AUTOMATIC_QUALITY_WINNER=true','');
     for(let i=0;i<rows.length;i++){
       if(stopped)break;
-      const r=rows[i],rd=normalizeDir(r.direction),src=clean(r.sourceText),stored=clean(r.targetText),storedBack=clean(r.backText),caseStarted=performance.now(),order=rotatedModels(i);
-      lines.push('========== CASE '+String(i+1).padStart(3,'0')+' · '+rd+' ==========','RECORDED_AT='+(recordTs(r)?new Date(recordTs(r)).toLocaleString('ko-KR',{hour12:false}):'-'),'STORED_VERSION='+clean(r.appVersion||'-'),'SOURCE='+src,'STORED_TRANSLATION='+(stored||'-'),'STORED_BACK='+(storedBack||'-'),'RUN_MODE=GEMINI || GPT_BLOCK','GPT_ORDER='+order.join('>'));
-      setStatus('status',(i+1)+'/'+rows.length+' · Gemini + Astra/Sol/Luna 동일 원문 실행 중…','warn');updateMetrics((i+1)+'/'+rows.length+' 4-MODEL '+rd);
-      const [gr,br]=await Promise.allSettled([runGemini(rd,src,doBack),runGptBlock(rd,src,doBack,i)]);
+      const r=rows[i],rd=normalizeDir(r.direction),src=clean(r.sourceText),stored=clean(r.targetText),storedBack=clean(r.backText),caseStarted=performance.now(),order=rotatedModels(i),examples=pickExamples(rd,src,FEWSHOT_K);
+      if(examples.length<FEWSHOT_K)throw new Error('FEWSHOT_NOT_ENOUGH '+rd+' got='+examples.length);
+      lines.push('========== CASE '+String(i+1).padStart(3,'0')+' · '+rd+' ==========','RECORDED_AT='+(recordTs(r)?new Date(recordTs(r)).toLocaleString('ko-KR',{hour12:false}):'-'),'STORED_VERSION='+clean(r.appVersion||'-'),'SOURCE='+src,'STORED_TRANSLATION='+(stored||'-'),'STORED_BACK='+(storedBack||'-'),'FEWSHOT_IDS='+examples.map(x=>x.id).join(','),...examples.map((x,j)=>'FEWSHOT_'+(j+1)+'='+x.id+' | SOURCE='+x.source+' | TARGET='+x.target),'GPT_ORDER='+order.join('>'));
+      setStatus('status',(i+1)+'/'+rows.length+' · Gemini SERVICE + Gemini Few-shot + Astra/Sol/Luna 실행 중…','warn');updateMetrics((i+1)+'/'+rows.length+' 5-LANE '+rd);
+      const [gr,gfr,br]=await Promise.allSettled([runGemini(rd,src,doBack),runGeminiFewShot(rd,src,examples,doBack),runGptBlock(rd,src,doBack,i,examples)]);
       if(stopped)break;
-
       if(gr.status==='fulfilled'){
-        const x=gr.value;
-        done++;
-        const ff=Number(x.forward?.displayMs),ft=Number(x.forwardWallMs);
-        const ffv=Number.isFinite(ff)&&ff>0?Math.round(ff):null,ftv=Number.isFinite(ft)&&ft>0?Math.round(ft):null;
-        if(ffv)gFF.push(ffv);if(ftv)gFT.push(ftv);
-        lines.push('[GEMINI FORWARD]','TRANSLATION='+clean(x.forward.text),'FIRST_MS='+(ffv??'NA'),'TOTAL_MS='+(ftv??'NA'),'FIRST_SOURCE='+(ffv?'displayMs':'unavailable'),'TOTAL_SOURCE=outer_call_wall','WINNER='+clean(x.forward?.winner||'-'),'REQUESTS='+Number(x.forward?.mainRequestCount||0),'DIRECT_FALLBACK='+(x.forward?.directToServerFallback===true));
-        if(doBack){
-          done++;
-          const bf=Number(x.back?.displayMs),bt=Number(x.backWallMs);
-          const bfv=Number.isFinite(bf)&&bf>0?Math.round(bf):null,btv=Number.isFinite(bt)&&bt>0?Math.round(bt):null;
-          if(bfv)gBF.push(bfv);if(btv)gBT.push(btv);
-          lines.push('BACK='+clean(x.back.text),'BACK_FIRST_MS='+(bfv??'NA'),'BACK_TOTAL_MS='+(btv??'NA'),'BACK_FIRST_SOURCE='+(bfv?'displayMs':'unavailable'),'BACK_TOTAL_SOURCE=outer_call_wall','BACK_RETRIES='+(Number(x.back?.languageRetryCount||0)+Number(x.back?.technicalRetryCount||0)+Number(x.back?.relationRetryCount||0)))
-        }
+        const x=gr.value;done++;const ff=Number(x.forward?.displayMs),ft=Number(x.forwardWallMs),ffv=Number.isFinite(ff)&&ff>0?Math.round(ff):null,ftv=Number.isFinite(ft)&&ft>0?Math.round(ft):null;if(ffv)base.fFirst.push(ffv);if(ftv)base.fTotal.push(ftv);
+        lines.push('[GEMINI SERVICE FORWARD]','TRANSLATION='+clean(x.forward.text),'FIRST_MS='+(ffv??'NA'),'TOTAL_MS='+(ftv??'NA'),'WINNER='+clean(x.forward?.winner||'-'),'REQUESTS='+Number(x.forward?.mainRequestCount||0),'DIRECT_FALLBACK='+(x.forward?.directToServerFallback===true));
+        if(doBack){done++;const bf=Number(x.back?.displayMs),bt=Number(x.backWallMs),bfv=Number.isFinite(bf)&&bf>0?Math.round(bf):null,btv=Number.isFinite(bt)&&bt>0?Math.round(bt):null;if(bfv)base.bFirst.push(bfv);if(btv)base.bTotal.push(btv);lines.push('BACK='+clean(x.back.text),'BACK_TOTAL_MS='+(btv??'NA'))}
         lines.push('')
-      }else{errors++;lines.push('[GEMINI ERROR] '+clean(gr.reason?.message||gr.reason),'')}
-
+      }else{errors++;lines.push('[GEMINI SERVICE ERROR] '+clean(gr.reason?.message||gr.reason),'')}
+      if(gfr.status==='fulfilled'){
+        const x=gfr.value;done++;gf.fTotal.push(Math.round(x.forward.totalMs));if(!x.forwardScriptOk)gf.scriptWarn++;
+        lines.push('[GEMINI FEWSHOT FORWARD]','TRANSLATION='+clean(x.forward.text),'TOTAL_MS='+Math.round(x.forward.totalMs),'FINISH='+clean(x.forward.finishReason||'-'),'SCRIPT_OK='+x.forwardScriptOk,'TOKENS='+x.forward.usage.input+'/'+x.forward.usage.output+'/'+x.forward.usage.total,'THOUGHTS='+x.forward.usage.thoughts,'INSTRUCTION_CHARS='+x.forward.instructionChars);
+        if(doBack&&x.back){done++;gf.bTotal.push(Math.round(x.back.totalMs));if(!x.backScriptOk)gf.scriptWarn++;lines.push('BACK='+clean(x.back.text),'BACK_TOTAL_MS='+Math.round(x.back.totalMs),'BACK_SCRIPT_OK='+x.backScriptOk,'BACK_TOKENS='+x.back.usage.input+'/'+x.back.usage.output+'/'+x.back.usage.total)}
+        lines.push('')
+      }else{errors++;lines.push('[GEMINI FEWSHOT ERROR] '+clean(gfr.reason?.message||gfr.reason),'')}
       if(br.status==='fulfilled'){
         const block=br.value;lines.push('GPT_ACTUAL_ORDER='+block.order.join('>'));
         for(const model of GPT_MODELS){
-          const rr=block.results[model];
-          if(!rr){errors++;lines.push('['+model+' ERROR] NOT_RUN','');continue}
-          if(rr.status==='rejected'){errors++;lines.push('['+model+' ERROR] '+clean(rr.reason?.message||rr.reason),'');continue}
-          const x=rr.value,st=stats[model],f=x.forward;
-          done++;st.fFirst.push(Math.round(f.firstMs));st.fTotal.push(Math.round(f.totalMs));st.fReason.push(Number(f.usage.reasoning)||0);st.fVisible.push(Number(f.usage.visible)||0);if(!x.forwardScriptOk)st.scriptWarn++;
-          lines.push('['+model+' FORWARD]','GPT_PROMPT='+x.promptRevision,'SMART_IDS='+(x.smartIds.length?x.smartIds.join(','):'-'),'TRANSLATION='+clean(f.text),'FIRST_MS='+Math.round(f.firstMs),'TOTAL_MS='+Math.round(f.totalMs),'FIRST_SOURCE='+f.firstSource,'SCRIPT_OK='+x.forwardScriptOk,'TOKENS='+f.usage.input+'/'+f.usage.output+'/'+f.usage.total,'OUTPUT_DETAIL reasoning='+f.usage.reasoning+' visible='+f.usage.visible+' cached='+f.usage.cached,'REQUEST_META effort='+(f.responseMeta?.reasoningEffort||'-')+' status='+(f.responseMeta?.status||'-')+' incomplete='+(f.responseMeta?.incompleteReason||'-')+' instructionChars='+f.instructionChars+' inputChars='+f.inputChars+' streamEvents='+f.streamEvents);
-          if(doBack&&x.back){
-            const b=x.back;done++;st.bFirst.push(Math.round(b.firstMs));st.bTotal.push(Math.round(b.totalMs));st.bReason.push(Number(b.usage.reasoning)||0);st.bVisible.push(Number(b.usage.visible)||0);if(!x.backScriptOk)st.scriptWarn++;
-            lines.push('BACK='+clean(b.text),'BACK_FIRST_MS='+Math.round(b.firstMs),'BACK_TOTAL_MS='+Math.round(b.totalMs),'BACK_FIRST_SOURCE='+b.firstSource,'BACK_SCRIPT_OK='+x.backScriptOk,'BACK_TOKENS='+b.usage.input+'/'+b.usage.output+'/'+b.usage.total,'BACK_OUTPUT_DETAIL reasoning='+b.usage.reasoning+' visible='+b.usage.visible+' cached='+b.usage.cached,'BACK_REQUEST_META effort='+(b.responseMeta?.reasoningEffort||'-')+' status='+(b.responseMeta?.status||'-')+' incomplete='+(b.responseMeta?.incompleteReason||'-')+' instructionChars='+b.instructionChars+' inputChars='+b.inputChars+' streamEvents='+b.streamEvents)
-          }
+          const rr=block.results[model];if(!rr){errors++;lines.push('['+model+' ERROR] NOT_RUN','');continue}if(rr.status==='rejected'){errors++;lines.push('['+model+' ERROR] '+clean(rr.reason?.message||rr.reason),'');continue}
+          const x=rr.value,st=stats[model],fw=x.forward;done++;st.fFirst.push(Math.round(fw.firstMs));st.fTotal.push(Math.round(fw.totalMs));st.fReason.push(Number(fw.usage.reasoning)||0);st.fVisible.push(Number(fw.usage.visible)||0);if(!x.forwardScriptOk)st.scriptWarn++;
+          lines.push('['+model+' FEWSHOT FORWARD]','GPT_PROMPT='+x.promptRevision,'SMART_IDS='+(x.smartIds.length?x.smartIds.join(','):'-'),'TRANSLATION='+clean(fw.text),'FIRST_MS='+Math.round(fw.firstMs),'TOTAL_MS='+Math.round(fw.totalMs),'SCRIPT_OK='+x.forwardScriptOk,'TOKENS='+fw.usage.input+'/'+fw.usage.output+'/'+fw.usage.total,'OUTPUT_DETAIL reasoning='+fw.usage.reasoning+' visible='+fw.usage.visible+' cached='+fw.usage.cached,'REQUEST_META effort='+(fw.responseMeta?.reasoningEffort||'-')+' status='+(fw.responseMeta?.status||'-')+' incomplete='+(fw.responseMeta?.incompleteReason||'-')+' instructionChars='+fw.instructionChars+' streamEvents='+fw.streamEvents);
+          if(doBack&&x.back){const bk=x.back;done++;st.bFirst.push(Math.round(bk.firstMs));st.bTotal.push(Math.round(bk.totalMs));st.bReason.push(Number(bk.usage.reasoning)||0);st.bVisible.push(Number(bk.usage.visible)||0);if(!x.backScriptOk)st.scriptWarn++;lines.push('BACK='+clean(bk.text),'BACK_FIRST_MS='+Math.round(bk.firstMs),'BACK_TOTAL_MS='+Math.round(bk.totalMs),'BACK_SCRIPT_OK='+x.backScriptOk,'BACK_TOKENS='+bk.usage.input+'/'+bk.usage.output+'/'+bk.usage.total)}
           lines.push('')
         }
       }else{errors++;lines.push('[GPT BLOCK ERROR] '+clean(br.reason?.message||br.reason),'')}
-
-      const wall=Math.round(performance.now()-caseStarted);caseWall.push(wall);lines.push('CASE_WALL_MS='+wall,'');
-      updateMetrics((i+1)+'/'+rows.length+' 완료');$('out').textContent=lines.slice(-260).join('\n');
-      if(i+1<rows.length&&!stopped)await sleep(gap)
+      const wall=Math.round(performance.now()-caseStarted);caseWall.push(wall);lines.push('CASE_WALL_MS='+wall,'');updateMetrics((i+1)+'/'+rows.length+' 완료');$('out').textContent=lines.slice(-320).join('\n');if(i+1<rows.length&&!stopped)await sleep(gap)
     }
-
-    lines.push('########## TIMING SUMMARY ms ##########',statLine('CASE_WALL_4MODEL',caseWall),statLine('GEMINI_FORWARD_FIRST',gFF),statLine('GEMINI_FORWARD_TOTAL',gFT));
-    if(doBack){lines.push(statLine('GEMINI_BACK_FIRST',gBF),statLine('GEMINI_BACK_TOTAL',gBT))}
-    for(const model of GPT_MODELS){
-      const st=stats[model];lines.push('', '### '+model+' ###',statLine('GPT_FORWARD_FIRST',st.fFirst),statLine('GPT_FORWARD_TOTAL',st.fTotal));
-      if(doBack)lines.push(statLine('GPT_BACK_FIRST',st.bFirst),statLine('GPT_BACK_TOTAL',st.bTotal));
-      lines.push(statLine('GPT_FORWARD_REASONING_TOKENS',st.fReason),statLine('GPT_FORWARD_VISIBLE_TOKENS',st.fVisible));
-      if(doBack)lines.push(statLine('GPT_BACK_REASONING_TOKENS',st.bReason),statLine('GPT_BACK_VISIBLE_TOKENS',st.bVisible));
-      lines.push('SCRIPT_WARNINGS='+st.scriptWarn)
-    }
-    lines.push('','MAX_OUTPUT_TOKENS=1024 unchanged','GEMINI_PROMPT=P168A SERVICE unchanged','GPT_PROMPT=P168A exact SERVICE prompt-config + same SMART selectors','GPT_STREAMING=true · TTFT=first response.output_text.delta · success requires response.completed','REASONING_REQUEST=low','SAMPLE_FROZEN_ONCE=true','GEMINI_TOTAL=outer call wall time','GPT_EXECUTION=sequential per case with rotating order; Gemini lane parallel','NO_AUTOMATIC_QUALITY_WINNER=true','', 'END stopped='+stopped+' completedCalls='+done+'/'+total+' errors='+errors,'ended='+now());
-    logText=lines.join('\n');$('out').textContent=logText;$('copy').disabled=false;$('save').disabled=false;setStatus('status',stopped?'중지됨 · 현재까지 로그 저장 가능':'완료 · 동일 고정표본 '+rows.length+'건 · '+done+'/'+total+' 호출 · 오류 '+errors,errors?'warn':'ok')
-  }catch(e){errors++;lines.push('FATAL='+clean(e?.stack||e));logText=lines.join('\n');$('out').textContent=logText;$('copy').disabled=false;$('save').disabled=false;setStatus('status','실행 중단 · '+clean(e?.message||e),'err')}
+    lines.push('########## TIMING / RELIABILITY SUMMARY ##########',statLine('CASE_WALL_5LANE',caseWall),statLine('GEMINI_SERVICE_FORWARD_FIRST',base.fFirst),statLine('GEMINI_SERVICE_FORWARD_TOTAL',base.fTotal));if(doBack)lines.push(statLine('GEMINI_SERVICE_BACK_FIRST',base.bFirst),statLine('GEMINI_SERVICE_BACK_TOTAL',base.bTotal));
+    lines.push('', '### GEMINI FEWSHOT '+GEMINI_MODEL+' ###',statLine('GEMINI_FEWSHOT_FORWARD_TOTAL',gf.fTotal));if(doBack)lines.push(statLine('GEMINI_FEWSHOT_BACK_TOTAL',gf.bTotal));lines.push('GEMINI_FEWSHOT_SCRIPT_WARNINGS='+gf.scriptWarn);
+    for(const model of GPT_MODELS){const st=stats[model];lines.push('', '### '+model+' FEWSHOT ###',statLine('GPT_FORWARD_FIRST',st.fFirst),statLine('GPT_FORWARD_TOTAL',st.fTotal));if(doBack)lines.push(statLine('GPT_BACK_FIRST',st.bFirst),statLine('GPT_BACK_TOTAL',st.bTotal));lines.push(statLine('GPT_FORWARD_REASONING_TOKENS',st.fReason),statLine('GPT_FORWARD_VISIBLE_TOKENS',st.fVisible));if(doBack)lines.push(statLine('GPT_BACK_REASONING_TOKENS',st.bReason),statLine('GPT_BACK_VISIBLE_TOKENS',st.bVisible));lines.push('SCRIPT_WARNINGS='+st.scriptWarn)}
+    lines.push('','QUALITY_DECISION=MANUAL_CHATGPT_ANALYSIS_REQUIRED','PASS_CRITERION=GPT must be clearly superior to Gemini in critical semantic errors; similarity is not enough','END stopped='+stopped+' completedCalls='+done+'/'+total+' errors='+errors,'ended='+now());
+    const txt=lines.join('\n'),name='gpt-gemini-integrated-r8-realdb-'+rows.length+'-'+new Date().toISOString().replace(/[:.]/g,'-')+'.txt';setArtifact(name,txt);$('out').textContent=txt;setStatus('status',stopped?'중지됨 · 현재까지 결과 저장 가능':'통합진단 완료 · '+rows.length+'건 · '+done+'/'+total+' 호출 · 오류 '+errors+'\n최종 TXT 하나만 ChatGPT에 보내주세요.',errors?'warn':'ok')
+  }catch(e){errors++;lines.push('FATAL='+clean(e?.stack||e));const txt=lines.join('\n'),name='gpt-gemini-integrated-r8-error-'+new Date().toISOString().replace(/[:.]/g,'-')+'.txt';setArtifact(name,txt);$('out').textContent=txt;setStatus('status','통합진단 중단 · '+clean(e?.message||e),'err')}
   finally{running=false;$('stop').disabled=true;updateStartEnabled();updateMetrics(stopped?'중지':'완료')}
 }
-function stopRun(){stopped=true;runGeneration++;try{activeOpenAiAbort?.abort()}catch(_){}try{dbFetchAbort?.abort()}catch(_){}try{serviceHost?.resetUnifiedDiagnosticLivePath?.('ALL','MODEL_COMPARE_STOP')}catch(_){}$('stop').disabled=true;setStatus('status','중지 요청됨…','warn')}
+async function runUnifiedWorkflow(){if(approvedMode==='bootstrap')return runBootstrap();return runCompare()}
+
+function stopRun(){stopped=true;runGeneration++;try{activeOpenAiAbort?.abort()}catch(_){}try{activeGeminiAbort?.abort()}catch(_){}try{dbFetchAbort?.abort()}catch(_){}try{serviceHost?.resetUnifiedDiagnosticLivePath?.('ALL','MODEL_COMPARE_STOP')}catch(_){}$('stop').disabled=true;setStatus('status','중지 요청됨…','warn')}
 
 $('keySave').addEventListener('click',saveKey);$('keyVerify').addEventListener('click',verifyKey);$('keyClear').addEventListener('click',clearKey);
-$('start').addEventListener('click',runCompare);$('stop').addEventListener('click',stopRun);$('copy').addEventListener('click',async()=>setStatus('status',await copyText(logText)?'로그를 복사했습니다.':'로그 복사 실패',logText?'ok':'err'));$('save').addEventListener('click',()=>saveText('p168a-same-prompt-r7-realdb-'+(Number($('count').value)||20)+'-'+new Date().toISOString().replace(/[:.]/g,'-')+'.txt',logText));
+$('start').addEventListener('click',runUnifiedWorkflow);$('stop').addEventListener('click',stopRun);$('copy').addEventListener('click',async()=>setStatus('status',await copyText(artifactText||logText)?'결과를 복사했습니다.':'결과 복사 실패',(artifactText||logText)?'ok':'err'));$('save').addEventListener('click',()=>{if(artifactText&&artifactName)saveText(artifactName,artifactText,artifactMime)});
 refreshKeyUi();preflight();
 </script>
 </body>
