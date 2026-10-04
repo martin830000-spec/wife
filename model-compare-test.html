@@ -14,7 +14,7 @@
 <div class="wrap">
 <div class="card">
 <h1>🤖 Gemini ↔ GPT 실사용 번역 비교</h1>
-<div class="sub">20261004-V361208-MODEL-COMPARE-REALDB-R2 · TEST ONLY</div>
+<div class="sub">20261004-V361208-MODEL-COMPARE-REALDB-R3 · TEST ONLY</div>
 <div class="warnbox" style="margin-top:9px"><b>실사용 SERVICE는 변경하지 않습니다.</b> 최근 번역 원문은 기존 Cloud Run/Cloudflare 관리자 조회 경로에서 읽기 전용으로 가져옵니다. Gemini는 V3.61.208/P168A 실제 SERVICE 진단 runtime을 그대로 사용하고, GPT는 이 페이지에만 저장된 OpenAI API 키로 브라우저에서 직접 호출합니다. 비교 결과와 OpenAI 키는 Firestore에 저장하지 않습니다.</div>
 </div>
 
@@ -62,7 +62,7 @@
 
 <script>
 'use strict';
-const BUILD_ID='20261004-V361208-MODEL-COMPARE-REALDB-R2';
+const BUILD_ID='20261004-V361208-MODEL-COMPARE-REALDB-R3';
 const EXPECTED_SERVICE_VERSION='V3.61.208';
 const EXPECTED_PROMPT_REVISION='P168A';
 const EXPECTED_PROMPT_SHA='7d28766e1f9938a531fed5870585cb4a3afe735e2c41cc25b511ff7f677ddd43';
@@ -218,7 +218,7 @@ async function openAiCall(instructions,input,maxTokens=1024){
   const key=currentKey(),model=currentModel();if(!key)throw new Error('OPENAI_KEY_MISSING');const c=new AbortController();activeOpenAiAbort=c;const tm=setTimeout(()=>c.abort(),90000),started=performance.now();
   try{
     const instructionText=String(instructions||''),inputText=String(input||'');
-    const r=await fetch(OPENAI_URL,{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:model,instructions:instructionText,input:inputText,max_output_tokens:maxTokens,store:false}),cache:'no-store',signal:c.signal});
+    const r=await fetch(OPENAI_URL,{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:model,instructions:instructionText,input:inputText,max_output_tokens:maxTokens,reasoning:{effort:'low'},store:false}),cache:'no-store',signal:c.signal});
     const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error('OPENAI_HTTP_'+r.status+' '+clean(d?.error?.message||''));
     const usage={input:Number(d?.usage?.input_tokens)||0,output:Number(d?.usage?.output_tokens)||0,total:Number(d?.usage?.total_tokens)||0,reasoning:Number(d?.usage?.output_tokens_details?.reasoning_tokens)||0,cached:Number(d?.usage?.input_tokens_details?.cached_tokens)||0};
     usage.visible=Math.max(0,usage.output-usage.reasoning);
@@ -244,29 +244,38 @@ async function copyText(t){try{await navigator.clipboard.writeText(t);return tru
 
 async function runCompare(){
   if(running)return;if(!preflightOk){setStatus('status','사전점검 PASS가 필요합니다.','err');return}if(!currentKey()){setStatus('status','OpenAI 키를 먼저 저장하세요.','err');return}
-  running=true;stopped=false;done=0;errors=0;k2lCount=0;l2kCount=0;logText='';const gen=++runGeneration;const n=Number($('count').value)||20,dir=$('dir').value,doBack=$('back').value==='on',gap=Number($('gap').value)||300,model=currentModel(),lines=[],gF=[],gB=[],oF=[],oB=[],oFR=[],oBR=[],oFV=[],oBV=[];total=0;updateMetrics('DB 조회');$('start').disabled=true;$('stop').disabled=false;$('copy').disabled=true;$('save').disabled=true;
+  running=true;stopped=false;done=0;errors=0;k2lCount=0;l2kCount=0;logText='';const gen=++runGeneration;const n=Number($('count').value)||20,dir=$('dir').value,doBack=$('back').value==='on',gap=Number($('gap').value)||300,model=currentModel(),lines=[],gF=[],gB=[],oF=[],oB=[],oFR=[],oBR=[],oFV=[],oBV=[],caseWall=[];total=0;updateMetrics('DB 조회');$('start').disabled=true;$('stop').disabled=false;$('copy').disabled=true;$('save').disabled=true;
   try{
     const rows=await fetchRecent(n,dir,gen);if(!rows.length)throw new Error('NO_REAL_USE_RECORDS');k2lCount=rows.filter(r=>normalizeDir(r.direction)==='K2L').length;l2kCount=rows.filter(r=>normalizeDir(r.direction)==='L2K').length;total=rows.length*2*(doBack?2:1);updateMetrics('비교 준비');
-    lines.push('MODEL_COMPARE '+BUILD_ID,'generated='+now(),'service=V3.61.208/P168A','promptSha='+EXPECTED_PROMPT_SHA,'gptModel='+model,'sampleSource=SERVER_REAL_USE_READ_ONLY app=couple requested='+n+' fetched='+rows.length+' direction='+dir,'sampleCounts K2L='+k2lCount+' L2K='+l2kCount,'samplePolicy=exclude failed/retranslate/duplicate-source; balance K2L/L2K when possible','geminiPath=EXACT_SERVICE_DIAGNOSTIC_RUNTIME','gptPath=BROWSER_DIRECT_OPENAI_RESPONSES','gptKeyStored=LOCAL_BROWSER_ONLY_NOT_LOGGED','diagnosticWritesLiveHistory=false','back='+doBack,'');
+    lines.push('MODEL_COMPARE '+BUILD_ID,'generated='+now(),'service=V3.61.208/P168A','promptSha='+EXPECTED_PROMPT_SHA,'gptModel='+model,'sampleSource=SERVER_REAL_USE_READ_ONLY app=couple requested='+n+' fetched='+rows.length+' direction='+dir,'sampleCounts K2L='+k2lCount+' L2K='+l2kCount,'samplePolicy=exclude failed/retranslate/duplicate-source; balance K2L/L2K when possible','geminiPath=EXACT_SERVICE_DIAGNOSTIC_RUNTIME','gptPath=BROWSER_DIRECT_OPENAI_RESPONSES','gptKeyStored=LOCAL_BROWSER_ONLY_NOT_LOGGED','diagnosticWritesLiveHistory=false','back='+doBack,'parallelMode=PER_CASE_2_LANE gemini=(forward->back) || gpt=(forward->back)','gptReasoningEffort=low','');
     for(let i=0;i<rows.length;i++){
-      if(stopped)break;const r=rows[i],rd=normalizeDir(r.direction),src=clean(r.sourceText),stored=clean(r.targetText),storedBack=clean(r.backText),order=i%2===0?['GEMINI','GPT']:['GPT','GEMINI'];lines.push('========== CASE '+String(i+1).padStart(3,'0')+' · '+rd+' ==========','RECORDED_AT='+(recordTs(r)?new Date(recordTs(r)).toLocaleString('ko-KR',{hour12:false}):'-'),'STORED_VERSION='+clean(r.appVersion||'-'),'SOURCE='+src,'STORED_TRANSLATION='+(stored||'-'),'STORED_BACK='+(storedBack||'-'),'RUN_ORDER='+order.join('>'));
-      for(const who of order){
-        if(stopped)break;updateMetrics((i+1)+'/'+rows.length+' '+who+' '+rd);
-        try{
-          if(who==='GEMINI'){
-            setStatus('status',(i+1)+'/'+rows.length+' · Gemini '+rd+' 실행 중…','warn');const x=await runGemini(rd,src,doBack);done++;const fm=Math.round(Number(x.forward?.displayMs??x.forward?.elapsed??0));if(fm>0)gF.push(fm);lines.push('[GEMINI FORWARD]','TRANSLATION='+clean(x.forward.text),'MS='+fm,'WINNER='+clean(x.forward?.winner||'-'),'REQUESTS='+Number(x.forward?.mainRequestCount||0),'DIRECT_FALLBACK='+(x.forward?.directToServerFallback===true));updateMetrics('Gemini F');
-            if(doBack){done++;const bm=Math.round(Number(x.back?.elapsed||0));if(bm>0)gB.push(bm);lines.push('BACK='+clean(x.back.text),'BACK_MS='+bm,'BACK_RETRIES='+(Number(x.back?.languageRetryCount||0)+Number(x.back?.technicalRetryCount||0)+Number(x.back?.relationRetryCount||0)));updateMetrics('Gemini B')}
-          }else{
-            setStatus('status',(i+1)+'/'+rows.length+' · GPT '+rd+' 실행 중…','warn');const x=await runGpt(rd,src,doBack);done++;oF.push(Math.round(x.forward.ms));oFR.push(Number(x.forward.usage.reasoning)||0);oFV.push(Number(x.forward.usage.visible)||0);lines.push('[GPT FORWARD]','MODEL='+x.forward.model,'SMART='+(x.smartIds.join('+')||'NONE'),'TRANSLATION='+clean(x.forward.text),'MS='+Math.round(x.forward.ms),'RETRY='+x.fRetry,'TOKENS='+x.forward.usage.input+'/'+x.forward.usage.output+'/'+x.forward.usage.total,'OUTPUT_DETAIL reasoning='+x.forward.usage.reasoning+' visible='+x.forward.usage.visible+' cached='+x.forward.usage.cached,'REQUEST_META effort='+(x.forward.responseMeta?.reasoningEffort||'-')+' status='+(x.forward.responseMeta?.status||'-')+' incomplete='+(x.forward.responseMeta?.incompleteReason||'-')+' instructionChars='+x.forward.instructionChars+' inputChars='+x.forward.inputChars);updateMetrics('GPT F');
-            if(doBack&&x.back){done++;oB.push(Math.round(x.back.ms));oBR.push(Number(x.back.usage.reasoning)||0);oBV.push(Number(x.back.usage.visible)||0);lines.push('BACK='+clean(x.back.text),'BACK_MS='+Math.round(x.back.ms),'BACK_RETRY='+x.bRetry,'BACK_TOKENS='+x.back.usage.input+'/'+x.back.usage.output+'/'+x.back.usage.total,'BACK_OUTPUT_DETAIL reasoning='+x.back.usage.reasoning+' visible='+x.back.usage.visible+' cached='+x.back.usage.cached,'BACK_REQUEST_META effort='+(x.back.responseMeta?.reasoningEffort||'-')+' status='+(x.back.responseMeta?.status||'-')+' incomplete='+(x.back.responseMeta?.incompleteReason||'-')+' instructionChars='+x.back.instructionChars+' inputChars='+x.back.inputChars);updateMetrics('GPT B')}
-          }
-          lines.push('')
-        }catch(e){errors++;lines.push('['+who+' ERROR] '+clean(e?.message||e),'');setStatus('status','오류 기록 후 다음 항목 계속 · '+clean(e?.message||e),'warn')}
-        await sleep(gap)
-      }
-      $('out').textContent=lines.slice(-180).join('\n')
+      if(stopped)break;
+      const r=rows[i],rd=normalizeDir(r.direction),src=clean(r.sourceText),stored=clean(r.targetText),storedBack=clean(r.backText),caseStarted=performance.now();
+      lines.push('========== CASE '+String(i+1).padStart(3,'0')+' · '+rd+' ==========','RECORDED_AT='+(recordTs(r)?new Date(recordTs(r)).toLocaleString('ko-KR',{hour12:false}):'-'),'STORED_VERSION='+clean(r.appVersion||'-'),'SOURCE='+src,'STORED_TRANSLATION='+(stored||'-'),'STORED_BACK='+(storedBack||'-'),'RUN_MODE=PARALLEL GEMINI||GPT');
+      setStatus('status',(i+1)+'/'+rows.length+' · Gemini + GPT '+rd+' 병렬 실행 중…','warn');updateMetrics((i+1)+'/'+rows.length+' 2-LANE '+rd);
+
+      const [gr,or]=await Promise.allSettled([runGemini(rd,src,doBack),runGpt(rd,src,doBack)]);
+      if(stopped)break;
+
+      if(gr.status==='fulfilled'){
+        const x=gr.value;done++;const fm=Math.round(Number(x.forward?.displayMs??x.forward?.elapsed??0));if(fm>0)gF.push(fm);
+        lines.push('[GEMINI FORWARD]','TRANSLATION='+clean(x.forward.text),'MS='+fm,'WINNER='+clean(x.forward?.winner||'-'),'REQUESTS='+Number(x.forward?.mainRequestCount||0),'DIRECT_FALLBACK='+(x.forward?.directToServerFallback===true));
+        if(doBack){done++;const bm=Math.round(Number(x.back?.elapsed||0));if(bm>0)gB.push(bm);lines.push('BACK='+clean(x.back.text),'BACK_MS='+bm,'BACK_RETRIES='+(Number(x.back?.languageRetryCount||0)+Number(x.back?.technicalRetryCount||0)+Number(x.back?.relationRetryCount||0)))}
+        lines.push('')
+      }else{errors++;lines.push('[GEMINI ERROR] '+clean(gr.reason?.message||gr.reason),'')}
+
+      if(or.status==='fulfilled'){
+        const x=or.value;done++;oF.push(Math.round(x.forward.ms));oFR.push(Number(x.forward.usage.reasoning)||0);oFV.push(Number(x.forward.usage.visible)||0);
+        lines.push('[GPT FORWARD]','MODEL='+x.forward.model,'SMART='+(x.smartIds.join('+')||'NONE'),'TRANSLATION='+clean(x.forward.text),'MS='+Math.round(x.forward.ms),'RETRY='+x.fRetry,'TOKENS='+x.forward.usage.input+'/'+x.forward.usage.output+'/'+x.forward.usage.total,'OUTPUT_DETAIL reasoning='+x.forward.usage.reasoning+' visible='+x.forward.usage.visible+' cached='+x.forward.usage.cached,'REQUEST_META effort='+(x.forward.responseMeta?.reasoningEffort||'-')+' status='+(x.forward.responseMeta?.status||'-')+' incomplete='+(x.forward.responseMeta?.incompleteReason||'-')+' instructionChars='+x.forward.instructionChars+' inputChars='+x.forward.inputChars);
+        if(doBack&&x.back){done++;oB.push(Math.round(x.back.ms));oBR.push(Number(x.back.usage.reasoning)||0);oBV.push(Number(x.back.usage.visible)||0);lines.push('BACK='+clean(x.back.text),'BACK_MS='+Math.round(x.back.ms),'BACK_RETRY='+x.bRetry,'BACK_TOKENS='+x.back.usage.input+'/'+x.back.usage.output+'/'+x.back.usage.total,'BACK_OUTPUT_DETAIL reasoning='+x.back.usage.reasoning+' visible='+x.back.usage.visible+' cached='+x.back.usage.cached,'BACK_REQUEST_META effort='+(x.back.responseMeta?.reasoningEffort||'-')+' status='+(x.back.responseMeta?.status||'-')+' incomplete='+(x.back.responseMeta?.incompleteReason||'-')+' instructionChars='+x.back.instructionChars+' inputChars='+x.back.inputChars)}
+        lines.push('')
+      }else{errors++;lines.push('[GPT ERROR] '+clean(or.reason?.message||or.reason),'')}
+
+      const wall=Math.round(performance.now()-caseStarted);caseWall.push(wall);lines.push('CASE_WALL_MS='+wall,'');
+      updateMetrics((i+1)+'/'+rows.length+' 완료');$('out').textContent=lines.slice(-180).join('\n');
+      if(i+1<rows.length&&!stopped)await sleep(gap)
     }
-    lines.push('########## TIMING SUMMARY ms ##########',statLine('GEMINI_FORWARD',gF),statLine('GPT_FORWARD',oF));if(doBack)lines.push(statLine('GEMINI_BACK',gB),statLine('GPT_BACK',oB));lines.push('','########## GPT OUTPUT TOKEN SUMMARY ##########',statLine('GPT_FORWARD_REASONING_TOKENS',oFR),statLine('GPT_FORWARD_VISIBLE_TOKENS',oFV));if(doBack)lines.push(statLine('GPT_BACK_REASONING_TOKENS',oBR),statLine('GPT_BACK_VISIBLE_TOKENS',oBV));lines.push('','MAX_OUTPUT_TOKENS=1024 unchanged','PROMPT_POLICY=P168A/SMART unchanged','REASONING_REQUEST=unchanged (not explicitly overridden)','', 'END stopped='+stopped+' completedCalls='+done+'/'+total+' errors='+errors,'ended='+now());
+    lines.push('########## TIMING SUMMARY ms ##########',statLine('CASE_WALL_PARALLEL',caseWall),statLine('GEMINI_FORWARD',gF),statLine('GPT_FORWARD',oF));if(doBack)lines.push(statLine('GEMINI_BACK',gB),statLine('GPT_BACK',oB));lines.push('','########## GPT OUTPUT TOKEN SUMMARY ##########',statLine('GPT_FORWARD_REASONING_TOKENS',oFR),statLine('GPT_FORWARD_VISIBLE_TOKENS',oFV));if(doBack)lines.push(statLine('GPT_BACK_REASONING_TOKENS',oBR),statLine('GPT_BACK_VISIBLE_TOKENS',oBV));lines.push('','MAX_OUTPUT_TOKENS=1024 unchanged','PROMPT_POLICY=P168A/SMART unchanged','REASONING_REQUEST=low','PARALLEL_MODE=PER_CASE_2_LANE; each lane keeps forward->back; cases remain sequential','', 'END stopped='+stopped+' completedCalls='+done+'/'+total+' errors='+errors,'ended='+now());
     logText=lines.join('\n');$('out').textContent=logText;$('copy').disabled=false;$('save').disabled=false;setStatus('status',stopped?'중지됨 · 현재까지 로그 저장 가능':'완료 · 실사용 '+rows.length+'건 · '+done+'/'+total+' 호출 · 오류 '+errors,errors?'warn':'ok')
   }catch(e){errors++;lines.push('FATAL='+clean(e?.stack||e));logText=lines.join('\n');$('out').textContent=logText;$('copy').disabled=false;$('save').disabled=false;setStatus('status','실행 중단 · '+clean(e?.message||e),'err')}
   finally{running=false;$('stop').disabled=true;updateStartEnabled();updateMetrics(stopped?'중지':'완료')}
