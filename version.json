@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.207",
-  "build": "20261003-V3.61.207-SERVICE-MEANING-FIDELITY-R1",
-  "buildId": "20261003-V3.61.207-SERVICE-MEANING-FIDELITY-R1",
-  "notes": "V3.61.207 SERVICE MEANING FIDELITY R1: couple prompt P161A strengthens administrative/document state/category fidelity, semantic breadth without invented cause, and back-translation actor/number/action fidelity. Deterministic output corruption may trigger at most one repair; normal translations remain one request. G158A, Chirp 3 STT, TTS, Relay/Cloudflare/Cloud Run and general translation behavior are unchanged from V3.61.202."
+  "version": "V3.61.208",
+  "build": "20261004-V3.61.208-SERVICE-P168A-R8",
+  "buildId": "20261004-V3.61.208-SERVICE-P168A-R8",
+  "notes": "V3.61.208 SERVICE P168A R8: validated P168A R8 promoted unchanged; P160-style natural readability retained, forward meaning fidelity strengthened; G158A, STT, TTS and network paths unchanged from V3.61.207."
 }
