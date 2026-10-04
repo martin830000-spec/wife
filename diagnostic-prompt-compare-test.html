@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>V3.61.208 SERVICE · 실사용 프롬프트 비교</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--line:#d9e1ec;--text:#172033;--muted:#667085;--blue:#2f56b3;--green:#137333;--red:#b42318;--amber:#a15c00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans KR","Noto Sans Lao",sans-serif}
+.wrap{width:min(100%,1040px);margin:auto;padding:12px 10px 70px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:9px 0}
+h1{font-size:19px;margin:0 0 5px}h2{font-size:15px;margin:0 0 8px}.sub,.note{font-size:11px;color:var(--muted);line-height:1.55}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef3ff;font-size:10px;font-weight:800;margin:3px 3px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+label{font-size:11px;font-weight:800;color:#475467}select,textarea,button{font:inherit}select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;background:#fff;padding:9px}
+textarea{min-height:150px;resize:vertical;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+button{border:0;border-radius:10px;min-height:42px;padding:9px 11px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}button.secondary{background:#e9edf5;color:#293751}button.danger{background:var(--red)}button:disabled{opacity:.5}
+.status{white-space:pre-wrap;border-radius:10px;padding:10px;font-size:11px;line-height:1.55;background:#eef3ff;margin-top:8px}.status.ok{background:#eaf7ee;color:var(--green)}.status.err{background:#fff0ef;color:var(--red)}.status.warn{background:#fff6e5;color:var(--amber)}
+.metric{border:1px solid var(--line);border-radius:10px;background:#fafcff;padding:8px}.metric span{display:block;color:var(--muted);font-size:9px}.metric b{display:block;font-size:15px;margin-top:2px}
+.out{white-space:pre-wrap;word-break:break-word;background:#101828;color:#f2f4f7;border-radius:12px;padding:11px;min-height:150px;max-height:720px;overflow:auto;font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+.warnbox{background:#fff7e6;border:1px solid #efd498;border-radius:10px;padding:9px;font-size:11px;line-height:1.55}
+.row{display:flex;gap:7px;flex-wrap:wrap}.row button{flex:1;min-width:140px}
+code{font-size:10px;word-break:break-all}
+@media(min-width:720px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+<h1>🧪 V3.61.208 SERVICE · 실사용 프롬프트 비교</h1>
+<div class="sub">20261004-V361208-PROMPT-COMPARE-REALDB-R1</div>
+<div>
+<span class="badge">A · P160A 기준</span><span class="badge">B · 현재 P168A SERVICE</span>
+</div>
+<div class="warnbox" style="margin-top:9px">실사용 DB 원문만 읽기 전용으로 가져와 <b>A=P160A 기준</b>과 <b>B=현재 P168A SERVICE</b>를 같은 V3.61.208 실제 husband/wife 진단 clone runtime에서 비교합니다. SMART 선택, thinking level, 정번역 정책, 의미가드/복구, 역번역/복구, direct→Relay fallback 구조는 SERVICE와 같습니다. 진단 결과는 실사용 기록에 다시 저장하지 않습니다.</div>
+</div>
+
+<div class="card">
+<h2>사전점검</h2>
+<div id="preflight" class="status">SERVICE host 연결 확인 전…</div>
+<div id="fingerprint" class="out" style="min-height:105px;max-height:260px">대기 중</div>
+</div>
+
+<div class="card" style="display:none" aria-hidden="true">
+<h2>기존 고정 예문 실험(비활성)</h2>
+<div class="grid">
+<div><label>문장 세트</label><select id="preset"><option value="all">문제 회귀 10문장</option><option value="holdout">Holdout 8문장</option><option value="allplus">회귀+Holdout 18문장</option><option value="k2l">K→L 회귀 5문장</option><option value="l2k">L→K 회귀 5문장</option><option value="custom">직접 입력</option></select></div>
+<div><label>각 프롬프트 반복</label><select id="runs"><option value="1">1회</option><option value="3" selected>3회</option><option value="5">5회</option></select></div>
+<div><label>정번역 후 역번역</label><select id="back"><option value="on" selected>실행</option><option value="off">정번역만</option></select></div>
+<div><label>호출 간 휴지</label><select id="gap"><option value="200">200 ms</option><option value="350" selected>350 ms</option><option value="700">700 ms</option></select></div>
+</div>
+<div style="margin-top:9px"><label>직접 입력 · 한 줄에 K2L|문장 또는 L2K|문장</label><textarea id="custom" disabled placeholder="K2L|기숙사 가서 좀 쉬었다가 저녁 먹으면 되겠네.&#10;L2K|ຕອນນີ້..."></textarea></div>
+<div class="row" style="margin-top:9px">
+<button id="start" disabled>▶ 실제 런타임 비교 실행</button>
+<button id="stop" class="danger" disabled>■ 중지</button>
+<button id="copy" class="secondary" disabled>📋 로그 복사</button>
+<button id="save" class="secondary" disabled>💾 로그 저장</button>
+</div>
+<div id="status" class="status">사전점검 완료 후 실행할 수 있습니다.</div>
+<div class="grid4" style="margin-top:8px">
+<div class="metric"><span>완료 호출</span><b id="mDone">0</b></div>
+<div class="metric"><span>예정 호출</span><b id="mTotal">0</b></div>
+<div class="metric"><span>오류</span><b id="mErr">0</b></div>
+<div class="metric"><span>현재 단계</span><b id="mPhase">-</b></div>
+</div>
+</div>
+
+<div class="card">
+<h2>실사용 DB 샘플 비교</h2>
+<div class="note">본앱(Couple)의 서버 저장 실제 번역을 <b>읽기 전용</b>으로 가져옵니다. 저장 당시 결과는 참고값으로 로그에 남기고, 같은 원문을 A=P160A와 B=현재 P168A SERVICE로 각각 1회 재번역·재역번역합니다. 양방향은 가능한 범위에서 K→L/L→K를 균형 표집하며 실패 기록·재번역 시도·중복 원문은 제외합니다. 자동 승패 판정은 하지 않습니다.</div>
+<div class="grid" style="margin-top:9px">
+<div><label>최근 실사용 건수</label><select id="dbCount"><option value="20" selected>20건 · 빠른 확인</option><option value="50">50건 · 기본 비교</option><option value="100">100건 · 최종 검증</option></select></div>
+<div><label>방향</label><select id="dbDir"><option value="ALL" selected>양방향 균형</option><option value="K2L">K→L</option><option value="L2K">L→K</option></select></div>
+<div><label>역번역</label><select id="dbBack"><option value="on" selected>포함</option><option value="off">정번역만</option></select></div>
+<div><label>호출 간 휴지</label><select id="dbGap"><option value="200">200 ms</option><option value="350" selected>350 ms</option><option value="700">700 ms</option></select></div>
+</div>
+<div class="row" style="margin-top:9px">
+<button id="dbStart" disabled>▶ 실사용 DB 비교 실행</button>
+<button id="dbStop" class="danger" disabled>■ 중지</button>
+<button id="dbCopy" class="secondary" disabled>📋 DB 로그 복사</button>
+<button id="dbSave" class="secondary" disabled>💾 DB 텍스트 저장</button>
+</div>
+<div id="dbStatus" class="status">사전점검 완료 후 실행할 수 있습니다. DB 조회 시 관리자 인증이 필요할 수 있습니다. 이 페이지를 직접 연 경우 인증을 위해 보이는 SERVICE 창이 자동으로 열릴 수 있습니다.</div>
+<div id="dbOut" class="out" style="margin-top:8px;min-height:110px;max-height:520px">실사용 DB 테스트를 아직 실행하지 않았습니다.</div>
+</div>
+
+<div class="card" style="display:none" aria-hidden="true">
+<h2>기존 고정/holdout 로그(비활성)</h2>
+<div class="note">비교 순서는 case/run마다 A→B→C, B→C→A, C→A→B로 회전해 호출 순서 편향을 줄입니다. 자동 winner 판정은 하지 않습니다. 고정/holdout과 실사용 DB 모두 A=P160A/B=P161A/C=P168A를 회전 실행합니다. 실사용 DB 결과는 위 DB 전용 로그 영역과 전용 복사/저장 버튼을 사용합니다. 완료 로그 끝에 정번역/역번역 평균·중앙값·P95·최대 지연을 기록하며, P168A 속도는 같은 실행의 현재 P161A 대비 parity를 1차 기준으로 판정합니다.</div>
+<div id="out" class="out" style="margin-top:8px">아직 실행하지 않았습니다.</div>
+</div>
+</div>
+
+<iframe id="serviceHost" src="./?exactRuntimePromptDiag=1" aria-hidden="true" style="position:fixed;left:-12000px;top:-12000px;width:2px;height:2px;border:0;opacity:0;pointer-events:none"></iframe>
+
+<script>
+"use strict";
+const BUILD_ID="20261004-V361208-PROMPT-COMPARE-REALDB-R1";
+const EXPECTED_SERVICE_VERSION="V3.61.208";
+const EXPECTED_SERVICE_BUILD="20261004-V3.61.208-SERVICE-P168A-R8";
+const EXPECTED_CURRENT_REVISION="P168A";
+const EXPECTED_CURRENT_SHA="7d28766e1f9938a531fed5870585cb4a3afe735e2c41cc25b511ff7f677ddd43";
+const EXPECTED_LIVE_INDEX_GIT_BLOB="ba8f3954fa3fa688e6d7368b4b79eec314539cb8";
+const P160={"schemaVersion":1,"channel":"TEST","promptRevision":"P160A","description":"P160A meaning-invariant refinement. P159A spouse-role/fidelity behavior is retained; event-state/time precision, semantic breadth/identity, quantity/unit fidelity and readable sole-evidence back-translation are strengthened without adding automatic retranslation.","forward":{"k2l":"Translate Korean to natural Lao for a Korean husband speaking to his Lao wife. PRIORITY: exact meaning > role/reference accuracy > source register > naturalness. Naturalize syntax only; never add, omit, infer, reinterpret, strengthen, soften, or complete meaning. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation/conditions, speech act/modality, purpose/intention, certainty, time/viewpoint, order, numbers/amounts, names/places, and lexical strength. Never change purpose↔hope/plan, past belief↔current guess, permission↔command, question↔statement, or guess↔fact. MEANING-INVARIANT LOCK: Preserve event state/aspect and time precision. Intention/plan, ongoing, habitual/repeated, and completed/past must not be swapped. Do not invent completion, past, future, repetition, or a more specific time; if ambiguous, stay ambiguous. Preserve expressed time granularity and event order. Do not force an explicit tense/aspect marker when natural target-language grammar can leave it implicit; preserve the state meaning, not a mechanical marker. SEMANTIC-BREADTH/IDENTITY LOCK: never narrow a broad concept, broaden a specific item, or substitute an identity-bearing food, product, person, place, brand, or transliteration with a merely similar or more familiar item. Use an established target-language name only when it denotes the same item; if identity is uncertain, preserve/transliterate it. QUANTITY/UNIT LOCK: preserve numeric value and the category of units, containers, prices/currency; equivalent numeric wording is allowed only when value is unchanged. PROVIDER/PURPOSE LOCK: 얻어먹다/얻어 마시다 means receiving food/drink another person provides/pays for; never reduce it to plain eating/drinking. If A한테/에게 is explicit, A=provider/payer and speaker=recipient. Never add 부탁/사달라고 or a request unless source explicitly has one. Keep -려고/-으려고 as purpose, not request/hope. NEGATIVE-CONFIRMATION LOCK: in positive X + “X는/은 거 아니야?”, X stays positive; negation belongs to the confirmation frame, not X. If X has 안/못/없다, preserve it. CONTRAST LOCK: in “X이지 Y라는 뜻은 아니야” or “X가 아니라 Y”, keep X and Y distinct; never insert Y or a stronger equivalent into X. ATTRIBUTE LOCK: never add source-absent attributes such as 생/신선한, raw/fresh, sweet, spicy, new/recent, or 방금/just-now. STATE-BREADTH LOCK: 컨디션/상태는 근거 없이 기분·질병·쇠약으로 좁히지 말 것. NAMED THIRD PARTY: never reinterpret an explicit named person as wife/listener; keep kinship specificity. INCOMPLETE INPUT: if source cuts off or lacks predicate/complement, do not invent one; output may remain incomplete. ROLE LOCK: husband=speaker, wife=listener; Korean first person=husband. Direct 여보/자기/자기야/내 사랑=wife/listener unless 자기 자신/스스로. If 여보/자기 is explicit subject/target/recipient/possessor, keep it; grammar overrides context. 우리 normally=husband+wife unless another group is explicit. If Korean omits actor, recipient, payer, possessor, reason, or purpose, keep it implicit; never invent it from prior context. Keep explicit people/names stable; don't replace a repeated name if reference could blur. Preserve unfamiliar names/places by sound/form; never correct to a similar familiar name. Preserve in/from/to/at relations. If wording is short, malformed, STT-like, or genuinely ambiguous, preserve the ambiguity instead of guessing. Casual/banmal -> natural intimate Lao; polite/respectful -> matching respectful Lao. Output exactly ONE Lao translation, no notes, explanations, alternatives, or labels. 숙제=school homework; 과제=assignment in study context; housework only for explicit household chores.","l2k":"Translate only the user's Lao text into clear, natural Korean for a Lao wife speaking to her Korean husband. PRIORITY: exact meaning > role/reference accuracy > source register > naturalness. Naturalize syntax only; never add, omit, infer, reinterpret, strengthen, soften, or complete meaning for fluency. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation/conditions, speech act and modality, purpose/intention, certainty/uncertainty, time/viewpoint, event order, numbers/amounts, names, places, and lexical strength. Never change purpose↔hope/plan, past belief↔current guess, permission↔command, question↔statement, or guess↔fact. MEANING-INVARIANT LOCK: Preserve event state/aspect and time precision. Intention/plan, ongoing, habitual/repeated, and completed/past must not be swapped. Do not invent completion, past, future, repetition, or a more specific time; if ambiguous, stay ambiguous. Preserve expressed time granularity and event order. Do not force an explicit tense/aspect marker when natural target-language grammar can leave it implicit; preserve the state meaning, not a mechanical marker. SEMANTIC-BREADTH/IDENTITY LOCK: never narrow a broad concept, broaden a specific item, or substitute an identity-bearing food, product, person, place, brand, or transliteration with a merely similar or more familiar item. Use an established target-language name only when it denotes the same item; if identity is uncertain, preserve/transliterate it. QUANTITY/UNIT LOCK: preserve numeric value and the category of units, containers, prices/currency; equivalent numeric wording is allowed only when value is unchanged. SEQUENCE LOCK: a ແລ້ວ declarative sequence stays declarative/then-sequential; never turn it into -면/if/when unless the source explicitly marks a condition such as ຖ້າ. PROVIDER/PAYER LOCK: in food/drink/payment context, X ລ້ຽງ Y keeps X as provider/payer and Y as recipient/beneficiary; ອາຫານ/ເຂົ້າທີ່ X ລ້ຽງ means food provided/paid for by X. Never swap provider/payer with recipient. ATTRIBUTE LOCK: never add source-absent attributes such as 생/신선한, raw/fresh, sweet, spicy, new/recent, or 방금/just-now. STATE-BREADTH LOCK: ຮູ້ສຶກ/ສະພາບ는 근거 없이 기분·질병·건강악화로 좁히지 말 것. NAMED THIRD PARTY: never reinterpret an explicit named person as husband/listener; keep explicit kinship specificity unchanged. INCOMPLETE INPUT: if the source cuts off or lacks a predicate/complement, do not invent one; output may remain incomplete. ROLE LOCK: wife=speaker, husband=listener; ຂ້ອຍ normally=wife/speaker; direct ເຈົ້າ/ທີ່ຮັກ normally=husband/listener. Explicit grammar/named people override contextual guesses. If Lao omits an actor, recipient, payer, possessor, reason, or purpose, keep it implicit in Korean when natural; do not invent it from prior context. Keep each explicit person/name stable across clauses. ຂອງ=possession; ໃຫ້+person=recipient/beneficiary; ຢ່າ=prohibition; ຢ່າຟ້າວ=do-not-rush/not-yet. Preserve unfamiliar names/transliterations by sound/form; never normalize them into a different familiar name. Preserve location relations and explicit uncertainty. If wording is short, oddly spaced, malformed, STT-like, or genuinely ambiguous, preserve the ambiguity and translate conservatively. Casual/intimate Lao -> natural warm Korean banmal; polite/respectful Lao -> conversational 존댓말. Output exactly ONE Korean translation only, with no notes, explanations, alternatives, or labels. ວຽກບ້ານ/ການບ້ານ normally=school homework/assignment unless explicit chores are described; explicit household work=집안일/가사."},"smart":{"k2lSelf":"If explicit 나/내/내가 needs an overt Lao self-reference, prefer ອ້າຍ in ordinary intimate husband→wife speech. Never add a husband/self subject when Korean leaves the actor implicit.","k2lHome":"For 잘 들어가/조심히 들어가, mean get home/go inside safely, not generic travel.","l2kElder":"If Lao explicitly names a parent/elder as third-person subject, keep natural Korean subject honorific -시- even in spouse-facing banmal.","k2lSpeechAct":"SPEECH-ACT LOCK: preserve prohibition, no-need, permission, obligation, suggestion, request, question/inference, purpose/intention, and certainty exactly. Never reinterpret one as another.","l2kSpeechAct":"SPEECH-ACT LOCK: preserve prohibition, no-need, permission, obligation, suggestion, request, question/inference, purpose/intention, and certainty exactly. Never reinterpret one as another.","k2lRelation":"REL LOCK: explicit 여보/자기 as subject/target/recipient stays wife/listener. 자기/너/당신+kin = wife's kin unless clearly third-party. 의=possession; 에게/한테=target. Keep names explicit when needed for reference.","l2kRelation":"REL LOCK: ຂອງ=possession; ໃຫ້+person=recipient/beneficiary. In X ເອົາ Y ... ໃຫ້ Z, keep Y=object and Z=recipient. Keep named/referenced people stable; do not invent spouse/kin/sex.","l2kReadability":"For long/multi-clause Lao, reorder or split only for readable Korean. Preserve actor, target, condition, negation, time order, uncertainty, and ambiguity; add nothing."},"back":{"husband":"Back-translate only the given Lao text into natural, easy-to-read Korean for verification. ROLE LOCK: HUSBAND→WIFE; husband=speaker, wife=listener. Use the given Lao as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Korean. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Korean grammar so a Korean reader can understand the result naturally, but use only the given Lao as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Korean grammar, word order, particles, and clause connections easy to understand, while preserving the Lao meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: broad Lao ຮູ້ສຶກ/ສະພາບ wording stays broad in Korean unless mood, illness, symptoms, or health are explicit; do not force 기분 or 건강/질병. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Lao contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. Plain ເຈົ້າ/ໂຕ normally=wife/listener here; bare ນ້ອງ is not automatically 동생. Keep omitted actors implicit when natural. Keep ຂອງ=possession and ໃຫ້=recipient/beneficiary. PROVIDER CHECK: if Lao shows another person provides/pays food/drink and no ຂໍ/request, do not invent 부탁/사달라고; use 얻어먹다/얻어 마시다 when natural. POLARITY/CONTRAST: preserve polarity in confirmation questions; keep X/Y distinct; never move negation into X or collapse X into Y. Preserve register naturally. Output exactly ONE natural Korean back-translation only, with no label or explanation. HOMEWORK: ວຽກບ້ານ/ການບ້ານ normally=숙제/과제 unless explicit household chores are described; explicit ວຽກເຮືອນ/ວຽກຄົວ or clear chores=집안일/가사.","wife":"Back-translate only the given Korean text into natural, easy-to-read Lao for verification. ROLE LOCK: WIFE→HUSBAND; wife=speaker, husband=listener. Use the given Korean as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Lao. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Lao grammar so the result is easy to understand, but use only the given Korean as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Lao grammar, word order, and clause connections easy to understand, while preserving the Korean meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: Korean 컨디션/상태 stays broad in Lao unless mood, illness, symptoms, or health are explicit; do not intensify it into disease, weakness, or health decline. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Korean contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. In direct wife→husband speech, 자기/자기야/여보=husband/listener unless Korean explicitly means 자기 자신/스스로. Keep omitted actors implicit when natural. Keep 의=possession and 에게/한테=recipient/target. Preserve register naturally. Output exactly ONE natural Lao back-translation only, with no label or explanation. HOMEWORK: 숙제=school homework; 과제=assignment in study context. Do not turn either into household-work wording unless Korean explicitly says 집안일/가사 or a household chore.","husbandRecovery":"Back-translate only the given Lao text into natural, easy-to-read Korean for verification. ROLE LOCK: HUSBAND→WIFE; husband=speaker, wife=listener. Use the given Lao as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Korean. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Korean grammar so a Korean reader can understand the result naturally, but use only the given Lao as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Korean grammar, word order, particles, and clause connections easy to understand, while preserving the Lao meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: broad Lao ຮູ້ສຶກ/ສະພາບ wording stays broad in Korean unless mood, illness, symptoms, or health are explicit; do not force 기분 or 건강/질병. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Lao contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. Plain ເຈົ້າ/ໂຕ normally=wife/listener here; bare ນ້ອງ is not automatically 동생. Keep omitted actors implicit when natural. Keep ຂອງ=possession and ໃຫ້=recipient/beneficiary. PROVIDER CHECK: if Lao shows another person provides/pays food/drink and no ຂໍ/request, do not invent 부탁/사달라고; use 얻어먹다/얻어 마시다 when natural. POLARITY/CONTRAST: preserve polarity in confirmation questions; keep X/Y distinct; never move negation into X or collapse X into Y. Preserve register naturally. Output exactly ONE natural Korean back-translation only, with no label or explanation. HOMEWORK: ວຽກບ້ານ/ການບ້ານ normally=숙제/과제 unless explicit household chores are described; explicit ວຽກເຮືອນ/ວຽກຄົວ or clear chores=집안일/가사.","wifeRecovery":"Back-translate only the given Korean text into natural, easy-to-read Lao for verification. ROLE LOCK: WIFE→HUSBAND; wife=speaker, husband=listener. Use the given Korean as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Lao. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Lao grammar so the result is easy to understand, but use only the given Korean as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Lao grammar, word order, and clause connections easy to understand, while preserving the Korean meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: Korean 컨디션/상태 stays broad in Lao unless mood, illness, symptoms, or health are explicit; do not intensify it into disease, weakness, or health decline. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Korean contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. In direct wife→husband speech, 자기/자기야/여보=husband/listener unless Korean explicitly means 자기 자신/스스로. Keep omitted actors implicit when natural. Keep 의=possession and 에게/한테=recipient/target. Preserve register naturally. Output exactly ONE natural Lao back-translation only, with no label or explanation. HOMEWORK: 숙제=school homework; 과제=assignment in study context. Do not turn either into household-work wording unless Korean explicitly says 집안일/가사 or a household chore."},"promptSha256":"422e1d8fa4b51c790d385a2d314da1e99de31681198a0e69183d57a9be2fe639"};
+const P168={"schemaVersion":1,"channel":"TEST","promptRevision":"P168A","description":"P168A P160-baseline naturalness-preserving targeted semantic lock. SMART and all back-translation prompts remain byte-identical to P160A; only four explicit forward meaning-reversal safeguards are strengthened.","forward":{"k2l":"Translate Korean to natural Lao for a Korean husband speaking to his Lao wife. PRIORITY: exact meaning > role/reference accuracy > source register > naturalness. Naturalize syntax only; never add, omit, infer, reinterpret, strengthen, soften, or complete meaning. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation/conditions, speech act/modality, purpose/intention, certainty, time/viewpoint, order, numbers/amounts, names/places, and lexical strength. Never change purpose↔hope/plan, past belief↔current guess, permission↔command, question↔statement, or guess↔fact. MEANING-INVARIANT LOCK: Preserve event state/aspect and time precision. Intention/plan, ongoing, habitual/repeated, and completed/past must not be swapped. Do not invent completion, past, future, repetition, or a more specific time; if ambiguous, stay ambiguous. Preserve expressed time granularity and event order. Do not force an explicit tense/aspect marker when natural target-language grammar can leave it implicit; preserve the state meaning, not a mechanical marker. SEMANTIC-BREADTH/IDENTITY LOCK: never narrow a broad concept, broaden a specific item, or substitute an identity-bearing food, product, person, place, brand, or transliteration with a merely similar or more familiar item. Use an established target-language name only when it denotes the same item; if identity is uncertain, preserve/transliterate it. QUANTITY/UNIT LOCK: preserve numeric value and the category of units, containers, prices/currency; equivalent numeric wording is allowed only when value is unchanged. PROVIDER/PURPOSE LOCK: 얻어먹다/얻어 마시다 means receiving food/drink another person provides/pays for; never reduce it to plain eating/drinking. If A한테/에게 is explicit, A=provider/payer and speaker=recipient. Never add 부탁/사달라고 or a request unless source explicitly has one. Keep -려고/-으려고 as purpose, not request/hope. NEGATIVE-CONFIRMATION LOCK: in positive X + “X는/은 거 아니야?”, X stays positive; negation belongs to the confirmation frame, not X. If X has 안/못/없다, preserve it. CONTRAST LOCK: in “X이지 Y라는 뜻은 아니야” or “X가 아니라 Y”, keep X and Y distinct; never insert Y or a stronger equivalent into X. ATTRIBUTE LOCK: never add source-absent attributes such as 생/신선한, raw/fresh, sweet, spicy, new/recent, or 방금/just-now. STATE-BREADTH LOCK: 컨디션/상태는 근거 없이 기분·질병·쇠약으로 좁히지 말 것. NAMED THIRD PARTY: never reinterpret an explicit named person as wife/listener; keep kinship specificity. INCOMPLETE INPUT: if source cuts off or lacks predicate/complement, do not invent one; output may remain incomplete. ROLE LOCK: husband=speaker, wife=listener; Korean first person=husband. Direct 여보/자기/자기야/내 사랑=wife/listener unless 자기 자신/스스로. If 여보/자기 is explicit subject/target/recipient/possessor, keep it; grammar overrides context. 우리 normally=husband+wife unless another group is explicit. If Korean omits actor, recipient, payer, possessor, reason, or purpose, keep it implicit; never invent it from prior context. Keep explicit people/names stable; don't replace a repeated name if reference could blur. Preserve unfamiliar names/places by sound/form; never correct to a similar familiar name. Preserve in/from/to/at relations. If wording is short, malformed, STT-like, or genuinely ambiguous, preserve the ambiguity instead of guessing. Casual/banmal -> natural intimate Lao; polite/respectful -> matching respectful Lao. Output exactly ONE Lao translation, no notes, explanations, alternatives, or labels. 숙제=school homework; 과제=assignment in study context; housework only for explicit household chores. MATERIAL-GUARD: Natural paraphrase is fine if practical meaning stays the same. Korean 바쁘다 without an explicit 회사/일/업무/근무/작업 cause means only busy; never add work/job cause or ວຽກ. 행사/졸업식 치르다/참석하다 is participation, not preparation/organization/hosting; use ຈັດງານ only if 준비/주최/진행/운영 is explicit. Never add hearsay or totality. Preserve explicit visa/legal/document category and process stage.","l2k":"Translate only the user's Lao text into clear, natural Korean for a Lao wife speaking to her Korean husband. PRIORITY: exact meaning > role/reference accuracy > source register > naturalness. Naturalize syntax only; never add, omit, infer, reinterpret, strengthen, soften, or complete meaning for fluency. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation/conditions, speech act and modality, purpose/intention, certainty/uncertainty, time/viewpoint, event order, numbers/amounts, names, places, and lexical strength. Never change purpose↔hope/plan, past belief↔current guess, permission↔command, question↔statement, or guess↔fact. MEANING-INVARIANT LOCK: Preserve event state/aspect and time precision. Intention/plan, ongoing, habitual/repeated, and completed/past must not be swapped. Do not invent completion, past, future, repetition, or a more specific time; if ambiguous, stay ambiguous. Preserve expressed time granularity and event order. Do not force an explicit tense/aspect marker when natural target-language grammar can leave it implicit; preserve the state meaning, not a mechanical marker. SEMANTIC-BREADTH/IDENTITY LOCK: never narrow a broad concept, broaden a specific item, or substitute an identity-bearing food, product, person, place, brand, or transliteration with a merely similar or more familiar item. Use an established target-language name only when it denotes the same item; if identity is uncertain, preserve/transliterate it. QUANTITY/UNIT LOCK: preserve numeric value and the category of units, containers, prices/currency; equivalent numeric wording is allowed only when value is unchanged. SEQUENCE LOCK: a ແລ້ວ declarative sequence stays declarative/then-sequential; never turn it into -면/if/when unless the source explicitly marks a condition such as ຖ້າ. PROVIDER/PAYER LOCK: in food/drink/payment context, X ລ້ຽງ Y keeps X as provider/payer and Y as recipient/beneficiary; ອາຫານ/ເຂົ້າທີ່ X ລ້ຽງ means food provided/paid for by X. Never swap provider/payer with recipient. ATTRIBUTE LOCK: never add source-absent attributes such as 생/신선한, raw/fresh, sweet, spicy, new/recent, or 방금/just-now. STATE-BREADTH LOCK: ຮູ້ສຶກ/ສະພາບ는 근거 없이 기분·질병·건강악화로 좁히지 말 것. NAMED THIRD PARTY: never reinterpret an explicit named person as husband/listener; keep explicit kinship specificity unchanged. INCOMPLETE INPUT: if the source cuts off or lacks a predicate/complement, do not invent one; output may remain incomplete. ROLE LOCK: wife=speaker, husband=listener; ຂ້ອຍ normally=wife/speaker; direct ເຈົ້າ/ທີ່ຮັກ normally=husband/listener. Explicit grammar/named people override contextual guesses. If Lao omits an actor, recipient, payer, possessor, reason, or purpose, keep it implicit in Korean when natural; do not invent it from prior context. Keep each explicit person/name stable across clauses. ຂອງ=possession; ໃຫ້+person=recipient/beneficiary; ຢ່າ=prohibition; ຢ່າຟ້າວ=do-not-rush/not-yet. Preserve unfamiliar names/transliterations by sound/form; never normalize them into a different familiar name. Preserve location relations and explicit uncertainty. If wording is short, oddly spaced, malformed, STT-like, or genuinely ambiguous, preserve the ambiguity and translate conservatively. Casual/intimate Lao -> natural warm Korean banmal; polite/respectful Lao -> conversational 존댓말. Output exactly ONE Korean translation only, with no notes, explanations, alternatives, or labels. ວຽກບ້ານ/ການບ້ານ normally=school homework/assignment unless explicit chores are described; explicit household work=집안일/가사. MATERIAL-GUARD: Natural Korean paraphrase is fine if practical meaning stays the same. ແລ້ວ alone never licenses 다/모두/전부; require explicit ໝົດ/ທັງໝົດ or equivalent. Direct ໃຫ້...ບໍ/ຫວາ? is a direct permission question (-해도 돼?/허용해?); never output -대?/-래?/-다고 했어 unless ບອກ/ເວົ້າ/ວ່າ or equivalent explicitly reports speech. Never add unstated cause or participant role. Preserve explicit visa/legal/document category and process stage."},"smart":{"k2lSelf":"If explicit 나/내/내가 needs an overt Lao self-reference, prefer ອ້າຍ in ordinary intimate husband→wife speech. Never add a husband/self subject when Korean leaves the actor implicit.","k2lHome":"For 잘 들어가/조심히 들어가, mean get home/go inside safely, not generic travel.","l2kElder":"If Lao explicitly names a parent/elder as third-person subject, keep natural Korean subject honorific -시- even in spouse-facing banmal.","k2lSpeechAct":"SPEECH-ACT LOCK: preserve prohibition, no-need, permission, obligation, suggestion, request, question/inference, purpose/intention, and certainty exactly. Never reinterpret one as another.","l2kSpeechAct":"SPEECH-ACT LOCK: preserve prohibition, no-need, permission, obligation, suggestion, request, question/inference, purpose/intention, and certainty exactly. Never reinterpret one as another.","k2lRelation":"REL LOCK: explicit 여보/자기 as subject/target/recipient stays wife/listener. 자기/너/당신+kin = wife's kin unless clearly third-party. 의=possession; 에게/한테=target. Keep names explicit when needed for reference.","l2kRelation":"REL LOCK: ຂອງ=possession; ໃຫ້+person=recipient/beneficiary. In X ເອົາ Y ... ໃຫ້ Z, keep Y=object and Z=recipient. Keep named/referenced people stable; do not invent spouse/kin/sex.","l2kReadability":"For long/multi-clause Lao, reorder or split only for readable Korean. Preserve actor, target, condition, negation, time order, uncertainty, and ambiguity; add nothing."},"back":{"husband":"Back-translate only the given Lao text into natural, easy-to-read Korean for verification. ROLE LOCK: HUSBAND→WIFE; husband=speaker, wife=listener. Use the given Lao as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Korean. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Korean grammar so a Korean reader can understand the result naturally, but use only the given Lao as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Korean grammar, word order, particles, and clause connections easy to understand, while preserving the Lao meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: broad Lao ຮູ້ສຶກ/ສະພາບ wording stays broad in Korean unless mood, illness, symptoms, or health are explicit; do not force 기분 or 건강/질병. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Lao contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. Plain ເຈົ້າ/ໂຕ normally=wife/listener here; bare ນ້ອງ is not automatically 동생. Keep omitted actors implicit when natural. Keep ຂອງ=possession and ໃຫ້=recipient/beneficiary. PROVIDER CHECK: if Lao shows another person provides/pays food/drink and no ຂໍ/request, do not invent 부탁/사달라고; use 얻어먹다/얻어 마시다 when natural. POLARITY/CONTRAST: preserve polarity in confirmation questions; keep X/Y distinct; never move negation into X or collapse X into Y. Preserve register naturally. Output exactly ONE natural Korean back-translation only, with no label or explanation. HOMEWORK: ວຽກບ້ານ/ການບ້ານ normally=숙제/과제 unless explicit household chores are described; explicit ວຽກເຮືອນ/ວຽກຄົວ or clear chores=집안일/가사.","wife":"Back-translate only the given Korean text into natural, easy-to-read Lao for verification. ROLE LOCK: WIFE→HUSBAND; wife=speaker, husband=listener. Use the given Korean as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Lao. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Lao grammar so the result is easy to understand, but use only the given Korean as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Lao grammar, word order, and clause connections easy to understand, while preserving the Korean meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: Korean 컨디션/상태 stays broad in Lao unless mood, illness, symptoms, or health are explicit; do not intensify it into disease, weakness, or health decline. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Korean contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. In direct wife→husband speech, 자기/자기야/여보=husband/listener unless Korean explicitly means 자기 자신/스스로. Keep omitted actors implicit when natural. Keep 의=possession and 에게/한테=recipient/target. Preserve register naturally. Output exactly ONE natural Lao back-translation only, with no label or explanation. HOMEWORK: 숙제=school homework; 과제=assignment in study context. Do not turn either into household-work wording unless Korean explicitly says 집안일/가사 or a household chore.","husbandRecovery":"Back-translate only the given Lao text into natural, easy-to-read Korean for verification. ROLE LOCK: HUSBAND→WIFE; husband=speaker, wife=listener. Use the given Lao as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Korean. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Korean grammar so a Korean reader can understand the result naturally, but use only the given Lao as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Korean grammar, word order, particles, and clause connections easy to understand, while preserving the Lao meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: broad Lao ຮູ້ສຶກ/ສະພາບ wording stays broad in Korean unless mood, illness, symptoms, or health are explicit; do not force 기분 or 건강/질병. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Lao contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. Plain ເຈົ້າ/ໂຕ normally=wife/listener here; bare ນ້ອງ is not automatically 동생. Keep omitted actors implicit when natural. Keep ຂອງ=possession and ໃຫ້=recipient/beneficiary. PROVIDER CHECK: if Lao shows another person provides/pays food/drink and no ຂໍ/request, do not invent 부탁/사달라고; use 얻어먹다/얻어 마시다 when natural. POLARITY/CONTRAST: preserve polarity in confirmation questions; keep X/Y distinct; never move negation into X or collapse X into Y. Preserve register naturally. Output exactly ONE natural Korean back-translation only, with no label or explanation. HOMEWORK: ວຽກບ້ານ/ການບ້ານ normally=숙제/과제 unless explicit household chores are described; explicit ວຽກເຮືອນ/ວຽກຄົວ or clear chores=집안일/가사.","wifeRecovery":"Back-translate only the given Korean text into natural, easy-to-read Lao for verification. ROLE LOCK: WIFE→HUSBAND; wife=speaker, husband=listener. Use the given Korean as the sole evidence for meaning; never reconstruct, guess, repair, or imitate a presumed original Lao. VERIFICATION READABILITY: this is not word-for-word. Reorder or split clauses when needed for ordinary Lao grammar so the result is easy to understand, but use only the given Korean as evidence and never restore information missing from it. Preserve event state/aspect and time precision; do not turn intention/ongoing/habitual/completed into one another or invent past/future/completion. Preserve semantic breadth, identity-bearing terms, numeric value, and unit/container/currency category. Naturalize syntax, not semantics: make Lao grammar, word order, and clause connections easy to understand, while preserving the Korean meaning exactly. Preserve speaker/listener/third-party roles, who does what to whom, possession vs recipient, negation, conditions, permission/prohibition, request/suggestion/command/question force, purpose/intention, certainty/uncertainty, time/viewpoint, numbers, amounts, names, places, and lexical/emotional strength. Do not add, omit, infer, normalize, soften, intensify, or resolve ambiguity. STATE-BREADTH: Korean 컨디션/상태 stays broad in Lao unless mood, illness, symptoms, or health are explicit; do not intensify it into disease, weakness, or health decline. Do not restore a lost explicit name, actor, recipient, or relationship just because the intended original seems obvious. If the Korean contains malformed, duplicated, suspicious, or stronger wording, do not silently repair or reinterpret it as the obvious intended word; preserve the anomaly closely enough that the user can notice it, without adding explanations. In direct wife→husband speech, 자기/자기야/여보=husband/listener unless Korean explicitly means 자기 자신/스스로. Keep omitted actors implicit when natural. Keep 의=possession and 에게/한테=recipient/target. Preserve register naturally. Output exactly ONE natural Lao back-translation only, with no label or explanation. HOMEWORK: 숙제=school homework; 과제=assignment in study context. Do not turn either into household-work wording unless Korean explicitly says 집안일/가사 or a household chore."},"promptSha256":"7d28766e1f9938a531fed5870585cb4a3afe735e2c41cc25b511ff7f677ddd43"};
+const CASES=[{"id":"K1_MODAL","dir":"K2L","text":"아 오늘저녁은 기숙사 언니들이랑 먹나보구나. 알겠어 그럼 기숙사가서 좀 쉬었다가 저녁먹으면 되겠네 😁","focus":"상황판단/예상 ‘되겠네’가 허용 ‘먹어도 돼’로 바뀌는지"},{"id":"K2_EVENT_ROLE","dir":"K2L","text":"고생했어 여보. 졸업식 치르느라 피곤했지? 좀 쉬었다가 부모님과같이 저녁식사하러 가면 되겠다. 나도 오늘 친구부부와 저녁식사 하기로했어.","focus":"졸업식 참여→준비/주최 역할 추가, 친구 부부→부부모임 범위 확대 여부"},{"id":"K3_PHOTO","dir":"K2L","text":"하하하 그래도 아버님 사진은 건졌네 ㅋㅋㅋㅋ 여보 저녁밥 맛있게 먹어~~~","focus":"‘사진은 건졌네’가 닮음/모습으로 재해석되는지"},{"id":"K4_MENU","dir":"K2L","text":"오늘저녁 메뉴는 뭐야? 아까 번역된걸로는 샤브샤브 먹는다고 이해했는데 신닷 먹으러 가는거야? 😂","focus":"음식명/질문/추측 범위 보존"},{"id":"K5_BUSY","dir":"K2L","text":"이야~ 오늘 여보 엄청바쁘네 ㅋㅋㅋㅋㅋ 근데 정말 멋있어 😁 장인어른이랑 장모님도 오늘 되게 즐거우셨겠지? 나도 거기 같이 있었으면 얼마나 좋았을까 계속 아쉽네 🥹","focus":"‘바쁘다’에 원문 없는 일/직업 원인 추가 여부"},{"id":"L1_KHAOPIAK","dir":"L2K","text":"ຕອນນີ້ມາກິນເຂົ້າປຽກຢູ່ຫາກໍຖ່າຍຮູບແລ້ວ","focus":"원문 없는 식당 장소/완료 범위 추가 여부"},{"id":"L2_MONEY","dir":"L2K","text":"ທີ່ຮັກຈື່ງຫາເງີນໄດ້ຫຼາຍໆເດເພາະຢ້ານຂ້ອຍຈ່າຍຫຼາຍ ຮາຮາ ທີ່ຈິງບໍ່ໄດ້ໃຊ້ເກັ່ງດອກຖ້າບໍ່ຈຳເປັນທີ່ຮັກກໍຮູ້ຂ້ອຍເປັນຄົນມັກເສຍດາຍປານໃດ🤣","focus":"인과/당위/설명 화행 안정성"},{"id":"L3_DOCS","dir":"L2K","text":"ອ້າຍລັ່ງເພີ່ນເອົາເອກະສານໄປໃຫ້ອ້າຍໜຸ່ມແລ້ວຂື້ນກັບອ້າຍໜຸ່ມແລ້ວລະວ່າຈະເຮັດໃຫ້ລະອຽດແລະໄວສ່ຳໃດເພາະເຈົ້າສາວກໍຫຼາຍຄົນແດ່ແຕ່ຖ້າເອກະສານລະອຽດຂ້ອຍຄິດວ່າບໍ່ເກີນເດືອນໜ້າກໍຈະໄດ້ໄປແນ່ນອນ","focus":"사람/역할/조건/시간 관계 보존"},{"id":"L4_PATUXAI","dir":"L2K","text":"ແມ່ນແລ້ວມາປະຕູໄຊຂື້ນໄປຊົມວິວແລ້ວລົງມາຊື້ນ້ຳຫມາກພ້າວກັບກະແລ້ມໃຫ້ພໍ່ແມ່ຈັກໜ່ອຍກໍຈະກັບຫໍພັກໄປອາບນ້ຳລະຈະໄປຫາກິນເຂົ້າແລງແຊບໆ","focus":"행동 순서/부모님 수혜자/이동 방향 보존"},{"id":"L5_HOTEL","dir":"L2K","text":"ທີ່ ໂຮງ ແຮມ ເພິ່ນ ໃຫ້ ສັ່ງ ອາຫານ ຢູ່ ນອກ ມາ ກິນ ຢູ່ ຫວາ?","focus":"허용 질문을 진술/전언으로 강화하지 않는지"}];
+
+const HOLDOUT_CASES=[{"id":"H1_BUSY_NO_CAUSE","dir":"K2L","text":"오늘 여보 진짜 바쁘네. 그래도 끝까지 잘 마무리했으면 좋겠다.","focus":"원인 없는 바쁨에 일/업무 원인을 추가하지 않는지"},{"id":"H2_BUSY_WORK_EXPLICIT","dir":"K2L","text":"오늘 회사 일 때문에 여보 정말 바빴겠네. 고생했어.","focus":"명시된 회사/일 원인과 고생했어의 수고 인정 화행을 보존하는지"},{"id":"H3_ORDER_PERMISSION","dir":"L2K","text":"ໂຮງແຮມໃຫ້ສັ່ງອາຫານຈາກຂ້າງນອກມາກິນໄດ້ບໍ?","focus":"외부 음식 주문 허용 질문을 자연스러운 직접 허용 질문으로 유지하고 배달/전언을 추가하지 않는지"},{"id":"H4_DELIVERY_EXPLICIT","dir":"L2K","text":"ໂຮງແຮມໃຫ້ສັ່ງອາຫານຈາກຂ້າງນອກໃຫ້ມາສົ່ງຢູ່ຫ້ອງໄດ້ບໍ?","focus":"원문에 명시된 배달/방 배송은 보존하되 전언형을 추가하지 않는지"},{"id":"H5_TOTALITY_ABSENT","dir":"L2K","text":"ຫາກໍຖ່າຍຮູບແລ້ວ","focus":"완료 표지만으로 다/전부 범위를 추가하지 않는지"},{"id":"H6_TOTALITY_EXPLICIT","dir":"L2K","text":"ຖ່າຍຮູບໝົດແລ້ວ","focus":"원문에 명시된 전부/완료 범위는 보존하는지"},{"id":"H7_REPORT_EXPLICIT","dir":"L2K","text":"ພະນັກງານໂຮງແຮມບອກວ່າສັ່ງອາຫານຈາກຂ້າງນອກມາກິນໄດ້","focus":"명시된 전언은 전언으로 보존하고 직접 허용질문으로 약화하지 않는지"},{"id":"H8_EVENT_ORGANIZE_EXPLICIT","dir":"K2L","text":"오늘 졸업식 준비하고 진행하느라 여보 정말 바빴겠네. 고생했어.","focus":"명시된 행사 준비/진행 역할과 바쁨의 원인은 그대로 보존하는지"}];
+
+const VARIANTS=[{id:"A",name:"P160A"},{id:"B",name:"CURRENT"},{id:"C",name:"P168A"}];
+
+let serviceHost=null,currentCfg=null,preflightInfo=null,stopped=false,running=false,fixedLog="",dbLog="";
+let done=0,total=0,errors=0,activeFrames=new Map();
+
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const clean=v=>String(v==null?"":v).trim();
+const now=()=>new Date().toLocaleString("ko-KR",{hour12:false});
+function setStatus(t,k=""){const e=$("status");e.textContent=t;e.className="status"+(k?" "+k:"")}
+function setPreflight(t,k=""){const e=$("preflight");e.textContent=t;e.className="status"+(k?" "+k:"")}
+function metrics(p="-"){$("mDone").textContent=done;$("mTotal").textContent=total;$("mErr").textContent=errors;$("mPhase").textContent=p}
+function canonical(cfg){return JSON.stringify({schemaVersion:cfg.schemaVersion,channel:cfg.channel,promptRevision:cfg.promptRevision,forward:cfg.forward,smart:cfg.smart,back:cfg.back})}
+async function sha256Text(s){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(String(s)));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+function safeInlineJson(obj){return JSON.stringify(obj).replace(/</g,"\\u003c").replace(/>/g,"\\u003e").replace(/&/g,"\\u0026").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029")}
+function promptFor(v){return v==="A"?P160:v==="B"?currentCfg:P168}
+function modeFor(dir){return dir==="L2K"?"wife":"husband"}
+function forwardFnName(dir){return dir==="L2K"?"__runLivePathDiagnosticL2K":"__runLivePathDiagnosticK2L"}
+function forwardReadyName(dir){return dir==="L2K"?"__livePathDiagnosticReadyL2K":"__livePathDiagnosticReadyK2L"}
+function forwardStopName(dir){return dir==="L2K"?"__stopLivePathDiagnosticL2K":"__stopLivePathDiagnosticK2L"}
+function backFnName(dir){return dir==="L2K"?"__runLiveBackDiagnosticL2K":"__runLiveBackDiagnosticK2L"}
+function backReadyName(dir){return dir==="L2K"?"__liveBackDiagnosticReadyL2K":"__liveBackDiagnosticReadyK2L"}
+function backStopName(dir){return dir==="L2K"?"__stopLiveBackDiagnosticL2K":"__stopLiveBackDiagnosticK2L"}
+function frameKey(dir,v){return dir+":"+v}
+function variantOrder(seed){const a=["A","B","C"],n=((seed%3)+3)%3;return a.slice(n).concat(a.slice(0,n))}
+function parseCustom(){return $("custom").value.split(/\n+/).map((x,i)=>{const m=x.match(/^\s*(K2L|L2K)\s*\|\s*(.+)$/i);return m?{id:"CUSTOM_"+(i+1),dir:m[1].toUpperCase(),text:m[2].trim(),focus:"사용자 직접 입력"}:null}).filter(Boolean)}
+function selectedCases(){const p=$("preset").value;if(p==="custom")return parseCustom();if(p==="holdout")return HOLDOUT_CASES.slice();if(p==="allplus")return CASES.concat(HOLDOUT_CASES);if(p==="k2l")return CASES.filter(x=>x.dir==="K2L");if(p==="l2k")return CASES.filter(x=>x.dir==="L2K");return CASES.slice()}
+function filename(){return "prompt-runtime-abc-p168-"+new Date().toISOString().replace(/[:.]/g,"-")+".txt"}
+function dbFilename(){return "real-db-p168-"+(Number($("dbCount").value)||20)+"-"+new Date().toISOString().replace(/[:.]/g,"-")+".txt"}
+
+function patchPromptConfigInCloneDocument(srcdoc,cfg){
+  const start="window.__COUPLE_PROMPT_CONFIG__=", end=";window.__DIAG_DEFAULT_APP__=";
+  const a=srcdoc.indexOf(start); if(a<0)throw new Error("CLONE_PROMPT_MARKER_START_MISSING");
+  const b=srcdoc.indexOf(end,a+start.length); if(b<0)throw new Error("CLONE_PROMPT_MARKER_END_MISSING");
+  const before=srcdoc.slice(0,a+start.length),after=srcdoc.slice(b);
+  const patched=before+safeInlineJson(cfg)+after;
+  if(patched.slice(0,a)!==srcdoc.slice(0,a))throw new Error("CLONE_PATCH_PREFIX_CHANGED");
+  return patched;
+}
+
+async function waitHost(timeoutMs=16000){
+  const f=$("serviceHost"),started=performance.now();
+  while(performance.now()-started<timeoutMs){
+    try{
+      const w=f.contentWindow;
+      if(w&&typeof w.getUnifiedAppVersion==="function"&&typeof w.getUnifiedBuildFingerprint==="function"&&typeof w.getUnifiedDiagnosticCloneDocument==="function"&&typeof w.getUnifiedPromptConfigStatus==="function"){
+        const ps=w.getUnifiedPromptConfigStatus();
+        if(ps?.ready)return w;
+      }
+    }catch(_e){}
+    await sleep(100)
+  }
+  throw new Error("SERVICE_HOST_BRIDGE_NOT_READY")
+}
+
+async function fetchVersionInfo(){
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),6000);
+  try{
+    const r=await fetch("./version.json?exact_runtime_diag="+Date.now(),{cache:"no-store",headers:{"Accept":"application/json","Cache-Control":"no-cache","Pragma":"no-cache"},signal:ctrl.signal});
+    if(!r.ok)throw new Error("VERSION_JSON_HTTP_"+r.status);
+    return await r.json()
+  }finally{clearTimeout(timer)}
+}
+async function fetchCurrentPrompt(){
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),6000);
+  try{
+    const r=await fetch("./prompt-config.json?exact_runtime_diag="+Date.now(),{cache:"no-store",headers:{"Accept":"application/json","Cache-Control":"no-cache","Pragma":"no-cache"},signal:ctrl.signal});
+    if(!r.ok)throw new Error("PROMPT_CONFIG_HTTP_"+r.status);
+    const c=await r.json(),sha=await sha256Text(canonical(c));
+    if(sha!==clean(c.promptSha256))throw new Error("PROMPT_CONFIG_SHA_MISMATCH");
+    return c
+  }finally{clearTimeout(timer)}
+}
+
+async function preflight(){
+  $("start").disabled=true;$("dbStart").disabled=true;setPreflight("SERVICE V3.61.208 host/runtime 확인 중…");
+  try{
+    const [host,cfg,vinfo,p160sha,p168sha]=await Promise.all([waitHost(),fetchCurrentPrompt(),fetchVersionInfo(),sha256Text(canonical(P160)),sha256Text(canonical(P168))]);
+    serviceHost=host;currentCfg=cfg;
+    const version=String(host.getUnifiedAppVersion?.()||""),fp=host.getUnifiedBuildFingerprint?.()||{},ps=host.getUnifiedPromptConfigStatus?.()||{};
+    const liveBuild=String(vinfo?.buildId||vinfo?.build||"");
+    const checks=[
+      ["serviceVersion",version===EXPECTED_SERVICE_VERSION,version],
+      ["versionJsonVersion",String(vinfo?.version||"")===EXPECTED_SERVICE_VERSION,String(vinfo?.version||"")],
+      ["serviceBuild",liveBuild===EXPECTED_SERVICE_BUILD,liveBuild],
+      ["currentRevision",cfg.promptRevision===EXPECTED_CURRENT_REVISION,cfg.promptRevision],
+      ["currentCanonicalSHA",cfg.promptSha256===EXPECTED_CURRENT_SHA,cfg.promptSha256],
+      ["hostPromptRevision",String(fp.promptRevision||ps.promptRevision||"")===EXPECTED_CURRENT_REVISION,String(fp.promptRevision||ps.promptRevision||"")],
+      ["hostPromptSHA",String(fp.promptSha256||ps.promptSha256||"")===EXPECTED_CURRENT_SHA,String(fp.promptSha256||ps.promptSha256||"")],
+      ["P160CanonicalSHA",p160sha===P160.promptSha256,p160sha],
+      ["P168CanonicalSHA",p168sha===P168.promptSha256,p168sha],
+      ["cloneDocumentBridge",typeof host.getUnifiedDiagnosticCloneDocument==="function","ready"],
+      ["adminDbBridge",true,"visible-service/opener bounded-auth"]
+    ];
+    const ok=checks.every(x=>x[1]);
+    preflightInfo={version,liveBuild,vinfo,fp,ps,p160sha,p168sha,checks};
+    $("fingerprint").textContent=[
+      "EXPECTED_SERVICE="+EXPECTED_SERVICE_VERSION,
+      "EXPECTED_BUILD="+EXPECTED_SERVICE_BUILD,
+      "LIVE_INDEX_GIT_BLOB="+EXPECTED_LIVE_INDEX_GIT_BLOB,
+      "HOST_VERSION="+version,
+      "VERSION_JSON_BUILD="+liveBuild,
+      "HOST_PAYLOAD_H="+String(fp.husbandPayloadSha256||"-"),
+      "HOST_PAYLOAD_W="+String(fp.wifePayloadSha256||"-"),
+      "CURRENT="+cfg.promptRevision+" / "+cfg.promptSha256,
+      "P160A="+P160.promptRevision+" / "+p160sha,
+      "P168A="+P168.promptRevision+" / "+p168sha,
+      "REAL_DB_BRIDGE=visible-service/opener bounded-auth",
+      "",
+      ...checks.map(x=>(x[1]?"PASS":"FAIL")+" · "+x[0]+" · "+x[2])
+    ].join("\n");
+    if(!ok)throw new Error("PREFLIGHT_MISMATCH");
+    setPreflight("PASS · V208 SERVICE 실제 clone bridge / P168A / SHA 일치","ok");
+    $("start").disabled=false;$("dbStart").disabled=false
+  }catch(e){
+    setPreflight("FAIL · "+String(e?.message||e)+"\nSERVICE 앱을 한 번 열어 1차 비밀번호 연결 상태를 확인한 뒤 이 페이지를 새로고침하세요.","err");
+    $("fingerprint").textContent+="\n\nERROR="+String(e?.stack||e)
+  }
+}
+
+async function createClone(dir,v){
+  if(!serviceHost||!currentCfg)throw new Error("PREFLIGHT_NOT_READY");
+  const mode=modeFor(dir),cfg=promptFor(v),doc=serviceHost.getUnifiedDiagnosticCloneDocument(mode);
+  if(!doc?.srcdoc)throw new Error("HOST_CLONE_DOCUMENT_EMPTY");
+  if(String(doc.version||"")!==EXPECTED_SERVICE_VERSION)throw new Error("HOST_CLONE_VERSION_MISMATCH_"+String(doc.version||""));
+  const src=v==="B"?doc.srcdoc:patchPromptConfigInCloneDocument(doc.srcdoc,cfg);
+  const f=document.createElement("iframe");
+  f.setAttribute("aria-hidden","true");f.dataset.dir=dir;f.dataset.variant=v;f.dataset.expectedPrompt=cfg.promptRevision;
+  f.style.cssText="position:fixed;width:2px;height:2px;left:-12000px;top:-12000px;border:0;opacity:0;pointer-events:none";
+  f.srcdoc=src;document.body.appendChild(f);
+  const started=performance.now(),fReady=forwardReadyName(dir),bReady=backReadyName(dir);
+  while(performance.now()-started<15000){
+    if(stopped){try{f.remove()}catch(_e){}throw new Error("STOPPED")}
+    try{
+      const w=f.contentWindow,pc=w?.__COUPLE_PROMPT_CONFIG__;
+      const promptOk=pc&&String(pc.promptRevision||"")===String(cfg.promptRevision||"")&&String(pc.promptSha256||"")===String(cfg.promptSha256||"");
+      if(promptOk&&typeof w?.[fReady]==="function"&&w[fReady]()&&typeof w?.[bReady]==="function"&&w[bReady]()){
+        activeFrames.set(frameKey(dir,v),f);return f
+      }
+    }catch(_e){}
+    await sleep(60)
+  }
+  try{f.remove()}catch(_e){}
+  throw new Error("CLONE_READY_TIMEOUT_"+dir+"_"+v)
+}
+
+function stopFrame(f){
+  if(!f)return;
+  try{const dir=f.dataset.dir,w=f.contentWindow;const a=w?.[forwardStopName(dir)],b=w?.[backStopName(dir)];if(typeof a==="function")a();if(typeof b==="function")b()}catch(_e){}
+}
+function destroyDirection(dir){
+  for(const v of ["A","B","C"]){const k=frameKey(dir,v),f=activeFrames.get(k);if(f){stopFrame(f);try{f.remove()}catch(_e){}activeFrames.delete(k)}}
+}
+function destroyAll(){for(const f of activeFrames.values()){stopFrame(f);try{f.remove()}catch(_e){}}activeFrames.clear()}
+
+async function prepareDirection(dir){
+  destroyDirection(dir);
+  for(const v of ["A","B","C"]){
+    setStatus(dir+" · "+v+" runtime clone 준비 중…");
+    await createClone(dir,v)
+  }
+}
+
+async function rebuildClone(dir,v){
+  const k=frameKey(dir,v),old=activeFrames.get(k);if(old){stopFrame(old);try{old.remove()}catch(_e){}activeFrames.delete(k)}
+  return createClone(dir,v)
+}
+
+async function withTimeout(p,ms,onTimeout){
+  let t;const timeout=new Promise((_,rej)=>{t=setTimeout(()=>{try{onTimeout?.()}catch(_e){}rej(new Error("DIAGNOSTIC_CALL_TIMEOUT"))},ms)});
+  try{return await Promise.race([p,timeout])}finally{clearTimeout(t)}
+}
+
+async function runForward(dir,v,source){
+  let f=activeFrames.get(frameKey(dir,v));if(!f)f=await createClone(dir,v);
+  const fn=forwardFnName(dir);
+  let r=await withTimeout(Promise.resolve().then(()=>f.contentWindow[fn](source)),90000,()=>stopFrame(f));
+  if(String(r?.error||"").includes("LIVE_APP_BUSY")){
+    f=await rebuildClone(dir,v);
+    r=await withTimeout(Promise.resolve().then(()=>f.contentWindow[fn](source)),90000,()=>stopFrame(f))
+  }
+  return r
+}
+async function runBack(dir,v,target){
+  let f=activeFrames.get(frameKey(dir,v));if(!f)f=await createClone(dir,v);
+  const fn=backFnName(dir);
+  let r=await withTimeout(Promise.resolve().then(()=>f.contentWindow[fn](target)),90000,()=>stopFrame(f));
+  if(/LIVE_(?:BACK|APP)_BUSY/.test(String(r?.error||""))){
+    f=await rebuildClone(dir,v);
+    r=await withTimeout(Promise.resolve().then(()=>f.contentWindow[fn](target)),90000,()=>stopFrame(f))
+  }
+  return r
+}
+function compactLabels(v){return Array.isArray(v)?v.map(x=>String(x)).filter(Boolean).join(" | "):""}
+
+
+function setDbStatus(t,k=""){const e=$("dbStatus");if(!e)return;e.textContent=t;e.className="status"+(k?" "+k:"")}
+function recordTs(r){return Number(r?.clientCreatedAtMs)||Date.parse(r?.ingestedAt||"")||0}
+function storedApp(r){const x=[r?.appVersion,r?.mode,r?.sourceType,r?.app,r?.clientApp].map(v=>String(v||"")).join(" ").toLowerCase();return /(^|\s)g1\.|general|통역/.test(x)?"general":"couple"}
+function isTranslationRecord(r){const src=clean(r?.sourceText),dst=clean(r?.targetText),type=String(r?.sourceType||"").toUpperCase(),status=String(r?.status||"SUCCESS").toUpperCase();return !!src&&!!dst&&status!=="FAILED"&&!r?.failure&&!/OPERATION_LOG|VOICE_DIAGNOSTIC/.test(type)&&!/^VOICE_DIAGNOSTIC\b/.test(src)}
+function retryAttemptIndex(r){const n=Number(r?.attemptIndex??r?.runtime?.attemptIndex);return Number.isFinite(n)&&n>=0?Math.min(99,Math.trunc(n)):null}
+function retryRecordFlag(r){const n=retryAttemptIndex(r);return r?.isRetranslate===true||r?.runtime?.userRetry===true||(n!=null&&n>0)}
+function normSource(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u200B\uFEFF]+/g,"").replace(/[.,!?…~`'\"“”‘’()\[\]{}:;·\-–—]/g,"")}
+function normalizeDir(v){const x=String(v||"").toUpperCase();return x==="L2K"?"L2K":x==="K2L"?"K2L":""}
+
+let dbVisibleService=null,dbFetchAbort=null,dbRunGeneration=0;
+function sameOriginUsableWindow(w){try{return !!(w&&!w.closed&&w.location.origin===location.origin)}catch(_e){return false}}
+function dbExistingAdminHost(){
+  const o=sameOriginUsableWindow(window.opener)?window.opener:null;
+  if(o&&typeof o.getUnifiedAdminSessionToken==="function"&&typeof o.getUnifiedDiagnosticRelayConfig==="function")return o;
+  if(sameOriginUsableWindow(dbVisibleService)&&typeof dbVisibleService.getUnifiedAdminSessionToken==="function")return dbVisibleService;
+  return null
+}
+function openVisibleDbHost(){
+  let h=dbExistingAdminHost();if(h)return h;
+  dbVisibleService=window.open("./?diagnosticDbHost=1","translatorServiceDbHost","width=520,height=820,resizable=yes,scrollbars=yes");
+  if(!dbVisibleService)throw new Error("DB_AUTH_WINDOW_BLOCKED_ALLOW_POPUP");
+  return dbVisibleService
+}
+async function waitDbAdminHost(generation,timeoutMs=12000){
+  const h=openVisibleDbHost(),start=performance.now();
+  while(performance.now()-start<timeoutMs){
+    if(stopped||generation!==dbRunGeneration)throw new Error("DB_CANCELLED");
+    try{if(sameOriginUsableWindow(h)&&typeof h.getUnifiedAdminSessionToken==="function"&&typeof h.ensureUnifiedAdminSession==="function"&&typeof h.getUnifiedDiagnosticRelayConfig==="function")return h}catch(_e){}
+    await sleep(100)
+  }
+  throw new Error("DB_SERVICE_HOST_READY_TIMEOUT")
+}
+function relayCfgFor(h){try{return h?.getUnifiedDiagnosticRelayConfig?.()||h?.getUnifiedRelayConfigForMode?.("husband")||null}catch(_e){return null}}
+function promiseDeadline(p,ms,label){return new Promise((resolve,reject)=>{let settled=false;const tm=setTimeout(()=>{if(!settled){settled=true;reject(new Error(label))}},ms);Promise.resolve(p).then(v=>{if(!settled){settled=true;clearTimeout(tm);resolve(v)}},e=>{if(!settled){settled=true;clearTimeout(tm);reject(e)}})})}
+function abortDbFetch(){try{dbFetchAbort?.abort()}catch(_e){}dbFetchAbort=null}
+async function ensureDbAdminSession(h,generation,force=false){
+  if(stopped||generation!==dbRunGeneration)throw new Error("DB_CANCELLED");
+  let session=force?"":String(h.getUnifiedAdminSessionToken?.()||"");
+  if(session)return session;
+  setDbStatus(force?"관리자 세션 재인증 중…":"관리자 세션 확인 중…","warn");
+  const fn=force?h.requestUnifiedAdminReauthFromDiagnostic:h.ensureUnifiedAdminSession;
+  if(typeof fn!=="function")throw new Error(force?"DB_REAUTH_BRIDGE_MISSING":"DB_AUTH_BRIDGE_MISSING");
+  const ok=await promiseDeadline(Promise.resolve().then(()=>fn.call(h)),20000,"DB_ADMIN_AUTH_TIMEOUT");
+  if(stopped||generation!==dbRunGeneration)throw new Error("DB_CANCELLED");
+  if(!ok)throw new Error(force?"DB_ADMIN_REAUTH_CANCELLED":"DB_ADMIN_AUTH_CANCELLED");
+  session=String(h.getUnifiedAdminSessionToken?.()||"");
+  if(!session)throw new Error("DB_ADMIN_SESSION_TOKEN_MISSING");
+  return session
+}
+async function adminFetch(path,generation){
+  const h=await waitDbAdminHost(generation);
+  let session=await ensureDbAdminSession(h,generation,false),reauthUsed=false,last;
+  const cfg=relayCfgFor(h);if(!cfg?.token)throw new Error("RELAY_CONFIG_MISSING");
+  const urls=[cfg.primary?.url,cfg.backup?.url].filter(Boolean);
+  for(let ui=0;ui<urls.length;ui++){
+    const base=urls[ui];
+    for(let attempt=0;attempt<2;attempt++){
+      if(stopped||generation!==dbRunGeneration)throw new Error("DB_CANCELLED");
+      try{
+        setDbStatus("DB 서버 조회 중…"+(ui?" · 백업 Relay":""),"warn");
+        abortDbFetch();const c=new AbortController();dbFetchAbort=c;const tm=setTimeout(()=>c.abort(),60000);
+        let res;
+        try{res=await fetch(String(base).replace(/\/$/,"")+path,{headers:{"X-App-Token":cfg.token,"X-Admin-Session":session,"Accept":"application/json"},cache:"no-store",signal:c.signal})}
+        finally{clearTimeout(tm);if(dbFetchAbort===c)dbFetchAbort=null}
+        if((res.status===401||res.status===403)&&!reauthUsed){reauthUsed=true;session=await ensureDbAdminSession(h,generation,true);continue}
+        if(!res.ok)throw new Error("HTTP_"+res.status);
+        return await res.json()
+      }catch(e){if(stopped||generation!==dbRunGeneration)throw new Error("DB_CANCELLED");last=e;if(e?.name==="AbortError")last=new Error("DB_FETCH_TIMEOUT_OR_CANCELLED");break}
+    }
+  }
+  throw last||new Error("ADMIN_FETCH_FAILED")
+}
+function balancedRecent(rows,count,dir){const n=Math.max(1,Number(count)||20),want=String(dir||"ALL").toUpperCase();let src=rows.filter(r=>normalizeDir(r?.direction));if(want!=="ALL")return src.filter(r=>normalizeDir(r.direction)===want).slice(0,n);const k=src.filter(r=>normalizeDir(r.direction)==="K2L"),l=src.filter(r=>normalizeDir(r.direction)==="L2K"),half=Math.floor(n/2),picked=[...k.slice(0,half),...l.slice(0,n-half)],keys=new Set(picked.map(r=>String(r.__sampleKey||""))),rest=src.filter(r=>!keys.has(String(r.__sampleKey||"")));while(picked.length<n&&rest.length)picked.push(rest.shift());return picked.sort((a,b)=>recordTs(b)-recordTs(a)).slice(0,n)}
+async function fetchRecentDbRecords(dir,count,generation){const n=Math.max(1,Math.min(100,Number(count)||20)),qdir=String(dir||"ALL").toUpperCase(),limit=Math.min(1000,Math.max(120,n*12)),d=await adminFetch("/telemetry/sample?kind=recent&scope=translations&direction="+encodeURIComponent(qdir)+"&app=couple&limit="+limit+"&scan=6000",generation);setDbStatus("DB 샘플 확보 · 기록 필터링 중…","warn");const sorted=(Array.isArray(d.records)?d.records:[]).filter(isTranslationRecord).filter(r=>storedApp(r)==="couple").filter(r=>!retryRecordFlag(r)).sort((a,b)=>recordTs(b)-recordTs(a)),seen=new Set(),unique=[];for(const r of sorted){const rd=normalizeDir(r.direction);if(!rd)continue;const key=rd+"|"+normSource(r.sourceText);if(!normSource(r.sourceText)||seen.has(key))continue;seen.add(key);unique.push(Object.assign({},r,{__sampleKey:key}))}return balancedRecent(unique,n,qdir)}
+function latinWords(v){return (String(v||"").match(/[A-Za-z][A-Za-z0-9_-]{2,}/g)||[]).map(x=>x.toLowerCase())}
+function outputAdvisory(input,output,expected){const a=[],src=String(input||""),out=String(output||"");const srcLatin=new Set(latinWords(src));const extra=[...new Set(latinWords(out).filter(x=>!srcLatin.has(x)))];const tech=extra.filter(x=>/^(?:interface|debug|system|control|undefined|object|error|json|html|javascript|function|prompt|assistant|user)$/i.test(x));if(tech.length)a.push("UNEXPECTED_TECH_LATIN:"+tech.join(","));if(!/[()（）]/.test(src)&&/[()（）]/.test(out))a.push("SOURCE_ABSENT_PARENTHETICAL");const han=/[\u3400-\u4DBF\u4E00-\u9FFF]/u,thai=/[\u0E00-\u0E7F]/u,lao=/[\u0E80-\u0EFF]/u,hangul=/[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3]/u;if(expected==="LO"){if(hangul.test(out))a.push("UNEXPECTED_HANGUL_IN_LAO");if(!han.test(src)&&han.test(out))a.push("UNEXPECTED_HAN_IN_LAO");if(!thai.test(src)&&thai.test(out))a.push("UNEXPECTED_THAI_IN_LAO");if(!srcLatin.size&&extra.length)a.push("SOURCE_ABSENT_LATIN:"+extra.join(","))}else if(expected==="KO"){if(lao.test(out))a.push("UNEXPECTED_LAO_IN_KOREAN");if(!thai.test(src)&&thai.test(out))a.push("UNEXPECTED_THAI_IN_KOREAN");if(!han.test(src)&&han.test(out))a.push("SOURCE_ABSENT_HAN_IN_KOREAN")}return [...new Set(a)].join("|")||"NONE"}
+function expectedForwardLang(dir){return dir==="K2L"?"LO":"KO"}
+function expectedBackLang(dir){return dir==="K2L"?"KO":"LO"}
+function dbVariantOrder(i){return i%2?["B","A"]:["A","B"]}
+async function prepareDirectionDb(dir){destroyDirection(dir);for(const v of ["A","B"]){setDbStatus(dir+" · "+v+" runtime clone 준비 중…");await createClone(dir,v)}}
+async function runDbExperiment(){
+  if(running)return;
+  if(!preflightInfo||!preflightInfo.checks.every(x=>x[1])){setDbStatus("사전점검 PASS가 필요합니다.","err");return}
+  const requested=Number($("dbCount").value)||20,dirSel=$("dbDir").value||"ALL",doBack=$("dbBack").value==="on",gap=Number($("dbGap").value)||350,generation=++dbRunGeneration;
+  running=true;stopped=false;done=0;errors=0;dbLog="";$("start").disabled=true;$("dbStart").disabled=true;$("dbStop").disabled=false;$("stop").disabled=true;$("dbCopy").disabled=true;$("dbSave").disabled=true;
+  const timings={A:{forward:[],back:[]},B:{forward:[],back:[]}},lines=[];
+  try{
+    setDbStatus("관리자 세션 확인 준비 중…","warn");
+    const rows=await fetchRecentDbRecords(dirSel,requested,generation);if(!rows.length)throw new Error("REAL_DB_NO_ELIGIBLE_RECORDS");
+    const dbK2L=rows.filter(r=>normalizeDir(r.direction)==="K2L").length,dbL2K=rows.filter(r=>normalizeDir(r.direction)==="L2K").length;
+    total=rows.length*2*(doBack?2:1);metrics("DB 준비");
+    lines.push("PROMPT_REAL_DB_AB "+BUILD_ID,"generated="+now(),"serviceVersion="+EXPECTED_SERVICE_VERSION,"serviceBuild="+EXPECTED_SERVICE_BUILD,"runtimeMode=EXACT_SERVICE_V208_DIAGNOSTIC_CLONES","sampleSource=SERVER_REAL_USE_READ_ONLY app=couple direction="+dirSel+" requested="+requested+" fetched="+rows.length,"sampleCounts K2L="+dbK2L+" L2K="+dbL2K,"samplePolicy=exclude failed/retranslate/duplicate-source; ALL balances K2L/L2K when available","A_revision="+P160.promptRevision,"A_promptSha="+P160.promptSha256,"B_revision="+currentCfg.promptRevision,"B_promptSha="+currentCfg.promptSha256,"back="+doBack,"IMPORTANT=stored rows are reference only; diagnostic reruns are NOT written to live history","");
+    for(const dir of ["K2L","L2K"]){const items=rows.filter(r=>normalizeDir(r.direction)===dir);if(!items.length)continue;if(stopped)break;await prepareDirectionDb(dir);lines.push("########## REAL DB DIRECTION "+dir+" · A/B CLONES READY ##########","");
+      for(let i=0;i<items.length;i++){if(stopped)break;const r=items[i],source=clean(r.sourceText),storedTarget=clean(r.targetText),storedBack=clean(r.backText),recordId=clean(r.id||r.recordId||r.key||r._id||"-"),order=dbVariantOrder(i);lines.push("========== DB CASE "+String(i+1).padStart(3,"0")+" · "+dir+" ==========","DB_RECORD_ID="+recordId,"RECORDED_AT="+(recordTs(r)?new Date(recordTs(r)).toLocaleString("ko-KR",{hour12:false}):"-"),"STORED_VERSION="+clean(r.appVersion||"-"),"SOURCE="+source,"STORED_TRANSLATION="+(storedTarget||"-"),"STORED_BACK="+(storedBack||"-"),"RUN_ORDER="+order.join(">"));
+        for(const v of order){if(stopped)break;const cfg=promptFor(v),label=v==="A"?"P160A":"CURRENT_P168A";metrics("DB "+label+" "+dir);setDbStatus("DB "+(i+1)+"/"+items.length+" · "+label+" 정번역…","warn");
+          try{const f=await runForward(dir,v,source);done++;metrics("DB "+label+" F");if(!f?.ok||!clean(f.text))throw new Error("FORWARD_FAILED_"+String(f?.error||"NO_TEXT"));const fms=Math.round(Number(f.displayMs)||0);if(fms>0)timings[v].forward.push(fms);lines.push("["+label+" FORWARD]","PROMPT_REVISION="+cfg.promptRevision+" PROMPT_SHA="+cfg.promptSha256,"TRANSLATION="+clean(f.text),"DISPLAY_MS="+fms+" REQUESTS="+Number(f.mainRequestCount||0),"WINNER="+clean(f.winner||"-")+" SEMANTIC_REPAIRED="+(f.semanticRepaired===true)+" REPAIR_FAILED="+(f.semanticRepairFailed===true),"FORWARD_OUTPUT_ADVISORY="+outputAdvisory(source,f.text,expectedForwardLang(dir)));
+            if(doBack){await sleep(gap);setDbStatus("DB "+(i+1)+"/"+items.length+" · "+label+" 역번역…","warn");const b=await runBack(dir,v,f.text);done++;metrics("DB "+label+" B");if(!b?.ok||!clean(b.text))throw new Error("BACK_FAILED_"+String(b?.error||"NO_TEXT"));const bms=Math.round(Number(b.elapsed)||0);if(bms>0)timings[v].back.push(bms);lines.push("BACK="+clean(b.text),"BACK_MS="+bms+" BACK_REQUESTS="+(Array.isArray(b.records)?b.records.length:0),"BACK_OUTPUT_ADVISORY="+outputAdvisory(f.text,b.text,expectedBackLang(dir)),"BACK_RECOVERY language="+Number(b.languageRetryCount||0)+" relation="+Number(b.relationRetryCount||0)+" single="+Number(b.singleResultRetryCount||0)+" technical="+Number(b.technicalRetryCount||0))}
+            lines.push("")
+          }catch(e){errors++;lines.push("["+label+" ERROR] "+String(e?.message||e),"");setDbStatus("오류 기록 후 다음 항목 계속 · "+String(e?.message||e),"warn")}
+          await sleep(gap)
+        }
+      }
+      destroyDirection(dir)
+    }
+    lines.push("########## REAL DB TIMING SUMMARY · milliseconds ##########");
+    for(const v of ["A","B"]){const label=v==="A"?"P160A":"CURRENT_P168A";lines.push(timingLine(label,"FORWARD",timings[v].forward));if(doBack)lines.push(timingLine(label,"BACK",timings[v].back))}
+    const afs=latencyStats(timings.A.forward),bfs=latencyStats(timings.B.forward),cmp=afs.n===bfs.n&&bfs.n>0,parity=cmp&&bfs.avg<=Math.round(afs.avg*1.03)&&bfs.median<=Math.round(afs.median*1.03)&&bfs.p95<=Math.round(afs.p95*1.10)&&bfs.max<=Math.round(afs.max*1.25);
+    lines.push("P168_DB_SPEED_PARITY_VS_P160="+parity,"TIMING_COUNTS_COMPARABLE="+cmp,"","END stopped="+stopped+" completedCalls="+done+"/"+total+" errors="+errors,"ended="+now());dbLog=lines.join("\n");$("dbOut").textContent=dbLog;$("dbCopy").disabled=false;$("dbSave").disabled=false;setDbStatus(stopped?"중지됨 · 현재까지 로그 저장 가능":"완료 · 실사용 "+rows.length+"건 · "+done+"/"+total+" 호출 · 오류 "+errors,errors?"warn":"ok")
+  }catch(e){errors++;lines.push("FATAL="+String(e?.stack||e));dbLog=lines.join("\n");$("dbOut").textContent=dbLog;$("dbCopy").disabled=false;$("dbSave").disabled=false;setDbStatus("실행 중단 · "+String(e?.message||e),"err")}
+  finally{abortDbFetch();destroyAll();running=false;$("dbStop").disabled=true;const ok=!!(preflightInfo&&preflightInfo.checks.every(x=>x[1]));$("start").disabled=!ok;$("dbStart").disabled=!ok;metrics(stopped?"DB 중지":"DB 완료")}
+}
+
+function latencyStats(arr){
+  const a=(arr||[]).map(Number).filter(x=>Number.isFinite(x)&&x>0).sort((x,y)=>x-y);
+  if(!a.length)return {n:0,avg:0,median:0,p95:0,max:0};
+  const sum=a.reduce((x,y)=>x+y,0),n=a.length,mid=Math.floor(n/2);
+  const median=n%2?a[mid]:Math.round((a[mid-1]+a[mid])/2);
+  return {n,avg:Math.round(sum/n),median,p95:a[Math.max(0,Math.ceil(n*.95)-1)],max:a[n-1]};
+}
+function timingLine(label,kind,arr){const s=latencyStats(arr);return label+" "+kind+" n="+s.n+" avg="+s.avg+" median="+s.median+" p95="+s.p95+" max="+s.max}
+
+async function runExperiment(){
+  if(running)return;
+  const items=selectedCases(),runs=Number($("runs").value)||3,doBack=$("back").value==="on",gap=Number($("gap").value)||350;
+  if(!items.length){setStatus("실험 문장이 없습니다.","err");return}
+  running=true;stopped=false;done=0;errors=0;fixedLog="";
+  const timings={A:{forward:[],back:[]},B:{forward:[],back:[]},C:{forward:[],back:[]}};
+  total=items.length*runs*3*(doBack?2:1);metrics("준비");
+  $("start").disabled=true;$("dbStart").disabled=true;$("stop").disabled=false;$("copy").disabled=true;$("save").disabled=true;
+  const lines=[
+    "PROMPT_EXACT_RUNTIME_ABC "+BUILD_ID,
+    "generated="+now(),
+    "serviceVersion="+EXPECTED_SERVICE_VERSION,
+    "serviceBuild="+EXPECTED_SERVICE_BUILD,
+    "liveIndexGitBlob="+EXPECTED_LIVE_INDEX_GIT_BLOB,
+    "runtimeMode=EXACT_SERVICE_V207_DIAGNOSTIC_CLONES",
+    "isolation=host getUnifiedDiagnosticCloneDocument() bytes; only boot __COUPLE_PROMPT_CONFIG__ replaced for A/C",
+    "currentRevision="+currentCfg.promptRevision,
+    "currentPromptSha="+currentCfg.promptSha256,
+    "p160Revision="+P160.promptRevision,
+    "p160Sha="+P160.promptSha256,
+    "candidateRevision="+P168.promptRevision,
+    "candidatePromptSha="+P168.promptSha256,
+    "runs="+runs+" cases="+items.length+" back="+doBack,
+    "IMPORTANT=live SERVICE prompt/history are not modified; diagnostic clone bridge stubs persistent writes",
+    ""
+  ];
+  try{
+    for(const dir of ["K2L","L2K"]){
+      const dirCases=items.filter(x=>x.dir===dir);if(!dirCases.length)continue;
+      if(stopped)break;
+      await prepareDirection(dir);
+      lines.push("########## DIRECTION "+dir+" · 3 REAL RUNTIME CLONES READY ##########","");
+      for(let ci=0;ci<dirCases.length;ci++){
+        const c=dirCases[ci];if(stopped)break;
+        lines.push("========== CASE "+c.id+" · "+dir+" ==========","FOCUS="+c.focus,"SOURCE="+c.text,"");
+        for(let ri=0;ri<runs;ri++){
+          const order=variantOrder(ci+ri);
+          lines.push("RUN_ORDER #"+(ri+1)+"="+order.join(">"));
+          for(const v of order){
+            if(stopped)break;
+            const cfg=promptFor(v),label=v==="A"?"P160A":"CURRENT_P168A";
+            metrics(c.id+" "+label+" F"+(ri+1));setStatus(c.id+" · "+label+" · "+(ri+1)+"/"+runs+" 실제 정번역…");
+            try{
+              const f=await runForward(dir,v,c.text);done++;metrics(c.id+" "+label+" F"+(ri+1));
+              if(!f?.ok||!clean(f.text))throw new Error("FORWARD_FAILED_"+String(f?.error||"NO_TEXT"));
+              const fms=Math.round(Number(f.displayMs)||0);if(fms>0)timings[v].forward.push(fms);
+              lines.push(
+                "["+label+" #"+(ri+1)+" FORWARD]",
+                "PROMPT_REVISION="+cfg.promptRevision+" PROMPT_SHA="+cfg.promptSha256,
+                "TRANSLATION="+clean(f.text),
+                "DISPLAY_MS="+fms+" MAIN_POLICY_MS="+Math.round(Number(f.mainPolicyMs)||0)+" REQUESTS="+Number(f.mainRequestCount||0),
+                "WINNER="+clean(f.winner||"-")+" SEMANTIC_REPAIRED="+(f.semanticRepaired===true)+" REPAIR_FAILED="+(f.semanticRepairFailed===true),
+                "REQUEST_LABELS="+(compactLabels(f.mainRequestLabels)||"-"),
+                "FINAL_QUALITY_PASS="+(f.finalQualityPass!==false)+" QUALITY_REASONS="+compactLabels(f.finalQualityReasons||[]),
+                "FORWARD_OUTPUT_ADVISORY="+outputAdvisory(c.text,f.text,expectedForwardLang(dir))
+              );
+              if(doBack){
+                await sleep(gap);metrics(c.id+" "+label+" B"+(ri+1));setStatus(c.id+" · "+label+" · "+(ri+1)+"/"+runs+" 실제 역번역…");
+                const b=await runBack(dir,v,f.text);done++;metrics(c.id+" "+label+" B"+(ri+1));
+                if(!b?.ok||!clean(b.text))throw new Error("BACK_FAILED_"+String(b?.error||"NO_TEXT"));
+                const bms=Math.round(Number(b.elapsed)||0);if(bms>0)timings[v].back.push(bms);
+                lines.push(
+                  "BACK="+clean(b.text),
+                  "BACK_MS="+bms+" BACK_REQUESTS="+(Array.isArray(b.records)?b.records.length:0),
+                  "BACK_RECOVERY language="+Number(b.languageRetryCount||0)+" relation="+Number(b.relationRetryCount||0)+" single="+Number(b.singleResultRetryCount||0)+" technical="+Number(b.technicalRetryCount||0),
+                  "BACK_LABELS="+(Array.isArray(b.records)?b.records.map(x=>clean(x?.label)).filter(Boolean).join(" | "):"-"),
+                  "BACK_OUTPUT_ADVISORY="+outputAdvisory(f.text,b.text,expectedBackLang(dir))
+                )
+              }
+              lines.push("")
+            }catch(e){
+              errors++; if(doBack && done%2===1){} // metric only; no guessed successful call count
+              lines.push("["+label+" #"+(ri+1)+" ERROR] "+String(e?.message||e),"");
+              setStatus("오류 기록 후 다음 항목 계속 · "+String(e?.message||e),"warn")
+            }
+            await sleep(gap)
+          }
+        }
+      }
+      destroyDirection(dir)
+    }
+    lines.push("########## TIMING SUMMARY · milliseconds ##########");
+    for(const v of ["A","B"]){const label=v==="A"?"P160A":"CURRENT_P168A";lines.push(timingLine(label,"FORWARD",timings[v].forward));if(doBack)lines.push(timingLine(label,"BACK",timings[v].back))}
+    const bfs=latencyStats(timings.B.forward),cfs=latencyStats(timings.C.forward),countsComparable=(bfs.n===cfs.n&&cfs.n>0),parityMet=(countsComparable&&cfs.avg<=Math.round(bfs.avg*1.03)&&cfs.median<=Math.round(bfs.median*1.03)&&cfs.p95<=Math.round(bfs.p95*1.10)&&cfs.max<=Math.round(bfs.max*1.25)),absoluteMet=(cfs.n>0&&cfs.avg<=1800&&cfs.median<=1750&&cfs.p95<=2300);lines.push("P168_SPEED_PARITY_TARGET avg<=CURRENT*1.03 median<=CURRENT*1.03 p95<=CURRENT*1.10 max<=CURRENT*1.25", "P168_SPEED_PARITY_MET="+parityMet, "P168_ABSOLUTE_REFERENCE avg<=1800 median<=1750 p95<=2300", "P168_ABSOLUTE_REFERENCE_MET="+absoluteMet, "TIMING_COUNTS_COMPARABLE="+countsComparable, "");
+    lines.push("END stopped="+stopped+" completedCalls="+done+"/"+total+" errors="+errors,"ended="+now());
+    fixedLog=lines.join("\n");$("out").textContent=fixedLog;$("copy").disabled=false;$("save").disabled=false;
+    setStatus(stopped?"중지됨 · 현재까지 로그 저장 가능":"완료 · "+done+"/"+total+" 호출 · 오류 "+errors,errors?"warn":"ok")
+  }catch(e){
+    errors++;lines.push("FATAL="+String(e?.stack||e));fixedLog=lines.join("\n");$("out").textContent=fixedLog;$("copy").disabled=false;$("save").disabled=false;
+    setStatus("실행 중단 · "+String(e?.message||e),"err")
+  }finally{
+    destroyAll();running=false;$("stop").disabled=true;const pfok=!!(preflightInfo&&preflightInfo.checks.every(x=>x[1]));$("start").disabled=!pfok;$("dbStart").disabled=!pfok;metrics(stopped?"중지":"완료")
+  }
+}
+
+$("preset").onchange=()=>{$("custom").disabled=$("preset").value!=="custom"};
+$("start").onclick=runExperiment;
+$("dbStart").onclick=runDbExperiment;
+$("stop").onclick=()=>{stopped=true;destroyAll();setStatus("중지 요청됨 · 진행 중 호출을 취소하고 있습니다…","warn")};
+$("dbStop").onclick=()=>{stopped=true;dbRunGeneration++;abortDbFetch();destroyAll();setDbStatus("중지 요청됨 · 진행 중 DB 조회/호출을 취소하고 있습니다…","warn")};
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(fixedLog);setStatus("고정/holdout 로그를 복사했습니다.","ok")}catch(e){setStatus("복사 실패 · "+String(e?.message||e),"err")}};
+$("save").onclick=()=>{const blob=new Blob([fixedLog],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename();a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$("dbCopy").onclick=async()=>{try{await navigator.clipboard.writeText(dbLog);setDbStatus("실사용 DB 로그를 복사했습니다.","ok")}catch(e){setDbStatus("DB 로그 복사 실패 · "+String(e?.message||e),"err")}};
+$("dbSave").onclick=()=>{const blob=new Blob([dbLog],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=dbFilename();a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+window.addEventListener("beforeunload",destroyAll);
+try{const g=document.querySelector('.grid4'),db=document.getElementById('dbStatus');if(g&&db)db.parentNode.insertBefore(g,db)}catch(_e){}preflight();
+</script>
+</body>
+</html>
