@@ -1,6 +1,6 @@
 {
-  "version": "V3.61.208",
-  "build": "20261004-V3.61.208-SERVICE-P168A-R8",
-  "buildId": "20261004-V3.61.208-SERVICE-P168A-R8",
-  "notes": "V3.61.208 SERVICE P168A R8: validated P168A R8 promoted unchanged; P160-style natural readability retained, forward meaning fidelity strengthened; G158A, STT, TTS and network paths unchanged from V3.61.207."
+  "version": "V3.61.209",
+  "build": "20261005-V3.61.209-SERVICE-MEMORY-ALBUM-R1",
+  "buildId": "20261005-V3.61.209-SERVICE-MEMORY-ALBUM-R1",
+  "notes": "V3.61.209 SERVICE MEMORY ALBUM R1: adds a Memory Album button above recent translation in both husband and wife embedded apps. Husband opens the album in Korean mode; wife opens it in Lao mode. Same-origin localStorage keeps the existing primary password and network-route state shared without placing secrets in the URL. Translation, prompt P168A R8, STT, TTS, Relay, Cloudflare and Cloud Run translation runtime are unchanged."
 }
