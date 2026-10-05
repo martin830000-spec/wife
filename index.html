@@ -398,7 +398,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div id="authScreen" class="auth-screen" role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="auth-card">
-    <span class="auth-corner-version" data-app-version data-channel="SERVICE" aria-label="앱 버전"><span data-version-number>V3.61.208</span><small data-version-channel>SERVICE</small></span>
+    <span class="auth-corner-version" data-app-version data-channel="SERVICE" aria-label="앱 버전"><span data-version-number>V3.61.209</span><small data-version-channel>SERVICE</small></span>
     <div class="auth-icon">🇰🇷 ↔ 🇱🇦</div>
     <div class="auth-head-row">
       <h1 id="authTitle" class="auth-title">한↔라오 번역기<span class="auth-title-lo">ແອັບແປພາສາ ເກົາຫຼີ ↔ ລາວ</span></h1>
@@ -418,8 +418,8 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
       <button id="forceRefreshBtn" class="auth-version-btn" type="button" onclick="forceUnifiedFreshReload()">⬇️ 최신파일 다시받기
 ໂຫຼດໄຟລ໌ລ່າສຸດໃໝ່</button>
     </div>
-    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.208 · SERVICE</span> · 최신 버전을 확인할 수 있습니다.
-ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.208 · SERVICE</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
+    <div id="versionCheckStatus" class="auth-version-status" aria-live="polite">현재 버전 <span id="versionCurrentText">V3.61.209 · SERVICE</span> · 최신 버전을 확인할 수 있습니다.
+ເວີຊັນປັດຈຸບັນ <span id="versionCurrentTextLo">V3.61.209 · SERVICE</span> · ສາມາດກວດເບິ່ງເວີຊັນລ່າສຸດໄດ້.</div>
     <div id="authStartStatus" class="auth-start-status">앱을 준비하고 있습니다.
 ກຳລັງກຽມແອັບໃຫ້ພ້ອມໃຊ້ງານ.</div>
     <button class="manual-btn" type="button" onclick="requestManualLanguageChoice()">📖 자세한 사용설명서 · ຄູ່ມືລະອຽດ</button>
@@ -457,7 +457,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 
 <div class="shell">
   <div id="shellSwitchbar" class="switchbar" role="navigation" aria-label="번역기 모드 선택">
-    <div class="shell-version-tools"><span class="shell-version" data-app-version data-channel="SERVICE"><span class="shell-version-number" data-version-number>V3.61.208</span><span class="shell-version-channel" data-version-channel>SERVICE</span></span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ"><span class="shell-guide-icon" aria-hidden="true">📖</span><span id="shellGuideLabel" class="shell-guide-label">자세한 설명서 · ຄູ່ມື</span></button></div>
+    <div class="shell-version-tools"><span class="shell-version" data-app-version data-channel="SERVICE"><span class="shell-version-number" data-version-number>V3.61.209</span><span class="shell-version-channel" data-version-channel>SERVICE</span></span><button class="shell-guide-btn" type="button" onclick="handleUnifiedGuideButton()" title="자세한 설명서 · ຄູ່ມືລະອຽດ" aria-label="자세한 설명서 · ຄູ່ມືລະອຽດ"><span class="shell-guide-icon" aria-hidden="true">📖</span><span id="shellGuideLabel" class="shell-guide-label">자세한 설명서 · ຄູ່ມື</span></button></div>
     <div class="mode-buttons">
       <button id="husbandModeBtn" class="mode-btn" type="button" onclick="selectMode('husband')"><span id="husbandModeLabel">🇰🇷 한국</span></button>
       <button id="wifeModeBtn" class="mode-btn" type="button" onclick="selectMode('wife')"><span id="wifeModeLabel">🇱🇦 ລາວ</span></button>
@@ -1124,6 +1124,8 @@ body #appScreen #primaryResultSection&gt;.result-header:first-child .btn-group-t
             &lt;div id="voiceInputStatus" class="voice-input-status" aria-live="polite" hidden&gt;&lt;/div&gt;
         &lt;/div&gt;
 
+        &lt;button type="button" class="btn-voice-input memory-album-btn" onclick="parent.postMessage({type:'integrated-memory-album',mode:'husband'},'*')"&gt;📷 추억사진첩&lt;/button&gt;
+
         &lt;details id="localHistoryBox" class="history-box"&gt;
             &lt;summary&gt;🕘 최근 번역 · ⭐ 즐겨찾기&lt;/summary&gt;
             &lt;div class="history-inner"&gt;
@@ -1210,7 +1212,7 @@ body #appScreen #primaryResultSection&gt;.result-header:first-child .btn-group-t
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.208';
+const APP_VERSION='V3.61.209';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 // V3.61.161 TEST: package synchronization for general-app prompt split; P154A and selective semantic guard behavior are unchanged.
@@ -6241,6 +6243,8 @@ body #appScreen #primaryResultSection&gt;.section-head:first-child .actions butt
       &lt;div id="voiceInputStatus" class="voice-input-status" aria-live="polite" hidden&gt;&lt;/div&gt;
     &lt;/div&gt;
 
+    &lt;button type="button" class="btn-voice-input memory-album-btn" onclick="parent.postMessage({type:'integrated-memory-album',mode:'wife'},'*')"&gt;📷 ອະລະບໍ້າຄວາມຊົງຈຳ&lt;/button&gt;
+
     &lt;details id="localHistoryBox" class="history-box"&gt;
       &lt;summary&gt;🕘 ການແປຫຼ້າສຸດ · ⭐ ລາຍການມັກ&lt;/summary&gt;
       &lt;div class="history-inner"&gt;
@@ -6326,7 +6330,7 @@ body #appScreen #primaryResultSection&gt;.section-head:first-child .actions butt
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const APP_VERSION='V3.61.208';
+const APP_VERSION='V3.61.209';
 // V3.61.25: concise source-faithful fast prompt; per-message safety-rule injection remains removed.
 // V3.49 fast live prompt: compact always-on core + source-triggered high-risk rules with broader Korean/Lao morphology.
 // V3.61.161 TEST: package synchronization for general-app prompt split; P154A and selective semantic guard behavior are unchanged.
@@ -9279,8 +9283,30 @@ window.addEventListener('pagehide',()=&gt;{if(document.getElementById('coupleFul
   window.showAppAlert=showAppAlert;
   window.alert=showAppAlert;
 })();
-const INTEGRATED_VERSION='V3.61.208';
+const INTEGRATED_VERSION='V3.61.209';
 const INTEGRATED_CHANNEL='SERVICE';
+const MEMORY_ALBUM_PATH='/memory-album/';
+const MEMORY_ALBUM_MODE_STORAGE='memory_album_user_mode_v1';
+const MEMORY_ALBUM_BRIDGE_STORAGE='memory_album_bridge_v1';
+function openMemoryAlbumFromIntegrated(mode){
+  const m=mode==='wife'?'wife':'husband';
+  try{
+    outerStorageSet(MEMORY_ALBUM_MODE_STORAGE,m);
+    outerStorageSet(MEMORY_ALBUM_BRIDGE_STORAGE,JSON.stringify({
+      source:'couple-app',
+      version:INTEGRATED_VERSION,
+      mode:m,
+      returnPath:String(location.pathname||'/')+String(location.search||''),
+      at:Date.now()
+    }));
+  }catch(e){console.warn('[MEMORY ALBUM BRIDGE]',e)}
+  const target=new URL(MEMORY_ALBUM_PATH,location.origin);
+  target.searchParams.set('mode',m);
+  target.searchParams.set('from','main');
+  location.href=target.pathname+target.search;
+}
+window.openMemoryAlbumFromIntegrated=openMemoryAlbumFromIntegrated;
+
 function unifiedAlert(message){let o=document.getElementById('unifiedCustomDialog');if(!o){o=document.createElement('div');o.id='unifiedCustomDialog';o.className='unified-dialog';o.hidden=true;o.setAttribute('role','alertdialog');o.setAttribute('aria-modal','true');o.innerHTML='<div class="unified-dialog-card"><div class="unified-dialog-message" id="unifiedCustomDialogMessage"></div><div class="unified-dialog-actions"><button type="button" id="unifiedCustomDialogOk">확인 · ຕົກລົງ</button></div></div>';document.body.appendChild(o);o.querySelector('#unifiedCustomDialogOk').onclick=()=>{o.hidden=true};}o.querySelector('#unifiedCustomDialogMessage').textContent=String(message??'');o.hidden=false;return false;}
 
 const UNIFIED_HOST_SESSION_ID='host-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
@@ -9347,7 +9373,7 @@ async function sha256HexText(text){
 const COUPLE_PROMPT_CONFIG_URL='prompt-config.json';
 const COUPLE_PROMPT_SCHEMA_VERSION=1;
 const COUPLE_PROMPT_CHANNEL='TEST';
-// V3.61.208: P168A naturalness-preserving meaning guard; STT/TTS/network contracts remain unchanged.
+// V3.61.209: P168A naturalness-preserving meaning guard; STT/TTS/network contracts remain unchanged.
 // Newer externally deployed prompt revisions remain allowed, so prompt-config.json stays independently updatable.
 const COUPLE_PROMPT_MIN_REVISION='P168A';
 const COUPLE_PROMPT_LKG_STORAGE='translator_service_prompt_config_lkg_v1';
@@ -10770,6 +10796,7 @@ window.addEventListener('message',function(ev){
       : '/korean-lao-general/';
     location.href=target+'?mode='+encodeURIComponent(sourceMode)+'&from=main';return;
   }
+  if(d.type==='integrated-memory-album'){openMemoryAlbumFromIntegrated(d.mode);return}
   if(d.type==='integrated-home'){showSelector();return}
   if(d.type==='integrated-guide'){openUnifiedManual(d.lang==='lo'?'lo':'ko');return}
   if(d.type==='integrated-logout'){logoutUnified();return}
@@ -10794,7 +10821,7 @@ syncVisibleViewport();
 
 <script id="release-notes-final-script-v361157">
 (function(){
- const RELEASE_DATA=Object.freeze({"version":"V3.61.208","id":"service-v361208-p168a-r8","seenKey":"translator_release_notice_seen_service_v361208_p168a_r8","ko":{"sub":"V3.61.208 SERVICE · P168A R8","summary":["부부앱 프롬프트를 실사용 검증을 마친 P168A R8로 승격했습니다. P160 계열의 자연스러운 읽기감을 유지하면서 의미보존을 보강했습니다.","졸업식 역할, 원문 없는 업무 원인, 완료→전체범위, 직접 허용질문→전언처럼 실제 이해가 달라질 수 있는 정번역 편차를 줄이는 방향으로 조정했습니다.","실사용 DB 50건과 회귀+Holdout 18문장×3 검증을 오류 없이 완료했으며, 일반앱·STT·TTS·Relay/Cloudflare/Cloud Run은 변경하지 않았습니다."],"sections":[["승격 범위",["P168A R8은 검증한 후보를 그대로 SERVICE로 올렸으며 승격 단계에서 새 번역 규칙이나 기능을 추가하지 않았습니다.","SMART와 역번역/복구 프롬프트는 P160A 기준을 유지하고, 정번역의 목표언어 자연스러움과 실용적인 의미보존 균형을 우선합니다.","정상 번역 요청 구조와 G158A 일반앱, Chirp 3 STT, TTS, 네트워크 경로는 그대로입니다."]]],"previous":"V3.61.207 SERVICE · MEANING FIDELITY R1 기준."},"lo":{"sub":"V3.61.208 SERVICE · P168A R8","summary":["ປັບ prompt ແອັບຄູ່ສົມລົດເປັນ P168A R8 ທີ່ຜ່ານການທົດສອບການໃຊ້ງານແລ້ວ ໂດຍຮັກສາຄວາມເປັນທຳມະຊາດຂອງພາສາ ແລະ ຮັກສາຄວາມໝາຍໃຫ້ດີຂຶ້ນ.","ຫຼຸດການປ່ຽນຄວາມໝາຍທີ່ອາດເພີ່ມສາເຫດເລື່ອງວຽກ, ເພີ່ມຄວາມໝາຍວ່າທັງໝົດ, ປ່ຽນບົດບາດໃນງານ ຫຼື ປ່ຽນຄຳຖາມການອະນຸຍາດເປັນຄຳເວົ້າອ້າງອີງ.","ການທົດສອບ DB 50 ລາຍການ ແລະ 18 ປະໂຫຍກ × 3 ຮອບສຳເລັດໂດຍບໍ່ມີ error; ແອັບທົ່ວໄປ, STT, TTS ແລະເສັ້ນທາງເຄືອຂ່າຍບໍ່ໄດ້ປ່ຽນ."],"sections":[["ຂອບເຂດການອັບເດດ",["ນຳ P168A R8 ທີ່ທົດສອບແລ້ວຂຶ້ນ SERVICE ໂດຍບໍ່ເພີ່ມກົດ ຫຼື ຟັງຊັນໃໝ່ໃນຂັ້ນຕອນອັບເດດ.","SMART ແລະ prompt ແປກັບ/ກູ້ຄືນ ຍັງໃຊ້ຖານ P160A ແລະໃຫ້ຄວາມສຳຄັນກັບຄວາມໝາຍກັບຄວາມເປັນທຳມະຊາດ.","G158A, Chirp 3 STT, TTS, Relay/Cloudflare/Cloud Run ບໍ່ປ່ຽນ."]]],"previous":"ອີງໃສ່ V3.61.207 SERVICE · MEANING FIDELITY R1."}})
+ const RELEASE_DATA=Object.freeze({"version":"V3.61.209","id":"service-v361209-memory-album-r1","seenKey":"translator_release_notice_seen_service_v361209_memory_album_r1","ko":{"sub":"V3.61.209 SERVICE · MEMORY ALBUM R1","summary":["남편앱·아내앱의 최근 번역 위에 📷 추억사진첩 버튼을 추가했습니다. 남편앱은 한국어, 아내앱은 라오어 모드로 사진첩을 엽니다.","부부앱 프롬프트를 실사용 검증을 마친 P168A R8로 승격했습니다. P160 계열의 자연스러운 읽기감을 유지하면서 의미보존을 보강했습니다.","졸업식 역할, 원문 없는 업무 원인, 완료→전체범위, 직접 허용질문→전언처럼 실제 이해가 달라질 수 있는 정번역 편차를 줄이는 방향으로 조정했습니다.","실사용 DB 50건과 회귀+Holdout 18문장×3 검증을 오류 없이 완료했으며, 일반앱·STT·TTS·Relay/Cloudflare/Cloud Run은 변경하지 않았습니다."],"sections":[["추억사진첩 연동",["본앱과 사진첩은 같은 GitHub Pages 출처를 사용해 기존 1차 비밀번호와 연결 경로 상태를 그대로 공유합니다.","사진첩으로 이동할 때 남편/아내 모드와 본앱 복귀 경로만 별도 브리지 상태로 저장하며 비밀값을 URL에 넣지 않습니다."]],["승격 범위",["P168A R8은 검증한 후보를 그대로 SERVICE로 올렸으며 승격 단계에서 새 번역 규칙이나 기능을 추가하지 않았습니다.","SMART와 역번역/복구 프롬프트는 P160A 기준을 유지하고, 정번역의 목표언어 자연스러움과 실용적인 의미보존 균형을 우선합니다.","정상 번역 요청 구조와 G158A 일반앱, Chirp 3 STT, TTS, 네트워크 경로는 그대로입니다."]]],"previous":"V3.61.208 SERVICE · P168A R8 기준."},"lo":{"sub":"V3.61.209 SERVICE · MEMORY ALBUM R1","summary":["ເພີ່ມປຸ່ມ 📷 ອະລະບໍ້າຄວາມຊົງຈຳ ໄວ້ເທິງປະຫວັດການແປ. ໂໝດຜົວເປີດອະລະບໍ້າເປັນພາສາເກົາຫຼີ ແລະ ໂໝດເມຍເປີດເປັນພາສາລາວ.","ປັບ prompt ແອັບຄູ່ສົມລົດເປັນ P168A R8 ທີ່ຜ່ານການທົດສອບການໃຊ້ງານແລ້ວ ໂດຍຮັກສາຄວາມເປັນທຳມະຊາດຂອງພາສາ ແລະ ຮັກສາຄວາມໝາຍໃຫ້ດີຂຶ້ນ.","ຫຼຸດການປ່ຽນຄວາມໝາຍທີ່ອາດເພີ່ມສາເຫດເລື່ອງວຽກ, ເພີ່ມຄວາມໝາຍວ່າທັງໝົດ, ປ່ຽນບົດບາດໃນງານ ຫຼື ປ່ຽນຄຳຖາມການອະນຸຍາດເປັນຄຳເວົ້າອ້າງອີງ.","ການທົດສອບ DB 50 ລາຍການ ແລະ 18 ປະໂຫຍກ × 3 ຮອບສຳເລັດໂດຍບໍ່ມີ error; ແອັບທົ່ວໄປ, STT, TTS ແລະເສັ້ນທາງເຄືອຂ່າຍບໍ່ໄດ້ປ່ຽນ."],"sections":[["ການເຊື່ອມອະລະບໍ້າ",["ແອັບຫຼັກ ແລະ ອະລະບໍ້າໃຊ້ GitHub Pages ຕົ້ນທາງດຽວກັນ ຈຶ່ງໃຊ້ລະຫັດທີ 1 ແລະ ສະຖານະເສັ້ນທາງເຊື່ອມຕໍ່ຮ່ວມກັນໄດ້.","ເມື່ອເປີດອະລະບໍ້າ ຈະບັນທຶກພຽງໂໝດຜົວ/ເມຍ ແລະ ເສັ້ນທາງກັບໄປແອັບຫຼັກ; ບໍ່ໃສ່ຄ່າລັບໃນ URL."]],["ຂອບເຂດການອັບເດດ",["ນຳ P168A R8 ທີ່ທົດສອບແລ້ວຂຶ້ນ SERVICE ໂດຍບໍ່ເພີ່ມກົດ ຫຼື ຟັງຊັນໃໝ່ໃນຂັ້ນຕອນອັບເດດ.","SMART ແລະ prompt ແປກັບ/ກູ້ຄືນ ຍັງໃຊ້ຖານ P160A ແລະໃຫ້ຄວາມສຳຄັນກັບຄວາມໝາຍກັບຄວາມເປັນທຳມະຊາດ.","G158A, Chirp 3 STT, TTS, Relay/Cloudflare/Cloud Run ບໍ່ປ່ຽນ."]]],"previous":"V3.61.208 SERVICE · P168A R8."}})
  function safeGet(k){try{return localStorage.getItem(k)}catch(_){return null}} function safeSet(k,v){try{localStorage.setItem(k,v)}catch(_){} }
  function esc(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
  function releaseLang(){try{if(currentMode==='wife')return 'lo';if(currentMode==='husband')return 'ko';const st=typeof readUnifiedPersistentUiState==='function'?readUnifiedPersistentUiState():null;return st&&(st.currentMode==='wife'||st.view==='wife')?'lo':'ko'}catch(_){return 'ko'}}
