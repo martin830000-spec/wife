@@ -100,7 +100,60 @@ async function runForward(app,dir,source){if(stopped)throw new Error('STOPPED');
 async function runBack(app,dir,target){if(stopped)throw new Error('STOPPED');if(app==='general'){const f=await ensureGeneralFrame(),w=generalBridgeWindow(f),snap=generalRouteSnapshot();if(!w||typeof w.__generalDiagnosticBack!=='function')throw new Error('GENERAL_BACK_BRIDGE_MISSING');try{return await w.__generalDiagnosticBack(dir,target)}finally{restoreGeneralRouteSnapshot(snap)}}return await localCoupleBack(dir,target)}
 function apiKey(){try{return String(main()?.getUnifiedDiagnosticKey?.()||'').trim()}catch(_){return''}}
 function relayCfg(){try{return main()?.getUnifiedDiagnosticRelayConfig?.()||main()?.getUnifiedRelayConfigForMode?.('husband')||null}catch(_){return null}}
-async function adminFetch(path){const m=main();if(!m)throw new Error('MAIN_APP_NOT_OPEN');let session=String(m.getUnifiedAdminSessionToken?.()||'');if(!session){const ok=await m.ensureUnifiedAdminSession?.();if(!ok)throw new Error('ADMIN_AUTH_CANCELLED');session=String(m.getUnifiedAdminSessionToken?.()||'')}const cfg=relayCfg();if(!cfg?.token)throw new Error('RELAY_CONFIG_MISSING');const urls=[cfg.primary?.url,cfg.backup?.url].filter(Boolean);let last;for(const base of urls){try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000);let res;try{res=await fetch(String(base).replace(/\/$/,'')+path,{headers:{'X-App-Token':cfg.token,'X-Admin-Session':session,'Accept':'application/json'},cache:'no-store',signal:c.signal})}finally{clearTimeout(tm)}if(res.status===401||res.status===403){const ok=await m.requestUnifiedAdminReauthFromDiagnostic?.();if(ok)return adminFetch(path)}if(!res.ok)throw new Error('HTTP_'+res.status);const data=await res.json();data._relay=base;return data}catch(e){last=e}}throw last||new Error('ADMIN_FETCH_FAILED')}
+// SERVICE V3.61.209 diagnostic-only admin auth hotfix H1: bounded reauthentication and regional failover.
+let adminReauthFlight=null;
+async function adminReauthShared(m){
+  if(adminReauthFlight)return adminReauthFlight;
+  const pending=Promise.resolve().then(()=>m.requestUnifiedAdminReauthFromDiagnostic?.()).then(Boolean);
+  adminReauthFlight=pending;
+  try{return await pending}finally{if(adminReauthFlight===pending)adminReauthFlight=null}
+}
+async function adminFetch(path){
+  const m=main();
+  if(!m)throw new Error('MAIN_APP_NOT_OPEN');
+  let session=String(m.getUnifiedAdminSessionToken?.()||'');
+  if(!session){
+    const ok=await m.ensureUnifiedAdminSession?.();
+    if(!ok)throw new Error('ADMIN_AUTH_CANCELLED');
+    session=String(m.getUnifiedAdminSessionToken?.()||'');
+  }
+  if(!session)throw new Error('ADMIN_SESSION_MISSING');
+  const cfg=relayCfg();
+  if(!cfg?.token)throw new Error('RELAY_CONFIG_MISSING');
+  const urls=[...new Set([cfg.primary?.url,cfg.backup?.url].filter(Boolean).map(x=>String(x).replace(/\/+$/,'')))];
+  let last=null;
+  for(let pass=0;pass<2;pass++){
+    let unauthorized=false,forbidden=false;
+    last=null;
+    for(const base of urls){
+      try{
+        const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
+        let res;
+        try{
+          res=await fetch(base+path,{headers:{'X-App-Token':cfg.token,'X-Admin-Session':session,'Accept':'application/json'},cache:'no-store',signal:controller.signal});
+        }finally{clearTimeout(timer)}
+        if(res.status===401){unauthorized=true;last=new Error('HTTP_401');continue}
+        if(res.status===403){forbidden=true;last=new Error('HTTP_403');continue}
+        if(!res.ok){last=new Error('HTTP_'+res.status);continue}
+        const data=await res.json();
+        data._relay=base;
+        return data;
+      }catch(e){last=e}
+    }
+    // 403 is an authorization/permission response, never a reason to request the password again.
+    if(forbidden)throw new Error('HTTP_403');
+    if(!unauthorized||pass!==0)break;
+    // Another concurrent request may already have renewed the shared opener session.
+    const current=String(m.getUnifiedAdminSessionToken?.()||'');
+    if(current&&current!==session){session=current;continue}
+    // Prompt at most once for this request, coalescing concurrent expired-session prompts.
+    const ok=await adminReauthShared(m);
+    if(!ok)throw new Error('ADMIN_AUTH_CANCELLED');
+    session=String(m.getUnifiedAdminSessionToken?.()||'');
+    if(!session)throw new Error('ADMIN_SESSION_MISSING_AFTER_REAUTH');
+  }
+  throw last||new Error('ADMIN_FETCH_FAILED');
+}
 function windowData(w){return w&&typeof w==='object'?w:{}}
 function usageWindowMs(key){return key==='last7d'?7*86400000:key==='last30d'?30*86400000:86400000}
 function usageRecordPid(r){return String(r?.physicalDeviceId||r?.clientEnv?.physicalDeviceId||'').trim()}
