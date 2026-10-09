@@ -9336,7 +9336,8 @@ try{syncUnifiedVersionMetadata()}catch(e){console.warn('[VERSION EARLY SYNC]',e)
 
 const PAYLOAD_IDS={husband:'payload-husband',wife:'payload-wife'};
 const EXTERNAL_DIAGNOSTIC_URL='diagnostic-h2-20261010.html';
-const EXTERNAL_DIAGNOSTIC_SHA256='30d33abf1e93c472cc96c58173fc0f267c05e20d8b7a4cbaced2e2318bfcfee8';
+const EXTERNAL_DIAGNOSTIC_MANIFEST_URL='diagnostic-integrity.json';
+let EXTERNAL_DIAGNOSTIC_SHA256=''; // Populated from independently deployed and verified manifest.
 let externalDiagnosticSource='';
 const SHARED_RELAY_URL_STORAGE='unified_google_stt_relay_url';
 const SHARED_RELAY_TOKEN_STORAGE='unified_google_stt_relay_token';
@@ -10714,17 +10715,41 @@ function requestUnifiedAdminTools(app='couple'){
 window.requestUnifiedAdminTools=requestUnifiedAdminTools;
 
 async function loadExternalDiagnosticSource(){
-  if(externalDiagnosticSource)return externalDiagnosticSource;
-    const res=await fetch(EXTERNAL_DIAGNOSTIC_URL+'?v='+encodeURIComponent(INTEGRATED_VERSION),{cache:'no-store'});
-    if(!res.ok)throw new Error('DIAGNOSTIC_HTTP_'+res.status);
-    const source=await res.text();
-    const expected=`const DIAG_VERSION='${INTEGRATED_VERSION}'`;
-    if(!source.includes(expected))throw new Error('External diagnostic version mismatch');
-    const actualHash=await sha256HexText(source.replace(/\r\n/g,'\n'));
-    if(actualHash!==EXTERNAL_DIAGNOSTIC_SHA256)throw new Error('External diagnostic integrity mismatch');
-    externalDiagnosticSource=source;
-    return source;
+  // H2 release contract: index.html and spouse translation are frozen; the diagnostic
+  // and its same-origin SHA-256 manifest can be deployed together independently.
+  let lastError=null;
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const nonce=Date.now()+'-'+attempt;
+      const manifestResponse=await fetch(EXTERNAL_DIAGNOSTIC_MANIFEST_URL+'?v='+encodeURIComponent(nonce),{cache:'no-store'});
+      if(!manifestResponse.ok)throw new Error('DIAGNOSTIC_MANIFEST_HTTP_'+manifestResponse.status);
+      const manifest=await manifestResponse.json();
+      const expectedHash=String(manifest?.sha256||'').trim().toLowerCase();
+      if(Number(manifest?.schemaVersion)!==1
+        ||String(manifest?.appVersion||'')!==INTEGRATED_VERSION
+        ||String(manifest?.diagnosticPath||'')!==EXTERNAL_DIAGNOSTIC_URL
+        ||!/^[a-f0-9]{64}$/.test(expectedHash))throw new Error('DIAGNOSTIC_MANIFEST_INVALID');
+      const diagUrl=EXTERNAL_DIAGNOSTIC_URL+'?hash='+encodeURIComponent(expectedHash.slice(0,16))+'&v='+encodeURIComponent(nonce);
+      const response=await fetch(diagUrl,{cache:'no-store'});
+      if(!response.ok)throw new Error('DIAGNOSTIC_HTTP_'+response.status);
+      const source=await response.text();
+      const versionMarker="const DIAG_VERSION='"+INTEGRATED_VERSION+"'";
+      if(!source.includes(versionMarker))throw new Error('DIAGNOSTIC_VERSION_MISMATCH');
+      if(source.length<1000||!source.includes('function makePromptCompareLog'))throw new Error('DIAGNOSTIC_STRUCTURE_INVALID');
+      const actualHash=await sha256HexText(source.replace(/\r\n/g,'\n'));
+      if(actualHash!==expectedHash)throw new Error('DIAGNOSTIC_DEPLOY_INTEGRITY_PENDING');
+      EXTERNAL_DIAGNOSTIC_SHA256=actualHash;
+      externalDiagnosticSource=source;
+      return source;
+    }catch(e){
+      lastError=e;
+      console.warn('[DIAGNOSTIC LOAD RETRY]',attempt+1,String(e?.message||e));
+      if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350+(attempt*650)));
+    }
+  }
+  throw lastError||new Error('DIAGNOSTIC_LOAD_FAILED');
 }
+
 function createUnifiedDiagnosticPopup(message='진단도구를 불러오는 중...'){
   try{if(unifiedDiagnosticPopup&&!unifiedDiagnosticPopup.closed)unifiedDiagnosticPopup.close()}catch(_){}
   const popupName='UnifiedCombinedDiagnostic_'+INTEGRATED_VERSION.replace(/[^A-Za-z0-9]/g,'')+'_'+Date.now();
@@ -10747,11 +10772,19 @@ async function openUnifiedAdminDiagnostic(preopenedPopup=null){
     popup.document.close();
     popup.focus();
   }catch(e){
-    try{popup.close()}catch(_){}
-    unifiedDiagnosticPopup=null;
-    externalDiagnosticSource='';
     console.error('[DIAGNOSTIC OPEN]',e);
-    unifiedAlert('관리자 종합 성능 테스트 창을 열지 못했습니다. 연결된 진단기 파일을 읽지 못했습니다. 진단기 경로·버전·SHA 무결성을 확인해주세요.');
+    // This is an on-demand diagnostic tool; never block the live translator
+    // with an app-wide modal for temporary Pages/manifest propagation.
+    try{
+      popup.document.open();
+      popup.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단기 연결 확인</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="font-family:system-ui,sans-serif;margin:32px;line-height:1.6"><h2>진단기를 불러오지 못했습니다</h2><p>진단기 파일이 배포 중이거나 연결 상태를 확인해야 합니다. 번역앱의 서비스 기능에는 영향을 주지 않습니다.</p><p id="diagOpenFailReason" style="color:#636b77;font:12px monospace;overflow-wrap:anywhere"></p><button id="diagOpenRetry" style="padding:12px 18px;cursor:pointer">다시 시도</button></body></html>');
+      popup.document.close();
+      const note=popup.document.getElementById('diagOpenFailReason');
+      if(note)note.textContent=String(e?.message||e).slice(0,180);
+      const retry=popup.document.getElementById('diagOpenRetry');
+      if(retry)retry.addEventListener('click',()=>openUnifiedAdminDiagnostic(popup));
+      popup.focus();
+    }catch(renderError){console.error('[DIAGNOSTIC FAILURE VIEW]',renderError)}
   }
 }
 window.openUnifiedAdminDiagnostic=openUnifiedAdminDiagnostic;
