@@ -9335,7 +9335,7 @@ function syncManualMetadata(){
 try{syncUnifiedVersionMetadata()}catch(e){console.warn('[VERSION EARLY SYNC]',e)}
 
 const PAYLOAD_IDS={husband:'payload-husband',wife:'payload-wife'};
-const EXTERNAL_DIAGNOSTIC_URL='diagnostic.html';
+const EXTERNAL_DIAGNOSTIC_URL='diagnostic-h2-20261010.html';
 const EXTERNAL_DIAGNOSTIC_SHA256='30d33abf1e93c472cc96c58173fc0f267c05e20d8b7a4cbaced2e2318bfcfee8';
 let externalDiagnosticSource='';
 const SHARED_RELAY_URL_STORAGE='unified_google_stt_relay_url';
@@ -10693,7 +10693,7 @@ async function getUnifiedRuntimeSafetyAudit(){
     add('HUSBAND_WIFE_FEATURE_PARITY',h.includes('id="retranslateBtn"')&&w.includes('id="retranslateBtn"')&&h.includes('id="copyBackBtn"')&&w.includes('id="copyBackBtn"')&&h.includes('id="voiceInputBtn"')&&w.includes('id="voiceInputBtn"')&&!h.includes('id="backTransBtn"')&&!w.includes('id="backTransBtn"'));
     add('MOBILE_KEYBOARD_GUARD',h.includes("installMobileKeyboardGuard('krInput','inputComposer')")&&w.includes("installMobileKeyboardGuard('loInput','inputComposer')"));
     add('INPUT_NOT_CLEARED_ON_FOCUS',!h.includes('clearTextOnFocus')&&!w.includes('clearTextOnFocus'));
-    add('DIAGNOSTIC_EXTERNAL_LAZY',EXTERNAL_DIAGNOSTIC_URL==='diagnostic.html'&&!document.getElementById('payload-diagnostic'));
+    add('DIAGNOSTIC_EXTERNAL_LAZY',EXTERNAL_DIAGNOSTIC_URL==='diagnostic-h2-20261010.html'&&!document.getElementById('payload-diagnostic'));
     add('DIAGNOSTIC_SESSION_GUARD_EXPOSED',typeof getUnifiedDiagnosticSessionId==='function'&&typeof getUnifiedLivePromptSnapshot==='function'&&!!UNIFIED_HOST_SESSION_ID);
     add('USER_UI_TECH_TERMS_HIDDEN',!document.getElementById('serverSetupOverlay')?.innerText.match(/API|Gemini|Azure|Firestore|Cloud Run/i));
     add('ADMIN_PASSWORD_NOT_IN_HTML',typeof unifiedAdminLoginRemote==='function'&&unifiedAdminLoginRemote.toString().includes('/admin/login')&&!submitUnifiedAdminAuth.toString().includes('password===')&&!submitUnifiedAdminAuth.toString().includes('password!=='));
@@ -10751,7 +10751,7 @@ async function openUnifiedAdminDiagnostic(preopenedPopup=null){
     unifiedDiagnosticPopup=null;
     externalDiagnosticSource='';
     console.error('[DIAGNOSTIC OPEN]',e);
-    unifiedAlert('관리자 종합 성능 테스트 창을 열지 못했습니다. index.html과 diagnostic.html이 같은 위치에 있는지 확인해주세요.');
+    unifiedAlert('관리자 종합 성능 테스트 창을 열지 못했습니다. 연결된 진단기 파일을 읽지 못했습니다. 진단기 경로·버전·SHA 무결성을 확인해주세요.');
   }
 }
 window.openUnifiedAdminDiagnostic=openUnifiedAdminDiagnostic;
@@ -10806,7 +10806,7 @@ function getUnifiedShellHealth(){
   const buttons=['authScreen','husbandModeBtn','wifeModeBtn','unifiedManual'];
   const missing=buttons.filter(id=>!document.getElementById(id));
   let payloads=true;
-  try{payloads=getPayloadText('husband').length>1000&&getPayloadText('wife').length>1000&&EXTERNAL_DIAGNOSTIC_URL==='diagnostic.html'}catch(e){payloads=false}
+  try{payloads=getPayloadText('husband').length>1000&&getPayloadText('wife').length>1000&&EXTERNAL_DIAGNOSTIC_URL==='diagnostic-h2-20261010.html'}catch(e){payloads=false}
   const handlers=(typeof startUnifiedTranslator==='function'&&typeof loginUnified==='function'&&typeof selectMode==='function'&&typeof openUnifiedManual==='function');
   return {ok:missing.length===0&&payloads&&handlers,version:INTEGRATED_VERSION,architecture:INTEGRATED_ARCHITECTURE,missing,payloads,handlers};
 }
