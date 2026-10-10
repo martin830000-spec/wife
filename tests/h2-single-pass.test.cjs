@@ -302,3 +302,28 @@ test('H2 first PINNED run freezes real-use 2+2 without prior local A/B and then 
   assert.equal(next.length,4);assert.equal(serverCalls,1);
   assert.deepEqual(Array.from(next,x=>x.sourceText),Array.from(first,x=>x.sourceText));
 });
+
+
+test('recent-record export permits 1000 original records with independent back text; no Gemini requests',async()=>{
+  assert.match(s,/<select id="recordCount">[^<]*<option value="50">50건<\/option>[\s\S]*?<option value="1000">1000건<\/option><\/select>/);
+  assert.match(s,/rows=await fetchRecentRecords\(dir,n,app,1000,retryFilter\)/);
+  assert.match(s,/requested=\${n} returned=\${rows.length} back=\${withBack\?'ON':'OFF'\}/);
+  assert.match(s,/if\(withBack\)x\.push\(\`역번역: \${String\(r\.backText\|\|'-'\)}\`\)/);
+  const a=s.indexOf("async function fetchRecentRecords("),b=s.indexOf("function engineForRecord(",a);
+  assert.ok(a>=0&&b>a);
+  const all=Array.from({length:1050},(_,i)=>({sourceText:'source-'+i,targetText:'forward-'+i,backText:'back-'+i,direction:i%2?'L2K':'K2L',app:'couple',date:1050-i}));
+  let url='';
+  const context=vm.createContext({
+    adminFetch:async x=>{url=x;return {records:all};},
+    isTranslationRecord:()=>true,recordTs:r=>r.date,storedApp:()=> 'couple',
+    buildRetranslationSessions:()=>{throw Error('must not group when all')},
+    retrySessionMatch:()=>true,retrySessionCompact:()=>({})
+  });
+  vm.runInContext(s.slice(a,b),context);
+  const result=await vm.runInContext("fetchRecentRecords('ALL',1000,'ALL',1000,'all')",context);
+  assert.equal(result.length,1000);
+  assert.equal(result[0].sourceText,'source-0');
+  assert.equal(result[999].backText,'back-999');
+  assert.match(url,/limit=1000/);
+  assert.match(url,/scan=4000/);
+});
