@@ -68,3 +68,34 @@ test('H2 A/B audit validates retained isolation and single-pass fields, not remo
   assert.match(s,/SINGLE_PASS_METRIC=client forward AND back generations/);
   assert.doesNotMatch(s,/makePromptCompareLog\.toString\(\)\.includes\('roundtrip meaning preservation'\)/);
 });
+
+test('H2 compares real historical P160A clone against P160-derived candidate',()=>{
+  const findConfig=name=>{
+    const m=s.match(new RegExp('const '+name+'=(\\\\{[^\\\\n]+\\\\});'));
+    assert.ok(m,'embedded '+name);
+    return JSON.parse(m[1]);
+  };
+  const a=findConfig('PROMPT_COMPARE_P160A_CONFIG'),b=findConfig('PROMPT_COMPARE_DEFAULT_B');
+  const canonical=x=>JSON.stringify({schemaVersion:x.schemaVersion,channel:x.channel,promptRevision:x.promptRevision,forward:x.forward,smart:x.smart,back:x.back});
+  assert.equal(a.promptRevision,'P160A');
+  assert.equal(a.promptSha256,'422e1d8fa4b51c790d385a2d314da1e99de31681198a0e69183d57a9be2fe639');
+  assert.equal(b.promptRevision,'EXP-P160-HERITAGE-P172-R1');
+  assert.equal(b.promptSha256,'e2d8b7d3d9b253d036aff731db0d90534ac6ebe57f2601a7ac5b04c74dfe936e');
+  for(const p of [a,b])assert.equal(crypto.createHash('sha256').update(canonical(p)).digest('hex'),p.promptSha256);
+  assert.deepEqual(a.smart,b.smart);
+  assert.deepEqual(a.back,b.back);
+  assert.notEqual(a.forward.k2l,b.forward.k2l);
+  assert.notEqual(a.forward.l2k,b.forward.l2k);
+  assert.match(s,/BASELINE_NOT_EXACT_P160A/);
+  assert.match(s,/SERVICE_RUNTIME_FINGERPRINT_MISMATCH/);
+  assert.match(s,/PROMPT_COMPARE_SERVICE_REV='P168A'/);
+  assert.match(s,/promptCompareLoadBase\\(\\);/);
+  const start=s.indexOf('async function promptCompareLane('),stop=s.indexOf('function makePromptCompareLog()',start);
+  assert.ok(start>0&&stop>start);
+  const lane=s.slice(start,stop);
+  assert.match(lane,/promptCompareCandidateForward\\(dir,source,kind==='A'\\?cfg.base:cfg.candidate\\)/);
+  assert.match(lane,/promptCompareCandidateBack\\(dir,out.forward,kind==='A'\\?cfg.base:cfg.candidate\\)/);
+  assert.doesNotMatch(lane,/localCoupleForward\\(/);
+  assert.doesNotMatch(lane,/localCoupleBack\\(/);
+  assert.match(s,/const z=await promptCompareLane\\(lane,dir,source,prep\\)/);
+});
