@@ -484,7 +484,7 @@ body.unified-booting .shell,body.unified-booting #authScreen{visibility:hidden}
 </div>
 
 
-<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="34035f5a2b798165c920060a5cf2411a0a672557ac551c06aa667e7502f0e810">&lt;!DOCTYPE html&gt;
+<textarea id="payload-husband" hidden aria-hidden="true" tabindex="-1" data-kind="husband" data-sha256="b1599214d91bc23938b6a591009084e8c5e0a6f107f0aadd296931febfeb9ed4">&lt;!DOCTYPE html&gt;
 &lt;html lang="ko"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
@@ -1786,6 +1786,12 @@ async function integratedRelayTtsFetch(options={},meta={}){
   return integratedRelayFetch('/azure/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p),signal:options.signal},{action:meta.action||'tts'});
 }
 async function fetchPrimaryDirect(url,options={},meta={}){
+  // SINGLE_PASS_R2: preselect route before generation dispatch, including Lao wife Cloudflare.
+  if(isSinglePassGenerationPath(url,meta)&amp;&amp;(INTEGRATED_MODE==='wife'||networkRoutePreferred('relay',meta)==='cloudflare')){
+    const preselected=await integratedRelayGeminiFetch(options,meta);
+    try{preselected.__directFallback=false}catch(_){}
+    return preselected;
+  }
   let response;
   try{
     response=await fetch(url,Object.assign({},options,{cache:'no-store'}));try{response.__clientRoute='direct';response.__directFallback=false}catch(e){}
@@ -5649,7 +5655,7 @@ window.addEventListener('pagehide',()=&gt;{if(document.getElementById('coupleFul
 &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="f222a964f8ce6b06ad3bd9816456e519e16523d6334318637e9b1620efd29ea5">&lt;!DOCTYPE html&gt;
+</textarea><textarea id="payload-wife" hidden aria-hidden="true" tabindex="-1" data-kind="wife" data-sha256="896eff15e743c89e4a40a7ee2bb76a5aa6e862b7b7f423028ca842310a12f0dd">&lt;!DOCTYPE html&gt;
 &lt;html lang="lo"&gt;
 &lt;head&gt;
 &lt;meta charset="UTF-8"&gt;
@@ -6886,6 +6892,12 @@ async function integratedRelayTtsFetch(options={},meta={}){
   return integratedRelayFetch('/azure/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p),signal:options.signal},{action:meta.action||'tts'});
 }
 async function fetchPrimaryDirect(url,options={},meta={}){
+  // SINGLE_PASS_R2: preselect route before generation dispatch, including Lao wife Cloudflare.
+  if(isSinglePassGenerationPath(url,meta)&amp;&amp;(INTEGRATED_MODE==='wife'||networkRoutePreferred('relay',meta)==='cloudflare')){
+    const preselected=await integratedRelayGeminiFetch(options,meta);
+    try{preselected.__directFallback=false}catch(_){}
+    return preselected;
+  }
   let response;
   try{
     response=await fetch(url,Object.assign({},options,{cache:'no-store'}));try{response.__clientRoute='direct';response.__directFallback=false}catch(e){}
