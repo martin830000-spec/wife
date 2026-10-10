@@ -109,3 +109,50 @@ test('H2 persists independent back details in both lanes with token usage or UNK
  assert.ok(s.includes('BACK_DETAIL_JSON'));
  assert.ok(s.includes("promptCompareCandidateBack(dir,out.forward,kind==='A'?cfg.base:cfg.candidate)"));
 });
+
+test('H2 real usage of back diagnostics is transported in cloned instrumentation for husband and wife',()=>{
+  const start=s.indexOf('function enrichBackTokenDiagnosticClone('),end=s.indexOf('function promptCompareInjectSrcdoc(',start);
+  assert.ok(start>0&&end>start);
+  const ctx=vm.createContext({});
+  vm.runInContext(s.slice(start,end),ctx);
+  const fixture='function run(v){const rec={};rec.quality=v?.quality||null;return v}';
+  for(const mode of ['husband','wife']){
+    const patched=ctx.enrichBackTokenDiagnosticClone(fixture,mode);
+    assert.notEqual(patched,fixture);
+    assert.ok(patched.includes('rec.usageMetadata='));
+    const testSrc=patched.replace('return v}', 'return rec}')+
+      ';run({usage:{prompt:250,candidate:13,thoughts:24,total:287}})';
+    const record=vm.runInContext(testSrc,vm.createContext({}));
+    assert.equal(record.usageMetadata.promptTokenCount,250);
+    assert.equal(record.usageMetadata.candidatesTokenCount,13);
+    assert.equal(record.usageMetadata.thoughtsTokenCount,24);
+    assert.equal(record.usageMetadata.totalTokenCount,287);
+    const missing=vm.runInContext(patched.replace('return v}', 'return rec}')+';run({})',vm.createContext({}));
+    assert.equal(missing.usageMetadata,null);
+  }
+  assert.match(s,/promptCompareInjectSrcdoc\(enrichBackTokenDiagnosticClone\(enrichRepairDiagnosticClone\(doc\.srcdoc,mode\),mode\),cfg\)/);
+  assert.match(s,/const backUsage=v\?\.usage/);
+});
+test('H2 estimates four-path cost ONLY when both reverse and forward token totals are observed',()=>{
+  const a=s.indexOf('function pcValidMs('),b=s.indexOf('function pcForwardDetail(',a);
+  const x=s.indexOf('function pcCostRate('),y=s.indexOf('function pcSummarizeForward(',x);
+  assert.ok(a>0&&b>a&&x>0&&y>x);
+  const ctx=vm.createContext({MODEL:'gemini-3.8-flash'});
+  vm.runInContext(s.slice(a,b)+s.slice(x,y),ctx);
+  const forward={requestTrace:[{promptTokens:100,totalTokens:150}]};
+  const back={requestTrace:[{promptTokens:200,totalTokens:225}]};
+  const row={dir:'K2L',aForwardDetail:forward,aBackDetail:back};
+  ctx.rows=[row];const complete=vm.runInContext("pcFourPathCost(rows,'K2L','A')",ctx);
+  assert.equal(complete.complete,true);assert.equal(complete.forwardKnown,1);
+  assert.equal(complete.backKnown,1);assert.equal(complete.backPromptTokens,200);
+  assert.ok(complete.totalUsd>0);
+  const forwardUsd=(100*.75+50*3.75)/1e6,backUsd=(200*.75+25*3.75)/1e6;
+  assert.ok(Math.abs(complete.totalUsd-forwardUsd-backUsd)<1e-10);
+  ctx.rows=[{dir:'L2K',aForwardDetail:forward,aBackDetail:{requestTrace:[{promptTokens:null,totalTokens:null}]}}];
+  const missing=vm.runInContext("pcFourPathCost(rows,'L2K','A')",ctx);
+  assert.equal(missing.complete,false);assert.equal(missing.totalUsd,null);
+  assert.equal(missing.backUsd,null);assert.equal(missing.backKnown,0);
+  assert.match(s,/FOUR_PATH_COST_ESTIMATE_JSON/);
+  assert.match(s,/id="pcCostA"/);
+  assert.match(s,/id="pcCostB"/);
+});
