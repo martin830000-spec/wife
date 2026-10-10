@@ -3451,11 +3451,14 @@ const SharedCriticalMeaningCoreV277=(()=&gt;{
     const n=Number(x);return Number.isFinite(n)?String(n):null;
   };
   function semanticNumberAliasSet(text,lang){
+    // H2 TEST R1: "한번" before try/check verbs is adverbial, not an explicit count.
+    // Preserve "한 번", "한번만", "한번 더", dates, amounts and clock times.
+    const h2CountingAliasText=String(text||'').replace(/한번(?=\s*(?:찾아|사\s*보|확인|해\s*보|생각해\s*보|알아|시도))/gu,' ');
     const s=String(text||''),out=new Set();
     if(lang==='ko'){
       const counters='(?:잔|알|개|번|명|시간|분|시|대|병|포|그릇|끼|개비)';
       const rules=[['1','(?:한|하나)'],['2','(?:두|둘)'],['3','(?:세|셋)'],['4','(?:네|넷)']];
-      for(const [n,w] of rules)if(new RegExp(w+'\\s*'+counters,'u').test(s))out.add(n);
+      for(const [n,w] of rules)if(new RegExp(w+'\\s*'+counters,'u').test(h2CountingAliasText))out.add(n);
     }else{
       const counters='(?:ແກ້ວ|ຈອກ|ເມັດ|ຄົນ|ຄັ້ງ|ຊົ່ວໂມງ|ນາທີ|ອັນ|ຂວດ)';
       const rules=[['1','(?:ໜຶ່ງ|ນຶ່ງ)'],['2','ສອງ'],['3','ສາມ'],['4','ສີ່']];
@@ -4538,6 +4541,7 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
               }else semanticRepairFailed=true;
             }
             // Meaning heuristics never auto-repair; only the objective corruption branch above may retry.
+            if(semanticRepairFailed&&(initialHardLatin.hard||initialHardDamage))throw makeCriticalSafetyErrorK2L({reasons:['OBJECTIVE_OUTPUT_CORRUPTION_REPAIR_FAILED']});
             const finalText = result.text;
             // V2.18: 이해 가능한 경미한 품질 경고는 추가 요청 없이 즉시 표시.
             // 속도와 안정성을 우선하고, 실제 사용을 방해하는 큰 오류만 차단한다.
@@ -8154,11 +8158,14 @@ const SharedCriticalMeaningCoreV277=(()=&gt;{
     const n=Number(x);return Number.isFinite(n)?String(n):null;
   };
   function semanticNumberAliasSet(text,lang){
+    // H2 TEST R1: "한번" before try/check verbs is adverbial, not an explicit count.
+    // Preserve "한 번", "한번만", "한번 더", dates, amounts and clock times.
+    const h2CountingAliasText=String(text||'').replace(/한번(?=\s*(?:찾아|사\s*보|확인|해\s*보|생각해\s*보|알아|시도))/gu,' ');
     const s=String(text||''),out=new Set();
     if(lang==='ko'){
       const counters='(?:잔|알|개|번|명|시간|분|시|대|병|포|그릇|끼|개비)';
       const rules=[['1','(?:한|하나)'],['2','(?:두|둘)'],['3','(?:세|셋)'],['4','(?:네|넷)']];
-      for(const [n,w] of rules)if(new RegExp(w+'\\s*'+counters,'u').test(s))out.add(n);
+      for(const [n,w] of rules)if(new RegExp(w+'\\s*'+counters,'u').test(h2CountingAliasText))out.add(n);
     }else{
       const counters='(?:ແກ້ວ|ຈອກ|ເມັດ|ຄົນ|ຄັ້ງ|ຊົ່ວໂມງ|ນາທີ|ອັນ|ຂວດ)';
       const rules=[['1','(?:ໜຶ່ງ|ນຶ່ງ)'],['2','ສອງ'],['3','ສາມ'],['4','ສີ່']];
@@ -8636,6 +8643,7 @@ async function translateText(options={}){
   const source=document.getElementById('loInput').value.trim();if(!currentApiKey){requestIntegratedCredentialEntry('primary','translate',0);appAlert('⚠️ ຕ້ອງໃສ່ລະຫັດທີ 1 ໃໝ່.');return}if(!source){focusMainTextInput();return}
   cancelBackTranslation(false);setBackTime('');stopKorean();const runId=++translationRunId;telemetryBeginAttempt(runId);lastRequestPayload=source;lastForwardQualitySnapshot=null;lastForwardTargetSnapshot='';setRetry(false);isTranslating=true;const btn=document.getElementById('translateBtn');btn.textContent='⏹️ ຢຸດການແປ';btn.style.background='#d93025';startTimer();document.getElementById('koResult').textContent='';setPrimaryResultVisible(false);document.getElementById('backResult').innerHTML=DEFAULT_BACK_HTML;setBackResultState(false,false);updateSpeechButtonAvailability();setKoreanCopyReady(false);const records=[];const ctx={activeSet:mainControllers,records,isActive:()=&gt;runId===translationRunId&amp;&amp;isTranslating,onStatus:t=&gt;{const el=document.getElementById('loadingText');if(el)el.textContent=t}};const started=performance.now();
   try{const singleHandle=createForwardRequest(source,ctx,'ຄຳແປຫຼັກ',GEMINI_TIMEOUT_MS,forwardMaxOutputTokensForSource(source));const singleOutcome=await singleHandle.outcome;if(!ctx.isActive())return;if(!singleOutcome.ok)throw singleOutcome.error;let result={...singleOutcome.result,hedged:false,rescued:false,tailRescued:false,winner:'ຄຳແປຫຼັກ'};let semanticRepaired=false,semanticRepairFailed=false;let initialCriticalRisk=detectCriticalMeaningRiskL2K(source,result.text);if(initialCriticalRisk.critical){result.quality={...(result.quality||{}),semanticAdvisory:true,semanticAdvisoryReasons:[...(initialCriticalRisk.reasons||[]),...(initialCriticalRisk.advisoryReasons||[])]};/* semantic heuristic remains diagnostic-only */}const minorAutoRepaired=false;let latinResidueAutoRetried=false,brokenCharAutoRetried=false;const initialHardLatin=detectHardLatinResidueV36140(source,result.text,'korean');const initialHardDamage=(initialCriticalRisk.reasons||[]).some(x=&gt;/^(?:HARD_MIXED_SCRIPT_CORRUPTION|BROKEN_REPLACEMENT_CHAR)$/.test(String(x)));if(initialHardLatin.hard||initialHardDamage){const repaired=await requestCriticalMeaningRepairL2K(source,{reasons:['OBJECTIVE_OUTPUT_CORRUPTION']},runId,ctx);if(repaired?.text&amp;&amp;ctx.isActive()){const repairedRisk=detectCriticalMeaningRiskL2K(source,repaired.text),repairedHardLatin=detectHardLatinResidueV36140(source,repaired.text,'korean'),repairedHardDamage=(repairedRisk.reasons||[]).some(x=&gt;/^(?:HARD_MIXED_SCRIPT_CORRUPTION|BROKEN_REPLACEMENT_CHAR)$/.test(String(x)));if(!repairedHardLatin.hard&amp;&amp;!repairedHardDamage){result={...repaired,hedged:false,rescued:true,tailRescued:false,winner:'ຄຳແປຫຼັກ·ກູ້ຂໍ້ຄວາມ'};semanticRepaired=true;latinResidueAutoRetried=initialHardLatin.hard;brokenCharAutoRetried=initialHardDamage;initialCriticalRisk=repairedRisk}else semanticRepairFailed=true}else semanticRepairFailed=true}// V3.61.207: semantic findings stay advisory; only objective corruption can trigger one repair.
+  if(semanticRepairFailed&&(initialHardLatin.hard||initialHardDamage))throw makeCriticalSafetyErrorL2K({reasons:['OBJECTIVE_OUTPUT_CORRUPTION_REPAIR_FAILED']});
   const finalText=result.text;/* V2.18: 경미한 품질 경고는 추가 정리 없이 즉시 표시 */document.getElementById('koResult').textContent=finalText;setPrimaryResultVisible(true);lastForwardQualitySnapshot={...(result.quality||{})};lastForwardTargetSnapshot=finalText;updateQualityBadge({...result.quality,postBackPending:true}, source, finalText);setTranslationOutputSafety(result.quality,finalText);isJustTranslated=true;clearInputDirtyIfUnchanged(source,'loInput');deferStoreTranslation(source,finalText,result.quality,{winner:result.winner,semanticRepaired,semanticRepairFailed,elapsedMs:performance.now()-started});const sec=((performance.now()-started)/1000).toFixed(1);recordLivePerfSample({totalMs:Math.round(performance.now()-started),winner:String(result.winner||''),hedged:!!result.hedged,rescued:!!result.rescued,winningRequestMs:Math.round(result.elapsedMs||0),requestCount:records.length,promptCharsMax:Math.max(0,...records.map(x=&gt;Number(x.promptChars||0))),promptCharsTotal:records.reduce((n,x)=&gt;n+Number(x.promptChars||0),0),semanticRepaired,semanticRepairFailed,brokenCharAutoRetried:!!brokenCharAutoRetried,outputLocked:!!translationOutputLocked,sourceChars:source.length,targetChars:finalText.length});telemetryCommitPrimary({runId,direction:'L2K',sourceText:source,targetText:finalText,quality:result.quality,totalMs:Math.round(performance.now()-started),winner:result.winner,hedged:!!result.hedged,rescued:!!result.rescued,tailRescued:!!result.tailRescued,winningRequestMs:Math.round(result.elapsedMs||0),semanticRepaired,semanticRepairFailed,brokenCharAutoRetried:!!brokenCharAutoRetried,outputLocked:!!translationOutputLocked,requestRecords:records});console.log('[WIFE TRANSLATION SUCCESS]',{elapsedSec:sec,winner:result.winner,hedged:result.hedged,rescued:result.rescued,minorContaminationDetected:result.quality?.softContamination===true,minorAutoRepaired,latinResidueAutoRetried,semanticRepaired,semanticRepairFailed,geminiRequestCount:records.length,promptCharsMax:Math.max(0,...records.map(x=&gt;Number(x.promptChars||0))),promptCharsTotal:records.reduce((n,x)=&gt;n+Number(x.promptChars||0),0),requestLabels:records.map(x=&gt;x.label)});stopTimer('ສຳເລັດ');resetTranslationUI();setKoreanCopyReady(true);updateSpeechButtonAvailability();if(isAutoSoundOn)void speakKorean();void requestBackTranslation(true);}
   catch(e){if(runId!==translationRunId)return;resetTranslationUI();setKoreanCopyReady(false);setRetry(true);setPrimaryResultVisible(true);if(e?.name==='AbortError'){stopTimer('ຢຸດແລ້ວ');document.getElementById('koResult').textContent='⚠️ ການແປຖືກຢຸດແລ້ວ.';return}
     if(hasCriticalTranslationFailure(e)){stopTimer('ລົ້ມເຫຼວ');document.getElementById('koResult').textContent=errorMessageLao(e,records);telemetryCommitFailure({runId,direction:'L2K',sourceText:source,error:e,stage:'critical-translation-failure',totalMs:Math.round(performance.now()-started),requestRecords:records});console.error('[WIFE TRANSLATION CRITICAL BLOCK]',e,records);return}
