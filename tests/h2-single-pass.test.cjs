@@ -163,3 +163,57 @@ test('H2 has budget-safe balanced 4-case instrumentation smoke option',()=>{
  assert.match(s,/Math\.ceil\(n\/2\)/);
  assert.match(s,/Math\.floor\(n\/2\)/);
 });
+
+// TEST H2 NEW SAMPLE R5: deterministic, no live API calls and no SERVICE code involvement.
+test('H2 new-only sampler removes historic 50, excludes seen values, and removes near-duplicates',()=>{
+  const a=s.indexOf('const PC_HISTORIC_50_HASHES='),b=s.indexOf('function promptCompareUpdate(',a);
+  assert.ok(a>0&&b>a,'sampler functions exist');
+  const ctx=vm.createContext({});
+  vm.runInContext(s.slice(a,b),ctx);
+  assert.equal(vm.runInContext('PC_HISTORIC_50_HASHES.size',ctx),50);
+  const exact='오늘 집에 가는 길에 꽃집에 가서 한번 사 보세요.';
+  assert.equal(vm.runInContext('pcSourceHash('+JSON.stringify(exact)+')',ctx),'5af6cf62391f5ed8');
+  const aText='오늘은 영화를 보기 전에 친구에게 생일 선물을 전해 줄게.';
+  const near='오늘은 영화를 보기 전에 친구에게 생일 선물을 전해 줄게! 😀';
+  const clean='내일은 공원에서 아내와 함께 산책을 하고 저녁을 먹을 거야.';
+  const stats={};
+  ctx.records=[{sourceText:exact},{sourceText:aText},{sourceText:near},{sourceText:clean}];
+  ctx.extra={mode:'NEW',seed:'testseed',previous:new Set(),stats};
+  const result=vm.runInContext("promptCompareUnique(records,5,'K2L',extra)",ctx);
+  assert.equal(result.length,2,'one historic and one near duplicate excluded');
+  assert.equal(stats.excludedHistorical,1);
+  assert.equal(stats.excludedNear,1);
+  ctx.extra.previous.add(vm.runInContext('pcSourceHash('+JSON.stringify(clean)+')',ctx));
+  const again=vm.runInContext("promptCompareUnique(records,5,'K2L',extra)",ctx);
+  assert.equal(again.length,1);
+});
+test('H2 never silently substitutes old records for insufficient new holdout',async()=>{
+  const a=s.indexOf('const PC_HISTORIC_50_HASHES='),b=s.indexOf('function promptCompareUpdate(',a);
+  const context=vm.createContext({fetchRecentRecords:async(dir)=>dir==='K2L'?
+    [{sourceText:'오늘 집에 가는 길에 꽃집에 가서 한번 사 보세요.',direction:dir},{sourceText:'안녕하세요 새로운 한국어 문장입니다. 내일 다시 전화해 주세요.',direction:dir}]:
+    [{sourceText:'ວັນນີ້ກິນເຂົ້າຢູ່ກັບຄອບຄົວ',direction:dir},{sourceText:'ຕອນຄ່ຳຈະໄປຊື້ດອກໄມ້ກັບໝູ່',direction:dir}]});
+  vm.runInContext(s.slice(a,b),context);
+  vm.runInContext('pcHistoryRead=async()=>new Set()',context);
+  await assert.rejects(vm.runInContext("promptCompareFetchRows(4,'NEW','fixture')",context),/INSUFFICIENT_NEW_CASES/);
+  const reg=await vm.runInContext("promptCompareFetchRows(4,'REGRESSION','fixture')",context);
+  assert.equal(reg.length,4);
+  assert.equal(reg.sampleMeta.mode,'REGRESSION');
+});
+test('H2 retains independent four-path review warnings and evidence in TXT without self-grading',()=>{
+  const a=s.indexOf('const PC_REVIEW_STAGES='),b=s.indexOf('function promptCompareRender(',a);
+  assert.ok(a>0&&b>a);
+  const ctx=vm.createContext({});
+  vm.runInContext(s.slice(a,b),ctx);
+  const flags=vm.runInContext("pcStageFlags('L2K','안녕하세요','ສະບາຍດີ ແຖມ Wait, correction: test/test')",ctx);
+  assert.ok(flags.back.includes('THAI_SCRIPT_SUSPECT'));
+  assert.ok(flags.back.includes('FOREIGN_LATIN_SUSPECT'));
+  assert.ok(flags.back.includes('SLASH_ALTERNATIVES_SUSPECT'));
+  assert.equal(flags.semantic,'MANUAL_REVIEW_REQUIRED');
+  assert.match(s,/A_STAGE_REVIEW/);assert.match(s,/B_STAGE_REVIEW/);
+  assert.match(s,/SAMPLE_SELECTION_JSON/);assert.match(s,/SAMPLE_MODE=/);
+  assert.match(s,/pcStageReviewUi\(r,'A'\)/);
+  assert.match(s,/pcStageReviewUi\(r,'B'\)/);
+  assert.match(s,/PC_TESTED_HASH_DB_KEY/);
+  assert.match(s,/pcHistoryMark\(source\)/);
+  assert.doesNotMatch(s,/\b(?:autoQualityResult|autoSemanticGrade)\s*=\s*true/);
+});
