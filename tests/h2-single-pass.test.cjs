@@ -168,7 +168,7 @@ test('H2 has budget-safe balanced 4-case instrumentation smoke option',()=>{
 test('H2 new-only sampler removes historic 50, excludes seen values, and removes near-duplicates',()=>{
   const a=s.indexOf('const PC_HISTORIC_50_HASHES='),b=s.indexOf('function promptCompareUpdate(',a);
   assert.ok(a>0&&b>a,'sampler functions exist');
-  const ctx=vm.createContext({});
+  const ctx=vm.createContext({pcRisk:()=>''});
   vm.runInContext(s.slice(a,b),ctx);
   assert.equal(vm.runInContext('PC_HISTORIC_50_HASHES.size',ctx),50);
   const exact='오늘 집에 가는 길에 꽃집에 가서 한번 사 보세요.';
@@ -189,7 +189,7 @@ test('H2 new-only sampler removes historic 50, excludes seen values, and removes
 });
 test('H2 never silently substitutes old records for insufficient new holdout',async()=>{
   const a=s.indexOf('const PC_HISTORIC_50_HASHES='),b=s.indexOf('function promptCompareUpdate(',a);
-  const context=vm.createContext({fetchRecentRecords:async(dir)=>dir==='K2L'?
+  const context=vm.createContext({pcRisk:()=>'',fetchRecentRecords:async(dir)=>dir==='K2L'?
     [{sourceText:'오늘 집에 가는 길에 꽃집에 가서 한번 사 보세요.',direction:dir},{sourceText:'안녕하세요 새로운 한국어 문장입니다. 내일 다시 전화해 주세요.',direction:dir}]:
     [{sourceText:'ວັນນີ້ກິນເຂົ້າຢູ່ກັບຄອບຄົວ',direction:dir},{sourceText:'ຕອນຄ່ຳຈະໄປຊື້ດອກໄມ້ກັບໝູ່',direction:dir}]});
   vm.runInContext(s.slice(a,b),context);
@@ -204,7 +204,7 @@ test('H2 retains independent four-path review warnings and evidence in TXT witho
   assert.ok(a>0&&b>a);
   const ctx=vm.createContext({});
   vm.runInContext(s.slice(a,b),ctx);
-  const flags=vm.runInContext("pcStageFlags('L2K','안녕하세요','ສະບາຍດີ ແຖມ Wait, correction: test/test')",ctx);
+  const flags=vm.runInContext("pcStageFlags('L2K','안녕하세요','ສະບາຍດີ แถม Wait, correction: test/test')",ctx);
   assert.ok(flags.back.includes('THAI_SCRIPT_SUSPECT'));
   assert.ok(flags.back.includes('FOREIGN_LATIN_SUSPECT'));
   assert.ok(flags.back.includes('SLASH_ALTERNATIVES_SUSPECT'));
