@@ -223,3 +223,60 @@ test('H2 retains independent four-path review warnings and evidence in TXT witho
   assert.match(s,/pcHistoryMark\(source\)/);
   assert.doesNotMatch(s,/\b(?:autoQualityResult|autoSemanticGrade)\s*=\s*true/);
 });
+
+test('H2 controlled R7 comparison baseline permits exactly one changed wife path',async()=>{
+  const a=s.indexOf('async function promptCompareCandidateConfig()'),b=s.indexOf('async function pcCopyBToBase()',a);
+  assert.ok(a>0&&b>a);
+  const original=JSON.parse(s.match(/const PROMPT_COMPARE_P160A_CONFIG=(\{[^\n]+\});/)[1]);
+  const deep=x=>JSON.parse(JSON.stringify(x)),serviceSha='7d28766e1f9938a531fed5870585cb4a3afe735e2c41cc25b511ff7f677ddd43';
+  const r7=deep(original);r7.promptRevision='EXP-P160-FOUR-PATH-MEANING-LOCK-R7';r7.promptSha256='443feede17abaf4e06e4b631e98bfbee52eba56c2b9e86df0d8f91283c938310';
+  const candidate=deep(r7);candidate.promptRevision='EXP-R7-CONTROLLED-WIFE-FORWARD-FACTS-F1';candidate.forward.l2k+=' \nFaithful added rule.';
+  const cells={promptCompareBaseMode:{value:'R7'},pcR7BaseInput:{value:JSON.stringify(r7)},promptCompareCandidate:{value:JSON.stringify(candidate)},promptCompareScope:{value:'ALL'}};
+  const ctx=vm.createContext({
+    $:k=>cells[k],
+    promptCompareLiveConfig:()=>({promptRevision:'P168A',promptSha256:serviceSha}),
+    PROMPT_COMPARE_P160A_CONFIG:original,PROMPT_COMPARE_SERVICE_REV:'P168A',PROMPT_COMPARE_SERVICE_SHA:serviceSha,
+    PROMPT_COMPARE_BASE_REV:'P160A',PROMPT_COMPARE_BASE_SHA:original.promptSha256,
+    promptCompareDeep:deep,
+    promptCompareRequired:d=>{if(!d.forward?.k2l||!d.back?.wife)throw Error('invalid config')},
+    promptCompareCanonical:d=>JSON.stringify({schemaVersion:d.schemaVersion,channel:d.channel,promptRevision:d.promptRevision,forward:d.forward,smart:d.smart,back:d.back}),
+    promptCompareHash:async v=>{const rev=JSON.parse(v).promptRevision;return rev==='P160A'?original.promptSha256:rev==='EXP-P160-FOUR-PATH-MEANING-LOCK-R7'?r7.promptSha256:'CUSTOM_SHA'},
+    pcChanged:(a,b)=>{const changes=[];for(const g of ['forward','smart','back'])for(const k of Object.keys(a[g]))if(a[g][k]!==b[g][k])changes.push(g+'.'+k);return changes}
+  });
+  vm.runInContext(s.slice(a,b),ctx);
+  let result=await vm.runInContext('promptCompareCandidateConfig()',ctx);
+  assert.equal(result.base.promptRevision,r7.promptRevision);
+  assert.equal(result.candidate.promptRevision,candidate.promptRevision);
+  assert.equal(JSON.stringify(result.changed),JSON.stringify(['forward.l2k']));
+  assert.equal(result.baseMode,'R7');
+  candidate.back.wife+=' another change';cells.promptCompareCandidate.value=JSON.stringify(candidate);
+  await assert.rejects(vm.runInContext('promptCompareCandidateConfig()',ctx),/R7_CONTROLLED_EXACTLY_ONE/);
+  candidate.back.wife=r7.back.wife;candidate.forward.l2k=r7.forward.l2k;candidate.back.wife+=' single back change';
+  cells.promptCompareCandidate.value=JSON.stringify(candidate);
+  result=await vm.runInContext('promptCompareCandidateConfig()',ctx);
+  assert.equal(JSON.stringify(result.changed),JSON.stringify(['back.wife']));
+  cells.promptCompareScope.value='BACK';
+  await assert.rejects(vm.runInContext('promptCompareCandidateConfig()',ctx),/R7_CONTROLLED_EXACTLY_ONE/);
+});
+test('H2 four-case pinned cohort accepts only balanced saved records and bypasses DB search',async()=>{
+  assert.match(s,/const PC_PINNED_COHORT_DB_KEY=/);
+  assert.match(s,/PINNED_LAST_FOUR_NOT_FOUND/);
+  assert.match(s,/PINNED_FOUR_PATH_BALANCE_INVALID/);
+  const a=s.indexOf('const PC_HISTORIC_50_HASHES='),b=s.indexOf('function promptCompareUpdate(',a);
+  assert.ok(a>0&&b>a);
+  let dbSearchCalls=0;
+  const ctx=vm.createContext({pcRisk:()=>'',fetchRecentRecords:()=>{dbSearchCalls++;throw Error('must not fetch real DB')}});
+  vm.runInContext(s.slice(a,b),ctx);
+  ctx.pcPinnedReadOrFreeze=async n=>{
+    assert.equal(n,4);
+    const rows=[{direction:'K2L',sourceText:'one',traceId:'a'},{direction:'L2K',sourceText:'two',traceId:'b'},
+      {direction:'K2L',sourceText:'three',traceId:'c'},{direction:'L2K',sourceText:'four',traceId:'d'}];
+    rows.sampleMeta={mode:'PINNED',frozen:true};return rows;
+  };
+  const rows=await vm.runInContext("promptCompareFetchRows(4,'PINNED','fixture')",ctx);
+  assert.equal(rows.length,4);assert.equal(rows.sampleMeta.mode,'PINNED');assert.equal(dbSearchCalls,0);
+  assert.match(s,/id="promptCompareBaseMode"/);
+  assert.match(s,/id="pcR7BaseInput"/);
+  assert.match(s,/id="pcCopyBToBase"/);
+  assert.match(s,/CONTROLLED_BASE_MODE=/);
+});
