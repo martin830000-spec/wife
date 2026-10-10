@@ -345,7 +345,33 @@ function promptCompareUnique(rows,need,dir,options={}){
   const selected=[];for(const rec of ordered){if(selected.some(x=>pcNearDuplicate(x.sourceText,rec.sourceText))){statistics.excludedNear++;continue}selected.push(rec);if(selected.length===need)break}
   return selected;
 }
+// H2 controlled R7 single-field tests can reuse exactly the prior local four-case cohort.
+// No new translation DB writes and no new Gemini calls for selection.
+const PC_PINNED_COHORT_DB_KEY='prompt-compare-pinned-four-h2-r6';
+async function pcPinnedReadOrFreeze(n){
+  if(n!==4)throw new Error('PINNED_FOUR_CASES_ONLY');
+  const db=await diagDb();let stored,last;
+  try{
+    const tx=db.transaction(RUN_STORE,'readonly'),store=tx.objectStore(RUN_STORE);
+    const read=key=>new Promise((resolve,reject)=>{const q=store.get(key);q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)});
+    [stored,last]=await Promise.all([read(PC_PINNED_COHORT_DB_KEY),read(PROMPT_COMPARE_DB_KEY)]);
+  }finally{db.close()}
+  let records=Array.isArray(stored?.rows)?stored.rows:null;
+  if(!records){
+    if(!Array.isArray(last?.rows)||last.rows.length!==4)throw new Error('PINNED_LAST_FOUR_NOT_FOUND: 먼저 해당 브라우저에서 4건 H2 A/B 결과가 있어야 합니다');
+    records=last.rows.map(row=>({direction:row.dir,sourceText:String(row.source||''),traceId:String(row.recordId||''),clientCreatedAtMs:Number(row.recordedAt)||0}));
+    if(records.some(r=>!r.sourceText.trim()||!['K2L','L2K'].includes(r.direction)))throw new Error('PINNED_LAST_FOUR_INVALID');
+    const newDb=await diagDb();
+    try{const tx=newDb.transaction(RUN_STORE,'readwrite');tx.objectStore(RUN_STORE).put({version:1,rows:records,createdAt:Date.now(),originRun:String(last.run?.runId||'')},PC_PINNED_COHORT_DB_KEY);
+      await new Promise((resolve,reject)=>{tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});
+    }finally{newDb.close()}
+  }
+  const k=records.filter(r=>r.direction==='K2L'),l=records.filter(r=>r.direction==='L2K');
+  if(records.length!==4||k.length!==2||l.length!==2||new Set(records.map(r=>r.direction+':'+r.traceId)).size!==4)throw new Error('PINNED_FOUR_PATH_BALANCE_INVALID');
+  const out=records.slice();out.sampleMeta={mode:'PINNED',seed:'PINNED',requested:4,fetchedK2L:2,fetchedL2K:2,availableNewK2L:2,availableNewL2K:2,originRun:String(stored?.originRun||last?.run?.runId||''),frozen:true,legacy50Excluded:'NOT_APPLICABLE_REPLAY',dedupeNear:false};return out;
+}
 async function promptCompareFetchRows(n,mode='NEW',seed=String(Date.now())){
+  if(mode==='PINNED')return await pcPinnedReadOrFreeze(n);
   const kn=Math.ceil(n/2),ln=Math.floor(n/2),pool=mode==='NEW'?500:Math.min(500,Math.max(80,n*4));
   const previous=mode==='NEW'?await pcHistoryRead():new Set();
   const both=await Promise.all([fetchRecentRecords('K2L',pool,'couple',500,'all'),fetchRecentRecords('L2K',pool,'couple',500,'all')]);
