@@ -79,8 +79,8 @@ test('H2 compares real historical P160A clone against P160-derived candidate',()
   const canonical=x=>JSON.stringify({schemaVersion:x.schemaVersion,channel:x.channel,promptRevision:x.promptRevision,forward:x.forward,smart:x.smart,back:x.back});
   assert.equal(a.promptRevision,'P160A');
   assert.equal(a.promptSha256,'422e1d8fa4b51c790d385a2d314da1e99de31681198a0e69183d57a9be2fe639');
-  assert.equal(b.promptRevision,'EXP-P160-HERITAGE-P172-R1');
-  assert.equal(b.promptSha256,'e2d8b7d3d9b253d036aff731db0d90534ac6ebe57f2601a7ac5b04c74dfe936e');
+  assert.equal(b.promptRevision,'EXP-P160-SEMANTIC-FIDELITY-R2');
+  assert.equal(b.promptSha256,'2879e76ce584a018dfcd2b479911e4931772bc52ac581647dae0d891fdc63910');
   for(const p of [a,b])assert.equal(crypto.createHash('sha256').update(canonical(p)).digest('hex'),p.promptSha256);
   assert.deepEqual(a.smart,b.smart);
   assert.deepEqual(a.back,b.back);
