@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "appVersion": "V3.61.209",
   "diagnosticPath": "diagnostic-h2-20261010.html",
-  "sha256": "5e0bcfe86093974a069692e2c7bbaba0d2c4c2616f608997804b62d3eab9f87b",
-  "revision": "H2-GEMINI-LATENCY-R2-STRESS-REPEAT-5-10-R1",
+  "sha256": "b87cb9021e2c07d9e90b2ff099defabb9c7bbf2229d134b1e824169a4bbe16f7",
+  "revision": "H2-GEMINI-LATENCY-R3-REPAIR-RECHECK-DIAGNOSTICS-R1",
   "policy": "Update diagnostic file and this manifest together; never weaken SHA verification."
 }
