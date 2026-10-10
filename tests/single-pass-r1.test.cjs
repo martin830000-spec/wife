@@ -242,3 +242,16 @@ test('single generation guard does not disable unrelated STT route policy',()=>{
     assert.equal(vm.runInContext('isSinglePassGenerationPath("/azure/tts",{action:"tts"})',ctx),false);
   }
 });
+
+test('SERVICE-era auth retry selftest is replaced with single-pass auth invariant',()=>{
+  assert.ok(raw.includes('PRIMARY_AUTH_REFRESH_NO_SAME_REQUEST_REPLAY'));
+  assert.ok(!raw.includes('PRIMARY_AUTH_ONE_REFRESH_RETRY'));
+  for(const [name,src] of sources){
+    const fn=slice(src,'async function fetchPrimaryDirect(url,options={},meta={})','async function fetchSecondaryDirect(');
+    assert.ok(!fn.includes('_credentialRetried'),name);
+    assert.ok(fn.includes("await requestIntegratedCredentialRefresh('primary')"),name);
+    assert.ok(fn.includes('if(integratedPrimaryPasswordError(response.status,bodyText))'),name);
+    assert.ok(fn.includes('const preselected=await integratedRelayGeminiFetch(options,meta)'),name);
+    assert.ok(/if\\(integratedPrimaryPasswordError\\(response.status,bodyText\\)\\)[\\s\\S]*?return response;/.test(fn),name);
+  }
+});
