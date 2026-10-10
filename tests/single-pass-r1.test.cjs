@@ -121,6 +121,7 @@ test('direct Gemini TypeError, 408, 5xx, and auth: no hidden replay in either ap
         requestIntegratedCredentialEntry:()=>{prompt++;},
         reportIntegratedCredentialGood:()=>{},
         currentApiKey:'TEST_ONLY',
+        INTEGRATED_MODE:'husband', networkRoutePreferred:()=> 'direct',
         console:{warn(){}}
       });
       vm.runInContext(pred+direct,ctx,{timeout:2000});
@@ -134,6 +135,39 @@ test('direct Gemini TypeError, 408, 5xx, and auth: no hidden replay in either ap
     }
   }
 });
+
+test('wife preselects Cloudflare once; husband honors chosen first path, even on errors',async()=>{
+  for(const [name,src] of sources){
+    const pred=slice(src,'function isSinglePassGenerationPath(path,meta={})','async function integratedRelayFetchDirect(');
+    const direct=slice(src,'async function fetchPrimaryDirect(url,options={},meta={})','async function fetchSecondaryDirect(');
+    for(const preference of ['direct','cloudflare']){
+      for(const status of [200,503]){
+        let network=0,relay=0,refresh=0;
+        const ctx=vm.createContext({
+          INTEGRATED_MODE:name==='L2K'?'wife':'husband',
+          networkRoutePreferred:()=>preference,
+          fetch:async()=>{network++;return{ok:status===200,status}},
+          integratedRelayGeminiFetch:async()=>{relay++;return{ok:status===200,status}},
+          integratedPrimaryPasswordError:()=>false,
+          integratedSafeResponseText:async()=>'',requestIntegratedCredentialRefresh:async()=>{refresh++;return true;},
+          requestIntegratedCredentialEntry:()=>{},
+          reportIntegratedCredentialGood:()=>{},
+          console:{warn(){}}
+        });
+        vm.runInContext(pred+direct,ctx,{timeout:2000});
+        const url='https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent';
+        const res=await vm.runInContext('fetchPrimaryDirect('+JSON.stringify(url)+',{method:"POST"},{action:"translate"})',ctx);
+        const expectedRelay=name==='L2K'||preference==='cloudflare';
+        assert.equal(network,expectedRelay?0:1,name+'/'+preference+'/'+status+'/direct');
+        assert.equal(relay,expectedRelay?1:0,name+'/'+preference+'/'+status+'/relay');
+        assert.equal(network+relay,1,name+'/'+preference+'/'+status+'/total');
+        assert.equal(res.status,status,name+'/'+preference+'/'+status+'/status');
+        assert.equal(refresh,0);
+      }
+    }
+  }
+});
+
 test('translation relay route failover stops after first attempted region and path',async()=>{
   for(const [name,src] of sources){
     const pred=slice(src,'function isSinglePassGenerationPath(path,meta={})','async function integratedRelayFetchDirect(');
