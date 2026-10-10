@@ -1261,7 +1261,7 @@ function promptTelemetryLabel(label,smartIds){const s=(smartIds&amp;&amp;smartId
 function detectKoreanRegisterForBack(text){
   const s=String(text||'').trim();if(!s)return'UNKNOWN';
   const formal=/(?:습니다|습니까|입니다|아닙니다|합니다|됩니다|드립니다|십시오)(?:[.!?~…\s]|$)/u.test(s);
-  const yoEnding=/(?:[가-힣]요)(?:[.!?~…\s]|$)/u.test(s)&amp;&amp;!/(?:필요)(?:[.!?~…\s]|$)/u.test(s);
+  const yoEnding=[...s.matchAll(/[가-힣]요(?=[.!?~…\s]|$)/gu)].some(m=&gt;m[0]!=='필요');
   return(formal||yoEnding)?'POLITE':'CASUAL';
 }
 function backRegisterMetaLine(registerTag){return `\nREGISTER_TARGET=${registerTag}. This tag controls speech level only; never use it to reconstruct meaning, wording, roles, or facts that are not present in the translated text.`;}
@@ -1646,11 +1646,13 @@ function integratedRelayReport(data){
   integratedRelayState.lastRegion=String(d.region||'');integratedRelayState.lastAction=String(d.action||'');integratedRelayState.lastPath=String(d.path||'');integratedRelayState.lastStatus=Number(d.status)||0;integratedRelayState.lastLatencyMs=Number(d.latencyMs)||0;integratedRelayState.lastFailover=!!d.failover;
   try{if(parent!==window)parent.postMessage(d,'*')}catch(e){}
 }
+// SINGLE_PASS_R1: generation transport is non-replayable; STT routes are separate.
+function isSinglePassGenerationPath(path,meta={}){return /(?:\/gemini\/generate|:generateContent)(?:\?|$)/i.test(String(path||''))&amp;&amp;!/^stt(?:-|$)/i.test(String(meta?.action||''));}
 async function integratedRelayFetchDirect(path,init={},meta={},preferredName=''){
   const c=integratedRelayRawConfig(),token=String(c.token||''),order=integratedRelayRouteOrder(preferredName);
   if(!token||!order.length)throw new TypeError('RELAY_NOT_CONFIGURED');
   let lastResponse=null,lastError=null,failoverUsed=false;
-  for(let i=0;i&lt;Math.min(2,order.length);i++){
+  for(let i=0;i&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length));i++){
     const ep=order[i],started=performance.now();let localController=null,timer=null,externalAbort=null,attemptTimedOut=false;
     try{
       const headers=Object.assign({},init.headers||{},{'X-App-Token':token,'Accept':(init.headers&amp;&amp;init.headers.Accept)||'application/json'});
@@ -1666,7 +1668,7 @@ async function integratedRelayFetchDirect(path,init={},meta={},preferredName='')
       const res=await fetch(ep.url+path,opts);lastResponse=res;
       const latency=Math.max(0,performance.now()-started);
       const bodyText=res.ok?'':await integratedSafeResponseText(res);
-      const canFail=i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(res.status,bodyText,null);
+      const canFail=!isSinglePassGenerationPath(path,meta)&amp;&amp;i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(res.status,bodyText,null);
       if(canFail){
         integratedRelayState.cooldownUntil[ep.name]=Date.now()+RELAY_FAILOVER_COOLDOWN_MS;integratedRelayState.failoverCount++;failoverUsed=true;
         integratedRelayReport({region:ep.name,action:meta.action||'',path,status:res.status,latencyMs:latency,failover:true,phase:'primary-failed'});continue;
@@ -1681,7 +1683,7 @@ async function integratedRelayFetchDirect(path,init={},meta={},preferredName='')
       const externalAborted=!!(init.signal&amp;&amp;init.signal.aborted);
       if(externalAborted&amp;&amp;!attemptTimedOut)throw e;
       if(e?.name==='AbortError'&amp;&amp;!attemptTimedOut)throw e;
-      const canFail=i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(0,'',e);
+      const canFail=!isSinglePassGenerationPath(path,meta)&amp;&amp;i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(0,'',e);
       if(canFail){
         integratedRelayState.cooldownUntil[ep.name]=Date.now()+RELAY_FAILOVER_COOLDOWN_MS;integratedRelayState.failoverCount++;failoverUsed=true;
         integratedRelayReport({region:ep.name,action:meta.action||'',path,status:0,latencyMs:latency,failover:true,phase:attemptTimedOut?'attempt-timeout':'network-failed',error:String(e?.message||e)});continue;
@@ -1696,7 +1698,7 @@ async function integratedRelayFetchDirect(path,init={},meta={},preferredName='')
 
 async function integratedRelayFetch(path,init={},meta={},preferredName=''){
   const feature=networkRouteFeature(meta,path),primary=networkRoutePreferred(feature,meta),routeOrder=(INTEGRATED_MODE==='wife'&amp;&amp;!meta?.allowDirectFallback)?['cloudflare']:(primary==='cloudflare'?['cloudflare','direct']:['direct','cloudflare']);let lastRes=null,lastErr=null,pathFallback=false;
-  for(const route of routeOrder){
+  for(const route of (isSinglePassGenerationPath(path,meta)?routeOrder.slice(0,1):routeOrder)){
     if(route==='direct'){
       try{
         const res=await integratedRelayFetchDirect(path,init,meta,preferredName),body=String(res?.__providerErrorBody||'');lastRes=res;
@@ -1706,13 +1708,13 @@ async function integratedRelayFetch(path,init={},meta={},preferredName=''){
       continue;
     }
     const order=integratedRelayRouteOrder(preferredName);let routeHadRetryableFailure=false;
-    for(let i=0;i&lt;Math.min(2,order.length);i++){
+    for(let i=0;i&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length));i++){
       const ep=order[i];
       try{
         const res=await integratedCloudflareFetch(path,init,meta,ep.name),body=String(res?.__providerErrorBody||'');lastRes=res;
         if(!integratedRelayShouldFailover(res.status,body,null)){if(res.ok)networkRouteRecord(feature,'cloudflare',true);try{res.__relayFailover=!!(pathFallback||i&gt;0);res.__clientRoute='cloudflare';res.__cloudflarePrimary=primary==='cloudflare'}catch(e){}return res}
-        routeHadRetryableFailure=true;if(i+1&lt;Math.min(2,order.length))continue;
-      }catch(e){if(init?.signal?.aborted&amp;&amp;!e?.__relayAttemptTimeout)throw e;if(!integratedRelayShouldFailover(0,'',e))throw e;lastErr=e;routeHadRetryableFailure=true;if(i+1&lt;Math.min(2,order.length))continue}
+        routeHadRetryableFailure=true;if(i+1&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length)))continue;
+      }catch(e){if(init?.signal?.aborted&amp;&amp;!e?.__relayAttemptTimeout)throw e;if(!integratedRelayShouldFailover(0,'',e))throw e;lastErr=e;routeHadRetryableFailure=true;if(i+1&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length)))continue}
     }
     if(routeHadRetryableFailure){networkRouteRecord(feature,'cloudflare',false,lastRes?'HTTP_'+String(lastRes?.status||0):String(lastErr?.message||'NETWORK'));pathFallback=true}
   }
@@ -1747,7 +1749,7 @@ async function integratedRelayFetchSingleDirect(path,init={},meta={},regionName=
 
 async function integratedRelayFetchSingle(path,init={},meta={},regionName=''){
   const feature=networkRouteFeature(meta,path),primary=networkRoutePreferred(feature,meta),routes=primary==='cloudflare'?['cloudflare','direct']:['direct','cloudflare'];const all=integratedRelayEndpoints(),ep=(regionName&amp;&amp;all.find(x=&gt;x.name===regionName))||all[0];if(!ep)throw new TypeError('RELAY_NOT_CONFIGURED');let lastRes=null,lastErr=null,pathFallback=false;
-  for(const route of routes){
+  for(const route of (isSinglePassGenerationPath(path,meta)?routes.slice(0,1):routes)){
     try{
       const res=route==='cloudflare'?await integratedCloudflareFetch(path,init,meta,ep.name):await integratedRelayFetchSingleDirect(path,init,meta,ep.name),body=String(res?.__providerErrorBody||'');lastRes=res;
       if(!integratedRelayShouldFailover(res?.status,body,null)){if(res.ok)networkRouteRecord(feature,route,true);try{res.__relayFailover=pathFallback;res.__clientRoute=route==='cloudflare'?'cloudflare':'relay';res.__cloudflarePrimary=primary==='cloudflare'}catch(e){}return res}
@@ -1789,7 +1791,7 @@ async function fetchPrimaryDirect(url,options={},meta={}){
     response=await fetch(url,Object.assign({},options,{cache:'no-store'}));try{response.__clientRoute='direct';response.__directFallback=false}catch(e){}
   }catch(e){
     if(options&amp;&amp;options.signal&amp;&amp;options.signal.aborted)throw e;
-    if(e instanceof TypeError||e?.name==='TypeError'){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;r.__clientRoute='relay'}catch(_){}return r;}
+    if(!isSinglePassGenerationPath(url,meta)&amp;&amp;(e instanceof TypeError||e?.name==='TypeError')){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;r.__clientRoute='relay'}catch(_){}return r;}
     throw e;
   }
   if(response.ok){reportIntegratedCredentialGood('primary');return response}
@@ -1797,17 +1799,12 @@ async function fetchPrimaryDirect(url,options={},meta={}){
   try{response.__providerErrorBody=bodyText}catch(e){}
   if(integratedPrimaryPasswordError(response.status,bodyText)){
     try{response.__passwordErrorKind='primary'}catch(e){}
-    if(meta?._credentialRetried!==true){
-      const refreshed=await requestIntegratedCredentialRefresh('primary');
-      if(refreshed&amp;&amp;currentApiKey){
-        const retryHeaders=Object.assign({},options?.headers||{}, {'x-goog-api-key':currentApiKey});
-        return fetchPrimaryDirect(url,Object.assign({},options,{headers:retryHeaders}),Object.assign({},meta,{_credentialRetried:true}));
-      }
-    }
+    // Refresh credentials only for a later explicit request.
+    await requestIntegratedCredentialRefresh('primary');
     requestIntegratedCredentialEntry('primary',meta.action||'translate',response.status);
     return response;
   }
-  if([408,500,502,503,504].includes(Number(response.status)||0)){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;r.__clientRoute='relay'}catch(_){}return r;}
+  if(!isSinglePassGenerationPath(url,meta)&amp;&amp;[408,500,502,503,504].includes(Number(response.status)||0)){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;r.__clientRoute='relay'}catch(_){}return r;}
   return response;
 }
 async function fetchSecondaryDirect(url,options={},meta={}){return integratedRelayTtsFetch(options,meta)}
@@ -3455,7 +3452,11 @@ const SharedCriticalMeaningCoreV277=(()=&gt;{
     if(lang==='ko'){
       const counters='(?:잔|알|개|번|명|시간|분|시|대|병|포|그릇|끼|개비)';
       const rules=[['1','(?:한|하나)'],['2','(?:두|둘)'],['3','(?:세|셋)'],['4','(?:네|넷)']];
-      for(const [n,w] of rules)if(new RegExp(w+'\\s*'+counters,'u').test(s))out.add(n);
+      for(const [n,w] of rules){
+        // Bare 한번 is adverbial; interpret '한 번' as a count only with whitespace.
+        const units=n==='1'?'(?:잔|알|개|명|시간|분|시|대|병|포|그릇|끼|개비|\\s+번)':counters;
+        if(new RegExp('(?:^|[^가-힣])'+w+'\\s*'+units,'u').test(s))out.add(n);
+      }
     }else{
       const counters='(?:ແກ້ວ|ຈອກ|ເມັດ|ຄົນ|ຄັ້ງ|ຊົ່ວໂມງ|ນາທີ|ອັນ|ຂວດ)';
       const rules=[['1','(?:ໜຶ່ງ|ນຶ່ງ)'],['2','ສອງ'],['3','ສາມ'],['4','ສີ່']];
@@ -4527,17 +4528,10 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
             let result={...singleOutcome.result,hedged:false,rescued:false,tailRescued:false,winner:'정번역'};
             let semanticRepaired=false,semanticRepairFailed=false;let initialCriticalRisk=detectCriticalMeaningRiskK2L(krText,result.text);if(initialCriticalRisk.critical){result.quality={...(result.quality||{}),semanticAdvisory:true,semanticAdvisoryReasons:[...(initialCriticalRisk.reasons||[]),...(initialCriticalRisk.advisoryReasons||[])]};/* semantic heuristic remains diagnostic-only */}let finalRelationReview=detectSelectiveRelationRiskK2L(krText,result.text);if(finalRelationReview.advisoryReasons?.length)result.quality={...(result.quality||{}),selectiveAdvisoryReasons:[...finalRelationReview.advisoryReasons]};
             const minorAutoRepaired=false;let latinResidueAutoRetried=false,brokenCharAutoRetried=false;
-            // V3.61.207: normal semantic findings remain advisory-only. One extra request is allowed ONLY for deterministic output corruption (broken/foreign script or hard unsupported model/meta Latin leakage).
+            // SINGLE_PASS_R1: output corruption is warning only; first result stays visible.
             const initialHardLatin=detectHardLatinResidueV36140(krText,result.text,'lao');
             const initialHardDamage=(initialCriticalRisk.reasons||[]).some(x=&gt;String(x).startsWith('출력 손상:'));
-            if(initialHardLatin.hard||initialHardDamage){
-              const repaired=await requestCriticalMeaningRepairK2L(krText,{reasons:['OBJECTIVE_OUTPUT_CORRUPTION']},runId);
-              if(repaired?.text&amp;&amp;runId===translationRunId&amp;&amp;isTranslating){
-                const repairedRisk=detectCriticalMeaningRiskK2L(krText,repaired.text),repairedHardLatin=detectHardLatinResidueV36140(krText,repaired.text,'lao'),repairedHardDamage=(repairedRisk.reasons||[]).some(x=&gt;String(x).startsWith('출력 손상:'));
-                if(!repairedHardLatin.hard&amp;&amp;!repairedHardDamage){result={...repaired,hedged:false,rescued:true,tailRescued:false,winner:'정번역·출력복구'};semanticRepaired=true;latinResidueAutoRetried=initialHardLatin.hard;brokenCharAutoRetried=initialHardDamage;initialCriticalRisk=repairedRisk;finalRelationReview=detectSelectiveRelationRiskK2L(krText,result.text)}else semanticRepairFailed=true;
-              }else semanticRepairFailed=true;
-            }
-            // Meaning heuristics never auto-repair; only the objective corruption branch above may retry.
+            if(initialHardLatin.hard||initialHardDamage)result.quality={...(result.quality||{}),semanticAdvisory:true,semanticAdvisoryReasons:[...(result.quality?.semanticAdvisoryReasons||[]),'OBJECTIVE_OUTPUT_CORRUPTION']};
             const finalText = result.text;
             // V2.18: 이해 가능한 경미한 품질 경고는 추가 요청 없이 즉시 표시.
             // 속도와 안정성을 우선하고, 실제 사용을 방해하는 큰 오류만 차단한다.
@@ -4867,12 +4861,10 @@ function normalizeLaoCombiningMarks(text){return String(text||'').replace(/([\u0
         return'';
     }
     async function runBackTranslationWithLanguageRecovery(laoText,myRunId){
-        const first=await createBackTranslationRequest(laoText,myRunId,'역번역');
-        const anomaly=backSevereAnomalyL2K(laoText,first.text),technicalReasons=(anomaly.reasons||[]).filter(x=&gt;/^(?:UNSUPPORTED_LATIN:|NO_KOREAN|LAO_LEFT|THAI_LEFT|CJK_LEFT|KANA_LEFT|BROKEN_CHAR|FOREIGN_SCRIPT:)/.test(String(x)));
-        if(technicalReasons.length&amp;&amp;myRunId===backTranslationRunId){
-            try{const retry=await createBackTranslationRequest(laoText,myRunId,'역번역·출력복구',false,false,false,true);const retryAnomaly=backSevereAnomalyL2K(laoText,retry.text),retryTechnical=(retryAnomaly.reasons||[]).filter(x=&gt;/^(?:UNSUPPORTED_LATIN:|NO_KOREAN|LAO_LEFT|THAI_LEFT|CJK_LEFT|KANA_LEFT|BROKEN_CHAR|FOREIGN_SCRIPT:)/.test(String(x)));if(!retryTechnical.length)return{...retry,languageRetryCount:0,languageRecovered:false,singleResultRetryCount:0,singleResultRecovered:false,technicalRetryCount:1,technicalRecovered:true,relationRetryCount:0,relationRecovered:false};}catch(e){console.warn('[BACK TECHNICAL RECOVERY K2L FAILED]',e,technicalReasons)}
-        }
-        return{...first,languageRetryCount:0,languageRecovered:false,singleResultRetryCount:0,singleResultRecovered:false,technicalRetryCount:technicalReasons.length?1:0,technicalRecovered:false,relationRetryCount:0,relationRecovered:false};
+      const first=await createBackTranslationRequest(laoText,myRunId,'역번역');
+      const reasons=(backSevereAnomalyL2K(laoText,first.text).reasons||[]).filter(x=&gt;/^(?:UNSUPPORTED_LATIN:|NO_KOREAN|LAO_LEFT|THAI_LEFT|CJK_LEFT|KANA_LEFT|BROKEN_CHAR|FOREIGN_SCRIPT:)/.test(String(x)));
+      if(reasons.length)console.warn('[BACK K2L ADVISORY]',reasons);
+      return{...first,languageRetryCount:0,languageRecovered:false,singleResultRetryCount:0,singleResultRecovered:false,technicalRetryCount:0,technicalRecovered:false,relationRetryCount:0,relationRecovered:false};
     }
     function setBackTime(text = '') {
         const el = document.getElementById('backTime');
@@ -6379,7 +6371,7 @@ function promptTelemetryLabel(label,smartIds){const s=(smartIds&amp;&amp;smartId
 function detectKoreanRegisterForBack(text){
   const s=String(text||'').trim();if(!s)return'UNKNOWN';
   const formal=/(?:습니다|습니까|입니다|아닙니다|합니다|됩니다|드립니다|십시오)(?:[.!?~…\s]|$)/u.test(s);
-  const yoEnding=/(?:[가-힣]요)(?:[.!?~…\s]|$)/u.test(s)&amp;&amp;!/(?:필요)(?:[.!?~…\s]|$)/u.test(s);
+  const yoEnding=[...s.matchAll(/[가-힣]요(?=[.!?~…\s]|$)/gu)].some(m=&gt;m[0]!=='필요');
   return(formal||yoEnding)?'POLITE':'CASUAL';
 }
 function backRegisterMetaLine(registerTag){return `\nREGISTER_TARGET=${registerTag}. This tag controls speech level only; never use it to reconstruct meaning, wording, roles, or facts that are not present in the translated text.`;}
@@ -6754,11 +6746,13 @@ function integratedRelayReport(data){
   integratedRelayState.lastRegion=String(d.region||'');integratedRelayState.lastAction=String(d.action||'');integratedRelayState.lastPath=String(d.path||'');integratedRelayState.lastStatus=Number(d.status)||0;integratedRelayState.lastLatencyMs=Number(d.latencyMs)||0;integratedRelayState.lastFailover=!!d.failover;
   try{if(parent!==window)parent.postMessage(d,'*')}catch(e){}
 }
+// SINGLE_PASS_R1: generation transport is non-replayable; STT routes are separate.
+function isSinglePassGenerationPath(path,meta={}){return /(?:\/gemini\/generate|:generateContent)(?:\?|$)/i.test(String(path||''))&amp;&amp;!/^stt(?:-|$)/i.test(String(meta?.action||''));}
 async function integratedRelayFetchDirect(path,init={},meta={},preferredName=''){
   const c=integratedRelayRawConfig(),token=String(c.token||''),order=integratedRelayRouteOrder(preferredName);
   if(!token||!order.length)throw new TypeError('RELAY_NOT_CONFIGURED');
   let lastResponse=null,lastError=null,failoverUsed=false;
-  for(let i=0;i&lt;Math.min(2,order.length);i++){
+  for(let i=0;i&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length));i++){
     const ep=order[i],started=performance.now();let localController=null,timer=null,externalAbort=null,attemptTimedOut=false;
     try{
       const headers=Object.assign({},init.headers||{},{'X-App-Token':token,'Accept':(init.headers&amp;&amp;init.headers.Accept)||'application/json'});
@@ -6774,7 +6768,7 @@ async function integratedRelayFetchDirect(path,init={},meta={},preferredName='')
       const res=await fetch(ep.url+path,opts);lastResponse=res;
       const latency=Math.max(0,performance.now()-started);
       const bodyText=res.ok?'':await integratedSafeResponseText(res);
-      const canFail=i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(res.status,bodyText,null);
+      const canFail=!isSinglePassGenerationPath(path,meta)&amp;&amp;i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(res.status,bodyText,null);
       if(canFail){
         integratedRelayState.cooldownUntil[ep.name]=Date.now()+RELAY_FAILOVER_COOLDOWN_MS;integratedRelayState.failoverCount++;failoverUsed=true;
         integratedRelayReport({region:ep.name,action:meta.action||'',path,status:res.status,latencyMs:latency,failover:true,phase:'primary-failed'});continue;
@@ -6789,7 +6783,7 @@ async function integratedRelayFetchDirect(path,init={},meta={},preferredName='')
       const externalAborted=!!(init.signal&amp;&amp;init.signal.aborted);
       if(externalAborted&amp;&amp;!attemptTimedOut)throw e;
       if(e?.name==='AbortError'&amp;&amp;!attemptTimedOut)throw e;
-      const canFail=i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(0,'',e);
+      const canFail=!isSinglePassGenerationPath(path,meta)&amp;&amp;i===0&amp;&amp;order.length&gt;1&amp;&amp;integratedRelayShouldFailover(0,'',e);
       if(canFail){
         integratedRelayState.cooldownUntil[ep.name]=Date.now()+RELAY_FAILOVER_COOLDOWN_MS;integratedRelayState.failoverCount++;failoverUsed=true;
         integratedRelayReport({region:ep.name,action:meta.action||'',path,status:0,latencyMs:latency,failover:true,phase:attemptTimedOut?'attempt-timeout':'network-failed',error:String(e?.message||e)});continue;
@@ -6804,7 +6798,7 @@ async function integratedRelayFetchDirect(path,init={},meta={},preferredName='')
 
 async function integratedRelayFetch(path,init={},meta={},preferredName=''){
   const feature=networkRouteFeature(meta,path),primary=networkRoutePreferred(feature,meta),routeOrder=(INTEGRATED_MODE==='wife'&amp;&amp;!meta?.allowDirectFallback)?['cloudflare']:(primary==='cloudflare'?['cloudflare','direct']:['direct','cloudflare']);let lastRes=null,lastErr=null,pathFallback=false;
-  for(const route of routeOrder){
+  for(const route of (isSinglePassGenerationPath(path,meta)?routeOrder.slice(0,1):routeOrder)){
     if(route==='direct'){
       try{
         const res=await integratedRelayFetchDirect(path,init,meta,preferredName),body=String(res?.__providerErrorBody||'');lastRes=res;
@@ -6814,13 +6808,13 @@ async function integratedRelayFetch(path,init={},meta={},preferredName=''){
       continue;
     }
     const order=integratedRelayRouteOrder(preferredName);let routeHadRetryableFailure=false;
-    for(let i=0;i&lt;Math.min(2,order.length);i++){
+    for(let i=0;i&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length));i++){
       const ep=order[i];
       try{
         const res=await integratedCloudflareFetch(path,init,meta,ep.name),body=String(res?.__providerErrorBody||'');lastRes=res;
         if(!integratedRelayShouldFailover(res.status,body,null)){if(res.ok)networkRouteRecord(feature,'cloudflare',true);try{res.__relayFailover=!!(pathFallback||i&gt;0);res.__clientRoute='cloudflare';res.__cloudflarePrimary=primary==='cloudflare'}catch(e){}return res}
-        routeHadRetryableFailure=true;if(i+1&lt;Math.min(2,order.length))continue;
-      }catch(e){if(init?.signal?.aborted&amp;&amp;!e?.__relayAttemptTimeout)throw e;if(!integratedRelayShouldFailover(0,'',e))throw e;lastErr=e;routeHadRetryableFailure=true;if(i+1&lt;Math.min(2,order.length))continue}
+        routeHadRetryableFailure=true;if(i+1&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length)))continue;
+      }catch(e){if(init?.signal?.aborted&amp;&amp;!e?.__relayAttemptTimeout)throw e;if(!integratedRelayShouldFailover(0,'',e))throw e;lastErr=e;routeHadRetryableFailure=true;if(i+1&lt;(isSinglePassGenerationPath(path,meta)?1:Math.min(2,order.length)))continue}
     }
     if(routeHadRetryableFailure){networkRouteRecord(feature,'cloudflare',false,lastRes?'HTTP_'+String(lastRes?.status||0):String(lastErr?.message||'NETWORK'));pathFallback=true}
   }
@@ -6855,7 +6849,7 @@ async function integratedRelayFetchSingleDirect(path,init={},meta={},regionName=
 
 async function integratedRelayFetchSingle(path,init={},meta={},regionName=''){
   const feature=networkRouteFeature(meta,path),primary=networkRoutePreferred(feature,meta),routes=primary==='cloudflare'?['cloudflare','direct']:['direct','cloudflare'];const all=integratedRelayEndpoints(),ep=(regionName&amp;&amp;all.find(x=&gt;x.name===regionName))||all[0];if(!ep)throw new TypeError('RELAY_NOT_CONFIGURED');let lastRes=null,lastErr=null,pathFallback=false;
-  for(const route of routes){
+  for(const route of (isSinglePassGenerationPath(path,meta)?routes.slice(0,1):routes)){
     try{
       const res=route==='cloudflare'?await integratedCloudflareFetch(path,init,meta,ep.name):await integratedRelayFetchSingleDirect(path,init,meta,ep.name),body=String(res?.__providerErrorBody||'');lastRes=res;
       if(!integratedRelayShouldFailover(res?.status,body,null)){if(res.ok)networkRouteRecord(feature,route,true);try{res.__relayFailover=pathFallback;res.__clientRoute=route==='cloudflare'?'cloudflare':'relay';res.__cloudflarePrimary=primary==='cloudflare'}catch(e){}return res}
@@ -6897,7 +6891,7 @@ async function fetchPrimaryDirect(url,options={},meta={}){
     response=await fetch(url,Object.assign({},options,{cache:'no-store'}));try{response.__clientRoute='direct';response.__directFallback=false}catch(e){}
   }catch(e){
     if(options&amp;&amp;options.signal&amp;&amp;options.signal.aborted)throw e;
-    if(e instanceof TypeError||e?.name==='TypeError'){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;if(!r.__clientRoute)r.__clientRoute='relay'}catch(_){}return r;}
+    if(!isSinglePassGenerationPath(url,meta)&amp;&amp;(e instanceof TypeError||e?.name==='TypeError')){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;if(!r.__clientRoute)r.__clientRoute='relay'}catch(_){}return r;}
     throw e;
   }
   if(response.ok){reportIntegratedCredentialGood('primary');return response}
@@ -6905,17 +6899,12 @@ async function fetchPrimaryDirect(url,options={},meta={}){
   try{response.__providerErrorBody=bodyText}catch(e){}
   if(integratedPrimaryPasswordError(response.status,bodyText)){
     try{response.__passwordErrorKind='primary'}catch(e){}
-    if(meta?._credentialRetried!==true){
-      const refreshed=await requestIntegratedCredentialRefresh('primary');
-      if(refreshed&amp;&amp;currentApiKey){
-        const retryHeaders=Object.assign({},options?.headers||{}, {'x-goog-api-key':currentApiKey});
-        return fetchPrimaryDirect(url,Object.assign({},options,{headers:retryHeaders}),Object.assign({},meta,{_credentialRetried:true}));
-      }
-    }
+    // Refresh credentials only for a later explicit request.
+    await requestIntegratedCredentialRefresh('primary');
     requestIntegratedCredentialEntry('primary',meta.action||'translate',response.status);
     return response;
   }
-  if([408,500,502,503,504].includes(Number(response.status)||0)){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;if(!r.__clientRoute)r.__clientRoute='relay'}catch(_){}return r;}
+  if(!isSinglePassGenerationPath(url,meta)&amp;&amp;[408,500,502,503,504].includes(Number(response.status)||0)){const r=await integratedRelayGeminiFetch(options,meta);try{r.__directFallback=true;if(!r.__clientRoute)r.__clientRoute='relay'}catch(_){}return r;}
   return response;
 }
 async function fetchSecondaryDirect(url,options={},meta={}){return integratedRelayTtsFetch(options,meta)}
@@ -8158,7 +8147,11 @@ const SharedCriticalMeaningCoreV277=(()=&gt;{
     if(lang==='ko'){
       const counters='(?:잔|알|개|번|명|시간|분|시|대|병|포|그릇|끼|개비)';
       const rules=[['1','(?:한|하나)'],['2','(?:두|둘)'],['3','(?:세|셋)'],['4','(?:네|넷)']];
-      for(const [n,w] of rules)if(new RegExp(w+'\\s*'+counters,'u').test(s))out.add(n);
+      for(const [n,w] of rules){
+        // Bare 한번 is adverbial; interpret '한 번' as a count only with whitespace.
+        const units=n==='1'?'(?:잔|알|개|명|시간|분|시|대|병|포|그릇|끼|개비|\\s+번)':counters;
+        if(new RegExp('(?:^|[^가-힣])'+w+'\\s*'+units,'u').test(s))out.add(n);
+      }
     }else{
       const counters='(?:ແກ້ວ|ຈອກ|ເມັດ|ຄົນ|ຄັ້ງ|ຊົ່ວໂມງ|ນາທີ|ອັນ|ຂວດ)';
       const rules=[['1','(?:ໜຶ່ງ|ນຶ່ງ)'],['2','ສອງ'],['3','ສາມ'],['4','ສີ່']];
@@ -8635,7 +8628,7 @@ async function translateText(options={}){
   if(voiceRecording||voiceProcessing){appAlert('⚠️ ກະລຸນາຈົບການຮັບສຽງກ່ອນແປ.');return}
   const source=document.getElementById('loInput').value.trim();if(!currentApiKey){requestIntegratedCredentialEntry('primary','translate',0);appAlert('⚠️ ຕ້ອງໃສ່ລະຫັດທີ 1 ໃໝ່.');return}if(!source){focusMainTextInput();return}
   cancelBackTranslation(false);setBackTime('');stopKorean();const runId=++translationRunId;telemetryBeginAttempt(runId);lastRequestPayload=source;lastForwardQualitySnapshot=null;lastForwardTargetSnapshot='';setRetry(false);isTranslating=true;const btn=document.getElementById('translateBtn');btn.textContent='⏹️ ຢຸດການແປ';btn.style.background='#d93025';startTimer();document.getElementById('koResult').textContent='';setPrimaryResultVisible(false);document.getElementById('backResult').innerHTML=DEFAULT_BACK_HTML;setBackResultState(false,false);updateSpeechButtonAvailability();setKoreanCopyReady(false);const records=[];const ctx={activeSet:mainControllers,records,isActive:()=&gt;runId===translationRunId&amp;&amp;isTranslating,onStatus:t=&gt;{const el=document.getElementById('loadingText');if(el)el.textContent=t}};const started=performance.now();
-  try{const singleHandle=createForwardRequest(source,ctx,'ຄຳແປຫຼັກ',GEMINI_TIMEOUT_MS,forwardMaxOutputTokensForSource(source));const singleOutcome=await singleHandle.outcome;if(!ctx.isActive())return;if(!singleOutcome.ok)throw singleOutcome.error;let result={...singleOutcome.result,hedged:false,rescued:false,tailRescued:false,winner:'ຄຳແປຫຼັກ'};let semanticRepaired=false,semanticRepairFailed=false;let initialCriticalRisk=detectCriticalMeaningRiskL2K(source,result.text);if(initialCriticalRisk.critical){result.quality={...(result.quality||{}),semanticAdvisory:true,semanticAdvisoryReasons:[...(initialCriticalRisk.reasons||[]),...(initialCriticalRisk.advisoryReasons||[])]};/* semantic heuristic remains diagnostic-only */}const minorAutoRepaired=false;let latinResidueAutoRetried=false,brokenCharAutoRetried=false;const initialHardLatin=detectHardLatinResidueV36140(source,result.text,'korean');const initialHardDamage=(initialCriticalRisk.reasons||[]).some(x=&gt;/^(?:HARD_MIXED_SCRIPT_CORRUPTION|BROKEN_REPLACEMENT_CHAR)$/.test(String(x)));if(initialHardLatin.hard||initialHardDamage){const repaired=await requestCriticalMeaningRepairL2K(source,{reasons:['OBJECTIVE_OUTPUT_CORRUPTION']},runId,ctx);if(repaired?.text&amp;&amp;ctx.isActive()){const repairedRisk=detectCriticalMeaningRiskL2K(source,repaired.text),repairedHardLatin=detectHardLatinResidueV36140(source,repaired.text,'korean'),repairedHardDamage=(repairedRisk.reasons||[]).some(x=&gt;/^(?:HARD_MIXED_SCRIPT_CORRUPTION|BROKEN_REPLACEMENT_CHAR)$/.test(String(x)));if(!repairedHardLatin.hard&amp;&amp;!repairedHardDamage){result={...repaired,hedged:false,rescued:true,tailRescued:false,winner:'ຄຳແປຫຼັກ·ກູ້ຂໍ້ຄວາມ'};semanticRepaired=true;latinResidueAutoRetried=initialHardLatin.hard;brokenCharAutoRetried=initialHardDamage;initialCriticalRisk=repairedRisk}else semanticRepairFailed=true}else semanticRepairFailed=true}// V3.61.207: semantic findings stay advisory; only objective corruption can trigger one repair.
+  try{const singleHandle=createForwardRequest(source,ctx,'ຄຳແປຫຼັກ',GEMINI_TIMEOUT_MS,forwardMaxOutputTokensForSource(source));const singleOutcome=await singleHandle.outcome;if(!ctx.isActive())return;if(!singleOutcome.ok)throw singleOutcome.error;let result={...singleOutcome.result,hedged:false,rescued:false,tailRescued:false,winner:'ຄຳແປຫຼັກ'};let semanticRepaired=false,semanticRepairFailed=false;let initialCriticalRisk=detectCriticalMeaningRiskL2K(source,result.text);if(initialCriticalRisk.critical){result.quality={...(result.quality||{}),semanticAdvisory:true,semanticAdvisoryReasons:[...(initialCriticalRisk.reasons||[]),...(initialCriticalRisk.advisoryReasons||[])]};/* semantic heuristic remains diagnostic-only */}const minorAutoRepaired=false;let latinResidueAutoRetried=false,brokenCharAutoRetried=false;const initialHardLatin=detectHardLatinResidueV36140(source,result.text,'korean');const initialHardDamage=(initialCriticalRisk.reasons||[]).some(x=&gt;/^(?:HARD_MIXED_SCRIPT_CORRUPTION|BROKEN_REPLACEMENT_CHAR)$/.test(String(x)));if(initialHardLatin.hard||initialHardDamage)result.quality={...(result.quality||{}),semanticAdvisory:true,semanticAdvisoryReasons:[...(result.quality?.semanticAdvisoryReasons||[]),'OBJECTIVE_OUTPUT_CORRUPTION']};/* SINGLE_PASS_R1 */
   const finalText=result.text;/* V2.18: 경미한 품질 경고는 추가 정리 없이 즉시 표시 */document.getElementById('koResult').textContent=finalText;setPrimaryResultVisible(true);lastForwardQualitySnapshot={...(result.quality||{})};lastForwardTargetSnapshot=finalText;updateQualityBadge({...result.quality,postBackPending:true}, source, finalText);setTranslationOutputSafety(result.quality,finalText);isJustTranslated=true;clearInputDirtyIfUnchanged(source,'loInput');deferStoreTranslation(source,finalText,result.quality,{winner:result.winner,semanticRepaired,semanticRepairFailed,elapsedMs:performance.now()-started});const sec=((performance.now()-started)/1000).toFixed(1);recordLivePerfSample({totalMs:Math.round(performance.now()-started),winner:String(result.winner||''),hedged:!!result.hedged,rescued:!!result.rescued,winningRequestMs:Math.round(result.elapsedMs||0),requestCount:records.length,promptCharsMax:Math.max(0,...records.map(x=&gt;Number(x.promptChars||0))),promptCharsTotal:records.reduce((n,x)=&gt;n+Number(x.promptChars||0),0),semanticRepaired,semanticRepairFailed,brokenCharAutoRetried:!!brokenCharAutoRetried,outputLocked:!!translationOutputLocked,sourceChars:source.length,targetChars:finalText.length});telemetryCommitPrimary({runId,direction:'L2K',sourceText:source,targetText:finalText,quality:result.quality,totalMs:Math.round(performance.now()-started),winner:result.winner,hedged:!!result.hedged,rescued:!!result.rescued,tailRescued:!!result.tailRescued,winningRequestMs:Math.round(result.elapsedMs||0),semanticRepaired,semanticRepairFailed,brokenCharAutoRetried:!!brokenCharAutoRetried,outputLocked:!!translationOutputLocked,requestRecords:records});console.log('[WIFE TRANSLATION SUCCESS]',{elapsedSec:sec,winner:result.winner,hedged:result.hedged,rescued:result.rescued,minorContaminationDetected:result.quality?.softContamination===true,minorAutoRepaired,latinResidueAutoRetried,semanticRepaired,semanticRepairFailed,geminiRequestCount:records.length,promptCharsMax:Math.max(0,...records.map(x=&gt;Number(x.promptChars||0))),promptCharsTotal:records.reduce((n,x)=&gt;n+Number(x.promptChars||0),0),requestLabels:records.map(x=&gt;x.label)});stopTimer('ສຳເລັດ');resetTranslationUI();setKoreanCopyReady(true);updateSpeechButtonAvailability();if(isAutoSoundOn)void speakKorean();void requestBackTranslation(true);}
   catch(e){if(runId!==translationRunId)return;resetTranslationUI();setKoreanCopyReady(false);setRetry(true);setPrimaryResultVisible(true);if(e?.name==='AbortError'){stopTimer('ຢຸດແລ້ວ');document.getElementById('koResult').textContent='⚠️ ການແປຖືກຢຸດແລ້ວ.';return}
     if(hasCriticalTranslationFailure(e)){stopTimer('ລົ້ມເຫຼວ');document.getElementById('koResult').textContent=errorMessageLao(e,records);telemetryCommitFailure({runId,direction:'L2K',sourceText:source,error:e,stage:'critical-translation-failure',totalMs:Math.round(performance.now()-started),requestRecords:records});console.error('[WIFE TRANSLATION CRITICAL BLOCK]',e,records);return}
@@ -8731,11 +8724,9 @@ function backRelationLossL2K(koreanText,laoText){
 }
 async function runBackRaceWithRelationRecovery(korean,runId){
   const first=await createBackRequest(korean,runId,'ກວດຄວາມໝາຍ');
-  const anomaly=backSevereAnomalyK2L(korean,first.text),technicalReasons=(anomaly.reasons||[]).filter(x=&gt;/^(?:UNSUPPORTED_LATIN:|NO_LAO|KOREAN_LEFT|THAI_LEFT|CJK_LEFT|KANA_LEFT|BROKEN_CHAR|FOREIGN_SCRIPT:)/.test(String(x)));
-  if(technicalReasons.length&amp;&amp;runId===backTranslationRunId){
-    try{const retry=await createBackRequest(korean,runId,'ກູ້ຜົນກວດ',false,false,true);const retryAnomaly=backSevereAnomalyK2L(korean,retry.text),retryTechnical=(retryAnomaly.reasons||[]).filter(x=&gt;/^(?:UNSUPPORTED_LATIN:|NO_LAO|KOREAN_LEFT|THAI_LEFT|CJK_LEFT|KANA_LEFT|BROKEN_CHAR|FOREIGN_SCRIPT:)/.test(String(x)));if(!retryTechnical.length)return{...retry,singleResultRetryCount:0,singleResultRecovered:false,technicalRetryCount:1,technicalRecovered:true,relationRetryCount:0,relationRecovered:false};}catch(e){console.warn('[BACK TECHNICAL RECOVERY L2K FAILED]',e,technicalReasons)}
-  }
-  return{...first,singleResultRetryCount:0,singleResultRecovered:false,technicalRetryCount:technicalReasons.length?1:0,technicalRecovered:false,relationRetryCount:0,relationRecovered:false};
+  const reasons=(backSevereAnomalyK2L(korean,first.text).reasons||[]).filter(x=&gt;/^(?:UNSUPPORTED_LATIN:|NO_LAO|KOREAN_LEFT|THAI_LEFT|CJK_LEFT|KANA_LEFT|BROKEN_CHAR|FOREIGN_SCRIPT:)/.test(String(x)));
+  if(reasons.length)console.warn('[BACK L2K ADVISORY]',reasons);
+  return{...first,singleResultRetryCount:0,singleResultRecovered:false,technicalRetryCount:0,technicalRecovered:false,relationRetryCount:0,relationRecovered:false};
 }
 function backErrorMessageLao(e){
   if(e?.status===429)return'⚠️ ຈຳກັດການໃຊ້ການແປ (429). ກະລຸນາລໍຖ້າສັກຄູ່ ແລ້ວລອງໃໝ່.';
@@ -10548,8 +10539,8 @@ async function getUnifiedRuntimeSafetyAudit(){
     const hc=_extractCriticalCore(h),wc=_extractCriticalCore(w);
     add('LIVE_CRITICAL_CORE_EMBEDDED_PARITY',!!hc&&hc===wc);
     add('WIFE_VOICE_DIAG_UI_REMOVED_V36140',!h.includes('id="voiceStatusCheckBtn"')&&!w.includes('id="voiceStatusCheckBtn"')&&w.includes('function startVoiceStatusCheck')&&w.includes('function copyVoiceStatusCheckLog'));
-    add('FORWARD_PRIMARY_SEMANTIC_ADVISORY_OBJECTIVE_RECOVERY',hTranslate.includes("createGeminiRequest(krText,runId,'정번역'")&&wTranslate.includes("createForwardRequest(source,ctx,'ຄຳແປຫຼັກ'")&&hTranslate.includes('detectCriticalMeaningRiskK2L(')&&wTranslate.includes('detectCriticalMeaningRiskL2K(')&&hTranslate.includes('semanticAdvisory:true')&&wTranslate.includes('semanticAdvisory:true')&&hTranslate.includes("OBJECTIVE_OUTPUT_CORRUPTION")&&wTranslate.includes("OBJECTIVE_OUTPUT_CORRUPTION")&&hTranslate.includes('requestCriticalMeaningRepairK2L(')&&wTranslate.includes('requestCriticalMeaningRepairL2K(')&&!hTranslate.includes('requestGeminiWithHedge(')&&!wTranslate.includes('runForwardPolicy('));
-    add('BACK_PRIMARY_SINGLE_WITH_TECHNICAL_RECOVERY_ONLY',hBack.includes("createBackTranslationRequest(laoText,myRunId,'역번역'")&&wBack.includes("createBackRequest(korean,runId,'ກວດຄວາມໝາຍ'")&&h.includes('runBackTranslationWithLanguageRecovery')&&w.includes('runBackRaceWithRelationRecovery')&&h.includes('UNSUPPORTED_LATIN:')&&w.includes('FOREIGN_SCRIPT:'));
+    add('FORWARD_PRIMARY_SINGLE_PASS_ADVISORY_ONLY',hTranslate.includes("createGeminiRequest(krText,runId,'정번역'")&&wTranslate.includes("createForwardRequest(source,ctx,'ຄຳແປຫຼັກ'")&&hTranslate.includes('semanticAdvisory:true')&&wTranslate.includes('semanticAdvisory:true')&&!hTranslate.includes('await requestCriticalMeaningRepairK2L(')&&!wTranslate.includes('await requestCriticalMeaningRepairL2K('));
+    add('BACK_PRIMARY_SINGLE_NO_AUTORETRY',(hBack.match(/createBackTranslationRequest\(/g)||[]).length===1&&(wBack.match(/createBackRequest\(/g)||[]).length===1&&!hBack.includes('역번역·출력복구')&&!wBack.includes('ກູ້ຜົນກວດ'));
     add('V36158_L2K_FORWARD_LOW',/buildFastForwardPromptL2K[\s\S]{0,900}thinkingLevel\s*:\s*['"]low['"]/.test(w));
     add('V36158_K2L_FORWARD_LOW',/buildFastForwardPromptK2L[\s\S]{0,900}thinkingLevel\s*:\s*['"]low['"]/.test(h));
     add('BACK_COMPACT_V2_LOW',h.includes('SharedBackTranslationPolicyV36149.HUSBAND_BACK_PROMPT')&&w.includes('SharedBackTranslationPolicyV36149.WIFE_BACK_PROMPT')&&h.includes("const backThinkingLevel='low'")&&w.includes("const backThinkingLevel='low'")&&String(pc.back?.husband||'').includes('do not silently repair or reinterpret')&&String(pc.back?.wife||'').includes('do not silently repair or reinterpret'));
@@ -10588,7 +10579,7 @@ async function getUnifiedRuntimeSafetyAudit(){
     add('DETERMINISTIC_LAUGHTER_LOCALIZATION',h.includes('normalizeCoupleChatLaughter')&&w.includes('normalizeCoupleChatLaughter')&&h.includes("normalizeCoupleChatLaughter('K2L'")&&w.includes("normalizeCoupleChatLaughter('L2K'"));
     add('BACK_REGISTER_METADATA_SOLE_EVIDENCE',!h.includes("detectKoreanRegisterForBack(lastRequestPayload||'')")&&w.includes('const registerTag=detectKoreanRegisterForBack(korean);')&&h.includes('This tag controls speech level only; never use it to reconstruct meaning')&&w.includes('This tag controls speech level only; never use it to reconstruct meaning'));
     add('BACK_ANOMALY_VISIBLE_NO_NORMALIZATION',husbandBackPrompt.includes('do not silently repair or reinterpret it as the obvious intended word')&&wifeBackPrompt.includes('do not silently repair or reinterpret it as the obvious intended word')&&husbandBackPrompt.includes('preserve the anomaly closely enough')&&wifeBackPrompt.includes('preserve the anomaly closely enough'));
-    add('FORWARD_NO_BACKGROUND_REWRITE',!hTranslate.includes('requestGeminiWithHedge(')&&!wTranslate.includes('runForwardPolicy(')&&hTranslate.indexOf('await requestCriticalMeaningRepairK2L(')<hTranslate.indexOf('const finalText = result.text')&&wTranslate.indexOf('await requestCriticalMeaningRepairL2K(')<wTranslate.indexOf('const finalText=result.text')&&hTranslate.includes('hedged:false,rescued:false,tailRescued:false')&&wTranslate.includes('hedged:false,rescued:false,tailRescued:false'));
+    add('FORWARD_NO_BACKGROUND_REWRITE',!hTranslate.includes('requestGeminiWithHedge(')&&!wTranslate.includes('runForwardPolicy(')&&!hTranslate.includes('await requestCriticalMeaningRepairK2L(')&&!wTranslate.includes('await requestCriticalMeaningRepairL2K(')&&hTranslate.includes('hedged:false,rescued:false,tailRescued:false')&&wTranslate.includes('hedged:false,rescued:false,tailRescued:false'));
     add('SEMANTIC_FIDELITY_CONTRACT_P160A',k2lPrompt.includes('Naturalize syntax only')&&l2kPrompt.includes('Naturalize syntax only')&&k2lPrompt.includes('speaker/listener/third-party roles')&&l2kPrompt.includes('speaker/listener/third-party roles')&&k2lPrompt.includes('who does what to whom')&&l2kPrompt.includes('who does what to whom')&&k2lPrompt.includes('purpose/intention')&&l2kPrompt.includes('purpose/intention')&&k2lPrompt.includes('lexical strength')&&l2kPrompt.includes('lexical strength'));
     const observedStart=diag.indexOf('async function runPolicyObserved'),observedEnd=diag.indexOf('function historyGuardScoreFromQ',observedStart);const observedSrc=observedStart>=0?diag.slice(observedStart,observedEnd>observedStart?observedEnd:observedStart+1400):'';
     const backStart=diag.indexOf('async function cloudStrictBackTranslation'),backEnd=diag.indexOf('function cloudDirectionSummary',backStart);const backSrc=backStart>=0?diag.slice(backStart,backEnd>backStart?backEnd:backStart+2500):'';
@@ -10605,10 +10596,10 @@ async function getUnifiedRuntimeSafetyAudit(){
     add('CRITICAL_CORE_L2K',wDetect.includes("SharedCriticalMeaningCoreV277.detect('L2K'")&&w.includes('SharedCriticalMeaningCoreV277'));
     add('SEMANTIC_ADVISORY_K2L_DIAGNOSTIC_ONLY',h.includes('detectSelectiveRelationRiskK2L')&&h.includes('semanticAdvisory:true')&&h.includes('semanticAdvisoryReasons')&&h.includes('function retryLastTranslation()')&&!hTranslate.includes('정번역 · 사용자 확인'));
     add('SEMANTIC_ADVISORY_L2K_DIAGNOSTIC_ONLY',w.includes('detectSelectiveRelationRiskL2K')&&w.includes('semanticAdvisory:true')&&w.includes('semanticAdvisoryReasons')&&w.includes('function retryLastTranslation()')&&!wTranslate.includes('사용자 확인'));
-    add('SELECTIVE_REPAIR_SINGLE_ATTEMPT',!h.includes("launch('안전재번역2')")&&!w.includes("launch('ແປປອດໄພ2')")&&h.includes('requestCriticalMeaningRepairK2L')&&w.includes('requestCriticalMeaningRepairL2K'));
+    add('NO_AUTO_CRITICAL_REPAIR',!hTranslate.includes('requestCriticalMeaningRepairK2L(')&&!wTranslate.includes('requestCriticalMeaningRepairL2K(')&&!hBack.includes('technicalRetryCount:1')&&!wBack.includes('technicalRetryCount:1'));
     add('SEMANTIC_PROMPT_P168A_ACTIVE',String(pc.promptRevision||'')==='P168A');
-    add('SEMANTIC_NO_AUTOREPAIR_K2L_EXCEPT_OBJECTIVE_CORRUPTION',hTranslate.includes('semanticAdvisory:true')&&hTranslate.includes("OBJECTIVE_OUTPUT_CORRUPTION")&&hTranslate.includes('requestCriticalMeaningRepairK2L(')&&hTranslate.includes('Meaning heuristics never auto-repair'));
-    add('SEMANTIC_NO_AUTOREPAIR_L2K_EXCEPT_OBJECTIVE_CORRUPTION',wTranslate.includes('semanticAdvisory:true')&&wTranslate.includes("OBJECTIVE_OUTPUT_CORRUPTION")&&wTranslate.includes('requestCriticalMeaningRepairL2K(')&&wTranslate.includes('semantic findings stay advisory; only objective corruption can trigger one repair'));
+    add('SEMANTIC_NO_AUTOREPAIR_K2L',hTranslate.includes('OBJECTIVE_OUTPUT_CORRUPTION')&&hTranslate.includes('semanticAdvisory:true')&&!hTranslate.includes('await requestCriticalMeaningRepairK2L('));
+    add('SEMANTIC_NO_AUTOREPAIR_L2K',wTranslate.includes('OBJECTIVE_OUTPUT_CORRUPTION')&&wTranslate.includes('semanticAdvisory:true')&&!wTranslate.includes('await requestCriticalMeaningRepairL2K('));
     add('BACK_LOW_SCORE_RESULT_VISIBLE_K2L',h.includes('a non-empty completed back-translation is always shown')&&!h.includes("e.name='BackQualityError'")&&!h.includes('repairHusbandBackTranslation('));
     add('BACK_LOW_SCORE_RESULT_VISIBLE_L2K',w.includes('a non-empty completed back-translation is always shown')&&!w.includes("e.name='BackQualityError'")&&!w.includes('repairBackTranslation('));
     add('BACK_QUALITY_WARNING_UI_PARITY',h.includes('id="backQualityBadge"')&&w.includes('id="backQualityBadge"')&&h.includes('id="backQualityReasonBtn"')&&w.includes('id="backQualityReasonBtn"')&&h.includes('⚠️ 주의 이유 보기')&&w.includes('⚠️ ເບິ່ງເຫດຜົນທີ່ຄວນກວດ'));
