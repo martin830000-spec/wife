@@ -31,6 +31,18 @@ function assertOne(str,fragment){
   assert.equal(n,1,fragment+' count: '+n);
 }
 
+
+test('embedded SHA-256 fingerprints reflect actual decoded runtime payloads',()=>{
+  const crypto=require('node:crypto');
+  for(const [name,src] of sources){
+    const id=name==='K2L'?'husband':'wife';
+    const tag=raw.match(new RegExp('<textarea id="payload-'+id+'"[^>]*>'))[0];
+    const expected=tag.match(/data-sha256="([a-f0-9]{64})"/)[1];
+    const actual=crypto.createHash('sha256').update(src,'utf8').digest('hex');
+    assert.equal(expected,actual,name+'/payload');
+  }
+});
+
 test('parse all inline JavaScript in wife and husband payloads and integrated shell',()=>{
   for(const [name,src] of [...sources,['shell',raw]]) {
     const jsTags=[...src.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
