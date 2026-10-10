@@ -260,7 +260,7 @@ test('H2 controlled R7 comparison baseline permits exactly one changed wife path
 });
 test('H2 four-case pinned cohort accepts only balanced saved records and bypasses DB search',async()=>{
   assert.match(s,/const PC_PINNED_COHORT_DB_KEY=/);
-  assert.match(s,/PINNED_LAST_FOUR_NOT_FOUND/);
+  assert.match(s,/SERVER_REAL_USE_2X2_INITIAL_FREEZE/);
   assert.match(s,/PINNED_FOUR_PATH_BALANCE_INVALID/);
   const a=s.indexOf('const PC_HISTORIC_50_HASHES='),b=s.indexOf('function promptCompareUpdate(',a);
   assert.ok(a>0&&b>a);
@@ -279,4 +279,26 @@ test('H2 four-case pinned cohort accepts only balanced saved records and bypasse
   assert.match(s,/id="pcR7BaseInput"/);
   assert.match(s,/id="pcCopyBToBase"/);
   assert.match(s,/CONTROLLED_BASE_MODE=/);
+});
+
+test('H2 first PINNED run freezes real-use 2+2 without prior local A/B and then reuses it',async()=>{
+  const a=s.indexOf("const PC_PINNED_COHORT_DB_KEY="),b=s.indexOf("async function promptCompareFetchRows(",a);
+  assert.ok(a>0&&b>a);
+  const memory={};let serverCalls=0;
+  function diagDb(){return Promise.resolve({close(){},transaction(_store,_mode){const tx={oncomplete:null,onerror:null,onabort:null};tx.objectStore=()=>({
+    get(key){const req={result:null,onsuccess:null,onerror:null};queueMicrotask(()=>{req.result=memory[key];req.onsuccess?.()});return req},
+    put(value,key){memory[key]=value;queueMicrotask(()=>tx.oncomplete?.())}
+  });return tx}})}
+  const cases=[{direction:'K2L',sourceText:'남편 첫째',traceId:'k-a'},{direction:'L2K',sourceText:'아내 첫째',traceId:'l-a'},{direction:'K2L',sourceText:'남편 둘째',traceId:'k-b'},{direction:'L2K',sourceText:'아내 둘째',traceId:'l-b'}];
+  const ctx=vm.createContext({diagDb,RUN_STORE:'runs',PROMPT_COMPARE_DB_KEY:'prior-ab',queueMicrotask,
+    promptCompareFetchRows:async(n,mode,seed)=>{serverCalls++;assert.equal(n,4);assert.equal(mode,'REGRESSION');assert.match(seed,/PINNED_INITIAL_REALDB/);return cases}
+  });
+  vm.runInContext(s.slice(a,b),ctx);
+  const first=await vm.runInContext("pcPinnedReadOrFreeze(4)",ctx);
+  assert.equal(first.length,4);assert.equal(first.sampleMeta.mode,'PINNED');
+  assert.equal(first.sampleMeta.origin,'SERVER_REAL_USE_2X2_INITIAL_FREEZE');
+  assert.equal(serverCalls,1);assert.equal(memory['prompt-compare-pinned-four-h2-r6'].rows.length,4);
+  const next=await vm.runInContext("pcPinnedReadOrFreeze(4)",ctx);
+  assert.equal(next.length,4);assert.equal(serverCalls,1);
+  assert.deepEqual(Array.from(next,x=>x.sourceText),Array.from(first,x=>x.sourceText));
 });
