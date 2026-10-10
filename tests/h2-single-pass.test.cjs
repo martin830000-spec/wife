@@ -34,7 +34,7 @@ test('H2 A/B log shows both direction counts and marks unknown separately',()=>{
 });
 
 test('H2 backtranslation trace enforces independent single generation and transport',()=>{
-  const a=s.indexOf('function pcBackDetail('),b=s.indexOf('function pcSummaryMs(',a);
+  const a=s.indexOf('function pcValidMs('),b=s.indexOf('function pcSummaryMs(',a);
   assert.ok(a>=0&&b>a);
   const ctx=vm.createContext({});
   vm.runInContext(s.slice(a,b),ctx);
@@ -100,4 +100,12 @@ test('H2 compares real historical P160A clone against P160-derived candidate',()
   assert.match(s,/const z=await promptCompareLane\(lane,dir,source,prep\)/);
 });
 
-test('H2 persists independent back details in both lanes with token usage or UNKNOWN',()=>{assert.match(s,/row\\.aBackDetail=z\\.backDetail/);assert.match(s,/row\\.bBackDetail=z\\.backDetail/);assert.match(s,/aBackDetail:null,bBackDetail:null/);assert.match(s,/H2-BACK-TOKENS-R2/);assert.match(s,/tokenUsageSource/);assert.match(s,/BACK_DETAIL_JSON/);assert.match(s,/promptCompareCandidateBack\\(dir,out\\.forward,kind==='A'\\?cfg\\.base:cfg\\.candidate\\)/)});
+test('H2 persists independent back details in both lanes with token usage or UNKNOWN',()=>{
+ assert.ok(s.includes('row.aBackDetail=z.backDetail'));
+ assert.ok(s.includes('row.bBackDetail=z.backDetail'));
+ assert.ok(s.includes('aBackDetail:null,bBackDetail:null'));
+ assert.ok(s.includes('H2-BACK-TOKENS-R2'));
+ assert.ok(s.includes('tokenUsageSource'));
+ assert.ok(s.includes('BACK_DETAIL_JSON'));
+ assert.ok(s.includes("promptCompareCandidateBack(dir,out.forward,kind==='A'?cfg.base:cfg.candidate)"));
+});
