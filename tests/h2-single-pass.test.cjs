@@ -99,3 +99,5 @@ test('H2 compares real historical P160A clone against P160-derived candidate',()
   assert.doesNotMatch(lane,/localCoupleBack\(/);
   assert.match(s,/const z=await promptCompareLane\(lane,dir,source,prep\)/);
 });
+
+test('H2 persists independent back details in both lanes with token usage or UNKNOWN',()=>{assert.match(s,/row\\.aBackDetail=z\\.backDetail/);assert.match(s,/row\\.bBackDetail=z\\.backDetail/);assert.match(s,/aBackDetail:null,bBackDetail:null/);assert.match(s,/H2-BACK-TOKENS-R2/);assert.match(s,/tokenUsageSource/);assert.match(s,/BACK_DETAIL_JSON/);assert.match(s,/promptCompareCandidateBack\\(dir,out\\.forward,kind==='A'\\?cfg\\.base:cfg\\.candidate\\)/)});
