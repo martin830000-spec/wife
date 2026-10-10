@@ -71,7 +71,7 @@ test('H2 A/B audit validates retained isolation and single-pass fields, not remo
 
 test('H2 compares real historical P160A clone against P160-derived candidate',()=>{
   const findConfig=name=>{
-    const m=s.match(new RegExp('const '+name+'=(\\\\{[^\\\\n]+\\\\});'));
+    const m=s.match(new RegExp('const '+name+'=(\\{[^\\n]+\\});'));
     assert.ok(m,'embedded '+name);
     return JSON.parse(m[1]);
   };
@@ -89,13 +89,13 @@ test('H2 compares real historical P160A clone against P160-derived candidate',()
   assert.match(s,/BASELINE_NOT_EXACT_P160A/);
   assert.match(s,/SERVICE_RUNTIME_FINGERPRINT_MISMATCH/);
   assert.match(s,/PROMPT_COMPARE_SERVICE_REV='P168A'/);
-  assert.match(s,/promptCompareLoadBase\\(\\);/);
+  assert.match(s,/promptCompareLoadBase\(\);/);
   const start=s.indexOf('async function promptCompareLane('),stop=s.indexOf('function makePromptCompareLog()',start);
   assert.ok(start>0&&stop>start);
   const lane=s.slice(start,stop);
-  assert.match(lane,/promptCompareCandidateForward\\(dir,source,kind==='A'\\?cfg.base:cfg.candidate\\)/);
-  assert.match(lane,/promptCompareCandidateBack\\(dir,out.forward,kind==='A'\\?cfg.base:cfg.candidate\\)/);
-  assert.doesNotMatch(lane,/localCoupleForward\\(/);
-  assert.doesNotMatch(lane,/localCoupleBack\\(/);
-  assert.match(s,/const z=await promptCompareLane\\(lane,dir,source,prep\\)/);
+  assert.match(lane,/promptCompareCandidateForward\(dir,source,kind==='A'\?cfg.base:cfg.candidate\)/);
+  assert.match(lane,/promptCompareCandidateBack\(dir,out.forward,kind==='A'\?cfg.base:cfg.candidate\)/);
+  assert.doesNotMatch(lane,/localCoupleForward\(/);
+  assert.doesNotMatch(lane,/localCoupleBack\(/);
+  assert.match(s,/const z=await promptCompareLane\(lane,dir,source,prep\)/);
 });
