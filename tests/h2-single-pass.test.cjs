@@ -58,8 +58,11 @@ test('H2 A/B audit validates retained isolation and single-pass fields, not remo
   assert.ok(from>=0&&to>from,'A/B log function boundaries');
   const log=s.slice(from,to);
   assert.ok(log.includes("'AUTO_QUALITY_EVALUATION=false'"),'actual A/B logging marker');
-  assert.match(s,/makePromptCompareLog\\.toString\\(\\)\\.includes\\('AUTO_QUALITY_EVALUATION=false'\\)/,'selftest checks actual marker, not legacy synonym');
-  assert.doesNotMatch(s,/makePromptCompareLog\\.toString\\(\\)\\.includes\\('AUTO_EVALUATION=false'\\)/);
+  const checkAt=s.indexOf("add('prompt compare isolated no auto evaluation'"),checkEnd=s.indexOf(");add('quality phase watchdog'",checkAt);
+  assert.ok(checkAt>=0&&checkEnd>checkAt);
+  const check=s.slice(checkAt,checkEnd);
+  assert.ok(check.includes("makePromptCompareLog.toString().includes('AUTO_QUALITY_EVALUATION=false')"),'selfcheck matches A/B log key');
+  assert.ok(!check.includes("makePromptCompareLog.toString().includes('AUTO_EVALUATION=false')"),'no obsolete key');
   assert.match(s,/prompt compare isolated no auto evaluation/);
   assert.match(s,/promptCompareInjectSrcdoc\.toString\(\)\.includes/);
   assert.match(s,/SINGLE_PASS_METRIC=client forward AND back generations/);
