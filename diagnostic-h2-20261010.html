@@ -278,8 +278,67 @@ function promptCompareResetFrames(reason){for(const m of ['husband','wife']){con
 async function promptCompareFrame(mode,cfg){mode=mode==='wife'?'wife':'husband';let f=promptCompareFrames[mode],readyName=mode==='wife'?'__livePathDiagnosticReadyL2K':'__livePathDiagnosticReadyK2L';try{const pc=f?.contentWindow?.__COUPLE_PROMPT_CONFIG__;if(f?.isConnected&&pc?.promptSha256===cfg.promptSha256&&typeof f.contentWindow?.[readyName]==='function'&&f.contentWindow[readyName]())return f}catch(_){}try{f?.remove()}catch(_){}promptCompareFrames[mode]=null;const doc=main()?.getUnifiedDiagnosticCloneDocument?.(mode);if(!doc?.srcdoc)throw new Error('MAIN_CLONE_DOCUMENT_BRIDGE_MISSING');f=document.createElement('iframe');f.id='promptCompareFrame_'+mode;f.setAttribute('aria-hidden','true');f.style.cssText='position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none;';f.srcdoc=promptCompareInjectSrcdoc(enrichBackTokenDiagnosticClone(enrichRepairDiagnosticClone(doc.srcdoc,mode),mode),cfg);document.body.appendChild(f);promptCompareFrames[mode]=f;for(let i=0;i<180;i++){if(promptCompareStopped)throw new Error('STOPPED');try{const pc=f.contentWindow?.__COUPLE_PROMPT_CONFIG__;if(pc?.promptSha256===cfg.promptSha256&&typeof f.contentWindow?.[readyName]==='function'&&f.contentWindow[readyName]())return f}catch(_){}await sleep(50)}throw new Error('CANDIDATE_CLONE_LOAD_TIMEOUT_'+mode)}
 async function promptCompareCandidateForward(dir,source,cfg){const mode=dir==='L2K'?'wife':'husband',prior=promptCompareQueues[mode]||Promise.resolve(),text=String(source||'').trim(),task=prior.catch(function(){}).then(async function(){const f=await promptCompareFrame(mode,cfg),fn=dir==='L2K'?f.contentWindow?.__runLivePathDiagnosticL2K:f.contentWindow?.__runLivePathDiagnosticK2L;if(typeof fn!=='function')throw new Error('CANDIDATE_FORWARD_BRIDGE_MISSING');return await fn(text)});promptCompareQueues[mode]=task.catch(function(){});return task}
 async function promptCompareCandidateBack(dir,target,cfg){const mode=dir==='L2K'?'wife':'husband',prior=promptCompareQueues[mode]||Promise.resolve(),text=String(target||'').trim(),task=prior.catch(function(){}).then(async function(){const f=await promptCompareFrame(mode,cfg),fn=dir==='L2K'?f.contentWindow?.__runLiveBackDiagnosticL2K:f.contentWindow?.__runLiveBackDiagnosticK2L;if(typeof fn!=='function')throw new Error('CANDIDATE_BACK_BRIDGE_MISSING');return await fn(text)});promptCompareQueues[mode]=task.catch(function(){});return task}
-function promptCompareUnique(rows,need,dir){const all=[],seen=new Set();for(const r of rows){const t=String(r.sourceText||'').trim().replace(/\s+/g,' ');if(!t||seen.has(t))continue;seen.add(t);all.push(r)}const special=all.filter(r=>pcRisk(dir,r.sourceText)).slice(0,Math.min(3,Math.ceil(need/5))),selected=new Set(special);return special.concat(all.filter(r=>!selected.has(r))).slice(0,need)}
-async function promptCompareFetchRows(n){const kn=Math.ceil(n/2),ln=Math.floor(n/2),pool=Math.min(500,Math.max(80,n*4)),both=await Promise.all([fetchRecentRecords('K2L',pool,'couple',500,'all'),fetchRecentRecords('L2K',pool,'couple',500,'all')]),k=promptCompareUnique(both[0],kn,'K2L'),l=promptCompareUnique(both[1],ln,'L2K');if(k.length!==kn||l.length!==ln)throw new Error('BIDIRECTIONAL_SAMPLE_INSUFFICIENT:K2L='+k.length+'/'+kn+' L2K='+l.length+'/'+ln);const out=[];for(let j=0;j<Math.max(k.length,l.length);j++){if(k[j])out.push(k[j]);if(l[j])out.push(l[j])}return out.slice(0,n)}
+// H2 R5 — public diagnostic contains opaque 64-bit fingerprints only, never old private message texts.
+const PC_HISTORIC_50_HASHES=new Set('5af6cf62391f5ed8 74ca56bf93fcf364 85125fde10d28198 e84362fcd47387a2 7b6ccfdc03d51ae4 1c17f0f85a05baec aa344a7beeaede3c a1373284ac1585d2 4f98f4eddc9308b4 85d96adee1041182 68595fb44bc1caaa 6530f2c23068d0f6 3595da0b0319bb26 70d3370ce019180e 93634888c8e1f5b9 6041db0b73d37352 3e1523e3164b41fb 10607a90a6bc4511 d62d2fa9b9ce3884 fe3149d018ba6262 8a931d88eb1f411c e9f558b80ddf4776 289e8db6fa161ccb 2d28825d48d9bb4e e73db1e804af2052 44f189695cc8a93d 2584871cc3e3bbe3 69689cd2997f7c3d c331bdcea5a5e1bc 6d716bff5099df7d 5f295d42cb17fe29 a5e17746ee8f9c79 9f4123b9f2f589f5 9fd04c8e291d9bef e80b5428663c6fa6 dac9b829c8e7b88d ce28a6f51155c3a2 b1a348f4078ea328 a546c31a8c413186 70e58c49da5e5e52 2050dcd883af9849 d4b2a263a0cc26ae 2b9c99b7510c5bae a026b64258bb946d 111cc2faeff1c6d9 799b14ae84793f82 3cfc171e27369ee2 523556373f5c39f8 c1b61129cdd84083 681909ad88f66024'.split(' '));
+const PC_TESTED_HASH_DB_KEY='prompt-compare-tested-fingerprints-h2-r5';
+function pcSourceCanonical(text){return String(text||'').trim().replace(/\s+/g,' ')}
+function pcSourceHash(text){
+  let hash=14695981039346656037n;
+  for(const char of pcSourceCanonical(text)){hash=BigInt.asUintN(64,(hash^BigInt(char.codePointAt(0)))*1099511628211n)}
+  return hash.toString(16).padStart(16,'0');
+}
+function pcSimilarityTokens(text){const clean=pcSourceCanonical(text).normalize('NFKC').replace(/[\p{P}\p{S}\s]/gu,'');const a=[...clean],out=new Set();for(let i=0;i+2<a.length;i++)out.add(a[i]+a[i+1]+a[i+2]);return out}
+function pcNearDuplicate(a,b){
+  if(Math.min(pcSourceCanonical(a).length,pcSourceCanonical(b).length)<25)return false;
+  const x=pcSimilarityTokens(a),y=pcSimilarityTokens(b);if(x.size<10||y.size<10)return false;
+  let intersection=0;for(const word of x)if(y.has(word))intersection++;
+  return intersection/(x.size+y.size-intersection)>=0.87;
+}
+async function pcHistoryRead(){
+  const db=await diagDb();
+  try{
+    const tx=db.transaction(RUN_STORE,'readonly'),store=tx.objectStore(RUN_STORE);
+    const load=key=>new Promise((res,rej)=>{const q=store.get(key);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)});
+    const [history,last]=await Promise.all([load(PC_TESTED_HASH_DB_KEY),load(PROMPT_COMPARE_DB_KEY)]);
+    const hashes=new Set(Array.isArray(history?.hashes)?history.hashes:[]);
+    for(const row of Array.isArray(last?.rows)?last.rows:[])if(row.source)hashes.add(pcSourceHash(row.source));
+    return hashes;
+  }finally{db.close()}
+}
+async function pcHistoryMark(source){
+  const current=await pcHistoryRead();current.add(pcSourceHash(source));
+  const db=await diagDb();
+  try{
+    const tx=db.transaction(RUN_STORE,'readwrite');
+    tx.objectStore(RUN_STORE).put({version:1,hashes:[...current].slice(-4000),savedAt:Date.now()},PC_TESTED_HASH_DB_KEY);
+    await new Promise((res,rej)=>{tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});
+  }finally{db.close()}
+}
+function pcRankHash(source,seed){let h=2166136261;for(const ch of pcSourceHash(source)+'/'+seed){h=Math.imul(h^ch.codePointAt(0),16777619)>>>0}return h>>>0}
+function promptCompareUnique(rows,need,dir,options={}){
+  const mode=options.mode||'REGRESSION',statistics=options.stats||{},prev=options.previous||new Set();
+  const all=[],seen=new Set();statistics.excludedHistorical=0;statistics.excludedSeen=0;statistics.excludedExact=0;statistics.excludedNear=0;
+  for(const r of rows){const t=pcSourceCanonical(r.sourceText);if(!t)continue;const h=pcSourceHash(t);
+    if(mode==='NEW'&&PC_HISTORIC_50_HASHES.has(h)){statistics.excludedHistorical++;continue}
+    if(mode==='NEW'&&prev.has(h)){statistics.excludedSeen++;continue}
+    if(seen.has(h)){statistics.excludedExact++;continue}
+    seen.add(h);all.push(r)}
+  if(mode==='REGRESSION'){const special=all.filter(r=>pcRisk(dir,r.sourceText)).slice(0,Math.min(3,Math.ceil(need/5))),sset=new Set(special);return special.concat(all.filter(r=>!sset.has(r))).slice(0,need)}
+  all.sort((a,b)=>pcRankHash(a.sourceText,options.seed)-pcRankHash(b.sourceText,options.seed));
+  const risk=all.filter(r=>pcRisk(dir,r.sourceText)),rset=new Set(risk);
+  const ordered=risk.slice(0,Math.min(3,Math.ceil(need/5))).concat(all.filter(r=>!rset.has(r)),risk.slice(Math.min(3,Math.ceil(need/5))));
+  const selected=[];for(const rec of ordered){if(selected.some(x=>pcNearDuplicate(x.sourceText,rec.sourceText))){statistics.excludedNear++;continue}selected.push(rec);if(selected.length===need)break}
+  return selected;
+}
+async function promptCompareFetchRows(n,mode='NEW',seed=String(Date.now())){
+  const kn=Math.ceil(n/2),ln=Math.floor(n/2),pool=mode==='NEW'?500:Math.min(500,Math.max(80,n*4));
+  const previous=mode==='NEW'?await pcHistoryRead():new Set();
+  const both=await Promise.all([fetchRecentRecords('K2L',pool,'couple',500,'all'),fetchRecentRecords('L2K',pool,'couple',500,'all')]);
+  const ks={},ls={};const k=promptCompareUnique(both[0],kn,'K2L',{mode,seed,previous,stats:ks}),l=promptCompareUnique(both[1],ln,'L2K',{mode,seed,previous,stats:ls});
+  const sampling={mode,seed,requested:n,fetchedK2L:both[0].length,fetchedL2K:both[1].length,availableNewK2L:k.length,availableNewL2K:l.length,excludedK2L:ks,excludedL2K:ls,historicalSeedSize:PC_HISTORIC_50_HASHES.size,localSeenCount:previous.size,dedupeNear:true};
+  if(k.length!==kn||l.length!==ln)throw new Error('INSUFFICIENT_'+(mode==='NEW'?'NEW_CASES':'REGRESSION_CASES')+':K2L='+k.length+'/'+kn+' L2K='+l.length+'/'+ln+' (최대 각 500건 조회; 기존 표본 혼합 없음. 더 많은 새로운 DB 기록이 필요합니다)');
+  const out=[];for(let j=0;j<Math.max(k.length,l.length);j++){if(k[j])out.push(k[j]);if(l[j])out.push(l[j])}out.sampleMeta=sampling;return out;
+}
 function promptCompareUpdate(done,total,stage,started){const pct=total?Math.round(done/total*100):0;$('promptCompareProgress').style.width=pct+'%';$('promptComparePercent').textContent=pct+'%';$('promptCompareProgressText').textContent=pct+'%';$('promptCompareCountText').textContent=promptCompareRows.length+' / '+Math.ceil(total/4);$('promptCompareStage').textContent=stage;$('promptCompareElapsed').textContent=fmtDuration(Date.now()-started);$('promptCompareCalls').textContent=promptCompareCalls}
 function promptCompareRender(){$('pcDone').textContent=promptCompareRows.length;$('pcErrors').textContent=promptCompareRows.filter(r=>r.aError||r.bError||r.error).length;$('pcK2L').textContent=promptCompareRows.filter(r=>r.dir==='K2L').length;$('pcL2K').textContent=promptCompareRows.filter(r=>r.dir==='L2K').length;$('pcCostA').textContent=pcCostUi('A');$('pcCostB').textContent=pcCostUi('B');$('promptCompareCases').innerHTML=promptCompareRows.slice(-20).reverse().map(r=>{const failed=!!(r.aError||r.bError||r.error);return'<div class="case"><div class="case-top"><div class="case-title">#'+r.index+' '+esc(r.source.slice(0,100))+'</div><span class="badge '+(failed?'bad':'good')+'">'+(failed?'부분 실패':esc(r.dir))+'</span></div><div class="case-meta">A 정 '+msText(r.aForwardMs)+' / 역 '+msText(r.aBackMs)+' · B 정 '+msText(r.bForwardMs)+' / 역 '+msText(r.bBackMs)+' · 표시 A '+msText(r.aForwardDetail?.firstDisplayMs)+' / B '+msText(r.bForwardDetail?.firstDisplayMs)+' · 정1회 A '+esc(r.aForwardDetail?.singlePassForwardStatus||'UNKNOWN')+' / B '+esc(r.bForwardDetail?.singlePassForwardStatus||'UNKNOWN')+' · 역1회 A '+esc(r.aBackDetail?.singlePassBackStatus||'UNKNOWN')+' / B '+esc(r.bBackDetail?.singlePassBackStatus||'UNKNOWN')+' · '+esc(r.order)+(r.riskTag?' · '+esc(r.riskTag):'')+(failed?' · '+esc([r.aError,r.bError,r.error].filter(Boolean).join(' | ')):'')+(r.aForwardDetail?.repairFailed?' · A 복구 실패':'')+(r.bForwardDetail?.repairFailed?' · B 복구 실패':'')+'</div><details><summary>정번역 / 역번역 / 말투 신호 확인 (자동 합격 판정 없음)</summary>'+pcDetail('원문',r.source)+pcDetail('A 정번역',r.aForward)+pcDetail('A 역번역',r.aBack)+pcDetail('A 말투 검토',pcRegister(r.dir,r.source,r.aForward,r.aBack))+pcDetail('B 정번역',r.bForward)+pcDetail('B 역번역',r.bBack)+pcDetail('B 말투 검토',pcRegister(r.dir,r.source,r.bForward,r.bBack))+'</details></div>'}).join('')}
 async function promptComparePersist(){try{const db=await diagDb(),tx=db.transaction(RUN_STORE,'readwrite');tx.objectStore(RUN_STORE).put({run:promptCompareRun,rows:promptCompareRows,savedAt:Date.now()},PROMPT_COMPARE_DB_KEY);await new Promise(function(res,rej){tx.oncomplete=res;tx.onerror=function(){rej(tx.error)}});db.close()}catch(_){}}
