@@ -156,3 +156,10 @@ test('H2 estimates four-path cost ONLY when both reverse and forward token total
   assert.match(s,/id="pcCostA"/);
   assert.match(s,/id="pcCostB"/);
 });
+
+test('H2 has budget-safe balanced 4-case instrumentation smoke option',()=>{
+ assert.match(s,/<select id="promptCompareCount"><option value="4" selected>/);
+ assert.match(s,/4건 · 비용 기록 확인용/);
+ assert.match(s,/Math\.ceil\(n\/2\)/);
+ assert.match(s,/Math\.floor\(n\/2\)/);
+});
