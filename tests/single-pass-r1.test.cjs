@@ -193,6 +193,45 @@ test('translation relay route failover stops after first attempted region and pa
     }
   }
 });
+
+test('relay region transport never resends Gemini; STT retains its separate failover',async()=>{
+  for(const [name,src] of sources){
+    const pred=slice(src,'function isSinglePassGenerationPath(path,meta={})','async function integratedRelayFetchDirect(');
+    const direct=slice(src,'async function integratedRelayFetchDirect(path,init={},meta={},preferredName=\'\'){','async function integratedRelayFetch(path,init={},meta={},preferredName=\'\'){');
+    for(const stage of ['translate','back','stt-rest-recovery']){
+      for(const scenario of ['503','throw']){
+        let calls=[];
+        const ctx=vm.createContext({
+          integratedRelayRawConfig:()=>({token:'TEST_TOKEN'}),
+          integratedRelayRouteOrder:()=>[{name:'seoul',url:'https://mock-seoul.invalid'},{name:'bangkok',url:'https://mock-bkk.invalid'}],
+          integratedRelayShouldFailover:()=>true,
+          integratedRelayState:{cooldownUntil:{},failoverCount:0},
+          RELAY_FAILOVER_COOLDOWN_MS:5000,
+          integratedSafeResponseText:async()=> 'test-status',
+          integratedRelayReport:()=>{},
+          performance:{now:()=>0},
+          Date,AbortController,setTimeout,clearTimeout,
+          fetch:async url=>{
+            calls.push(String(url));
+            if(scenario==='throw')throw new TypeError('network');
+            return{ok:false,status:503};
+          },
+          console:{warn(){}}
+        });
+        vm.runInContext(pred+direct,ctx,{timeout:2000});
+        const path=stage==='stt-rest-recovery'?'/transcribe':'/gemini/generate';
+        try{
+          await vm.runInContext('integratedRelayFetchDirect('+JSON.stringify(path)+',{method:"POST"},{action:'+JSON.stringify(stage)+'})',ctx)
+        }catch(e){if(scenario!=='throw')throw e}
+        const expected=stage==='stt-rest-recovery'?2:1;
+        assert.equal(calls.length,expected,name+'/'+stage+'/'+scenario);
+        assert.ok(calls[0].includes('mock-seoul.invalid'));
+        if(expected===2)assert.ok(calls[1].includes('mock-bkk.invalid'));
+      }
+    }
+  }
+});
+
 test('single generation guard does not disable unrelated STT route policy',()=>{
   for(const [,src] of sources){
     const ctx=context(src,'function isSinglePassGenerationPath(path,meta={})','async function integratedRelayFetchDirect(');
