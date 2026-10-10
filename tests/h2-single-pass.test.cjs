@@ -209,6 +209,12 @@ test('H2 retains independent four-path review warnings and evidence in TXT witho
   assert.ok(flags.back.includes('FOREIGN_LATIN_SUSPECT'));
   assert.ok(flags.back.includes('SLASH_ALTERNATIVES_SUSPECT'));
   assert.equal(flags.semantic,'MANUAL_REVIEW_REQUIRED');
+  const korean=vm.runInContext("pcStageFlags('K2L','ສະບາຍດີ','아멘/사투 사투.')",ctx);
+  assert.ok(korean.back.includes('SLASH_ALTERNATIVES_SUSPECT'),'Korean real-run example detected');
+  const lao=vm.runInContext("pcStageFlags('L2K','안녕하세요','ອາວ/ລຸງ')",ctx);
+  assert.ok(lao.back.includes('SLASH_ALTERNATIVES_SUSPECT'),'Lao family slash detected');
+  const url=vm.runInContext("pcStageFlags('K2L','ເບິ່ງ https://example.com/path','한 가지 표현뿐이에요')",ctx);
+  assert.equal(url.forward.includes('SLASH_ALTERNATIVES_SUSPECT'),false,'URLs not misidentified');
   assert.match(s,/A_STAGE_REVIEW/);assert.match(s,/B_STAGE_REVIEW/);
   assert.match(s,/SAMPLE_SELECTION_JSON/);assert.match(s,/SAMPLE_MODE=/);
   assert.match(s,/pcStageReviewUi\(r,'A'\)/);
