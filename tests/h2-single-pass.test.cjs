@@ -52,3 +52,10 @@ test('H2 backtranslation trace enforces independent single generation and transp
   assert.match(s,/A_BACK_DETAIL_JSON/);
   assert.match(s,/B_BACK_DETAIL_JSON/);
 });
+
+test('H2 A/B audit validates retained isolation and single-pass fields, not removed prose',()=>{
+  assert.match(s,/prompt compare isolated no auto evaluation/);
+  assert.match(s,/promptCompareInjectSrcdoc\.toString\(\)\.includes/);
+  assert.match(s,/SINGLE_PASS_METRIC=client forward AND back generations/);
+  assert.doesNotMatch(s,/makePromptCompareLog\.toString\(\)\.includes\('roundtrip meaning preservation'\)/);
+});
