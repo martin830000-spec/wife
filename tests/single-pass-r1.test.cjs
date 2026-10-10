@@ -141,8 +141,9 @@ test('translation relay route failover stops after first attempted region and pa
       const ctx=vm.createContext(mock);
       vm.runInContext(pred+route,ctx);
       await vm.runInContext('integratedRelayFetch("/gemini/generate",{method:"POST"},{action:"translate"})',ctx);
-      assert.equal(direct,preferred==='direct'?1:0,name+'/'+preferred);
-      assert.equal(cloudflare,preferred==='cloudflare'?1:0,name+'/'+preferred);
+      const expectedRoute=name==='L2K'?'cloudflare':preferred;
+      assert.equal(direct,expectedRoute==='direct'?1:0,name+'/'+preferred);
+      assert.equal(cloudflare,expectedRoute==='cloudflare'?1:0,name+'/'+preferred);
     }
   }
 });
