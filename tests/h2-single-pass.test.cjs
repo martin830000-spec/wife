@@ -32,3 +32,23 @@ test('H2 A/B log shows both direction counts and marks unknown separately',()=>{
   assert.match(s,/L2K_COUNT/);
   assert.match(s,/Backend\/provider retries not observed/);
 });
+
+test('H2 backtranslation trace enforces independent single generation and transport',()=>{
+  const a=s.indexOf('function pcBackDetail('),b=s.indexOf('function pcSummaryMs(',a);
+  assert.ok(a>=0&&b>a);
+  const ctx=vm.createContext({});
+  vm.runInContext(s.slice(a,b),ctx);
+  const check=(gens,fetches,status)=>{
+    const x={records:Array.from({length:gens},()=>({label:'back'})),networkTrace:Array.from({length:fetches},()=>({route:'relay'}))};
+    const d=vm.runInContext('pcBackDetail('+JSON.stringify(x)+')',ctx);
+    assert.equal(d.singlePassBackStatus,status);
+    assert.equal(d.clientBackGenerations,gens);
+    assert.equal(d.clientBackFetches,fetches);
+  };
+  check(1,1,'PASS');check(2,1,'FAIL');check(1,2,'FAIL');check(0,0,'UNKNOWN');
+  assert.equal(vm.runInContext('pcBackDetail({ok:true})',ctx).singlePassBackStatus,'UNKNOWN');
+  assert.match(s,/SINGLE_PASS_BACK_FAILURES_A/);
+  assert.match(s,/SINGLE_PASS_BACK_FAILURES_B/);
+  assert.match(s,/A_BACK_DETAIL_JSON/);
+  assert.match(s,/B_BACK_DETAIL_JSON/);
+});
