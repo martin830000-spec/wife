@@ -1,0 +1,18 @@
+name: Single Pass TEST Gate
+on:
+  push:
+    branches:
+      - test/single-pass-couple-runtime-20261010-r1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mocked-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/single-pass-r1.test.cjs
