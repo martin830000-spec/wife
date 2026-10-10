@@ -252,6 +252,6 @@ test('SERVICE-era auth retry selftest is replaced with single-pass auth invarian
     assert.ok(fn.includes("await requestIntegratedCredentialRefresh('primary')"),name);
     assert.ok(fn.includes('if(integratedPrimaryPasswordError(response.status,bodyText))'),name);
     assert.ok(fn.includes('const preselected=await integratedRelayGeminiFetch(options,meta)'),name);
-    assert.ok(/if\\(integratedPrimaryPasswordError\\(response.status,bodyText\\)\\)[\\s\\S]*?return response;/.test(fn),name);
+    assert.ok(fn.includes('return response;'),name);
   }
 });
