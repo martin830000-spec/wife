@@ -158,7 +158,7 @@ test('H2 estimates four-path cost ONLY when both reverse and forward token total
 });
 
 test('H2 has budget-safe balanced 4-case instrumentation smoke option',()=>{
- assert.match(s,/<select id="promptCompareCount"><option value="4" selected>/);
+ assert.match(s,/<select id="promptCompareCount"><option value="6">6건[^<]*<\/option><option value="4" selected>/);
  assert.match(s,/4건 · 비용 기록 확인용/);
  assert.match(s,/Math\.ceil\(n\/2\)/);
  assert.match(s,/Math\.floor\(n\/2\)/);
@@ -333,7 +333,7 @@ test('P168A role pilot uses source-verified live SERVICE baseline and private ca
   assert.match(s,/id="pcP168File"/);
   assert.match(s,/async function pcP168LoadFile\(file\)/);
   assert.match(s,/if\(liveHash!==PROMPT_COMPARE_SERVICE_SHA\|\|live\.promptSha256!==liveHash\)/);
-  assert.match(s,/P168A_ROLE_CANDIDATE_EXACTLY_TWO_FORWARD_FIELDS_REQUIRED/);
+  assert.match(s,/P168A_EXACT_R1_R2_SCOPE_REQUIRED/);assert.match(s,/cfg\.promptRevision==='EXP-P168A-ROLE-SPEECHACT-R1'&&changed\.length===2/);
   assert.match(s,/P168A_CANDIDATE_SHA_MISMATCH/);
   assert.match(s,/changed\.length!==2\|\|!changed\.includes\('forward\.k2l'\)\|\|!changed\.includes\('forward\.l2k'\)/);
   assert.match(s,/\$\('promptCompareSampleMode'\)\.value='NEW'/);
