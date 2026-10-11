@@ -327,3 +327,18 @@ test('recent-record export permits 1000 original records with independent back t
   assert.match(url,/limit=1000/);
   assert.match(url,/scan=4000/);
 });
+
+test('P168A role pilot uses source-verified live SERVICE baseline and private candidate file without automatic Gemini calls',()=>{
+  assert.match(s,/<option value="P168A">SERVICE P168A 기준/);
+  assert.match(s,/id="pcP168File"/);
+  assert.match(s,/async function pcP168LoadFile\(file\)/);
+  assert.match(s,/if\(liveHash!==PROMPT_COMPARE_SERVICE_SHA\|\|live\.promptSha256!==liveHash\)/);
+  assert.match(s,/P168A_ROLE_CANDIDATE_EXACTLY_TWO_FORWARD_FIELDS_REQUIRED/);
+  assert.match(s,/P168A_CANDIDATE_SHA_MISMATCH/);
+  assert.match(s,/changed\.length!==2\|\|!changed\.includes\('forward\.k2l'\)\|\|!changed\.includes\('forward\.l2k'\)/);
+  assert.match(s,/\$\('promptCompareSampleMode'\)\.value='NEW'/);
+  const start=s.indexOf('async function pcP168LoadFile(file)'),end=s.indexOf('async function pcPresetValidate(data)',start);
+  assert.ok(end>start);
+  assert.doesNotMatch(s.slice(start,end),/runPromptCompare\(|runForward\(|runBack\(|generateContent|fetch\(/);
+  assert.doesNotMatch(s,/If the Korean explicitly presents husband and wife as co-actors/);
+});
