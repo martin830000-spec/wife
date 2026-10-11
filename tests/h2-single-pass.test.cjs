@@ -342,3 +342,17 @@ test('P168A role pilot uses source-verified live SERVICE baseline and private ca
   assert.doesNotMatch(s.slice(start,end),/runPromptCompare\(|runForward\(|runBack\(|generateContent|fetch\(/);
   assert.doesNotMatch(s,/If the Korean explicitly presents husband and wife as co-actors/);
 });
+
+test('R2 exact-six importer is private, hash-gated, preserves previous R1, and has no eager Gemini calls',()=>{
+  assert.match(s,/id="pcR2FileButton"/);
+  assert.match(s,/R2_CASE_SHA_MISMATCH/);
+  assert.match(s,/R2_PROMPT_SHA_MISMATCH/);
+  assert.match(s,/R2_FIELD_SCOPE_MISMATCH/);
+  assert.match(s,/R2_FIXED_CANDIDATE_INVALID/);
+  assert.match(s,/mode==='FIXED_R2'\)return pcR2GetFixed\(n\)/);
+  assert.match(s,/source=PRIVATE_DB_EXACT/);
+  const a=s.indexOf('async function pcR2Load(file)'),b=s.indexOf('function pcR2GetFixed(',a);
+  assert.ok(a>=0&&b>a);
+  assert.doesNotMatch(s.slice(a,b),/runPromptCompare\(|runForward\(|runBack\(|fetch\(/);
+  assert.doesNotMatch(s,/Lao explicitly names the husband as the actor/);
+});
