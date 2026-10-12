@@ -1,0 +1,19 @@
+name: Latency Phase Offline Experiment
+on:
+  push:
+    branches:
+      - experiment/latency-phases-20261012-r1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline tests only - no Gemini calls or deployment
+        run: node --test tests/*.test.cjs
