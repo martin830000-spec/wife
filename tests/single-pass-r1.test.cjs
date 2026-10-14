@@ -136,7 +136,7 @@ test('direct Gemini TypeError, 408, 5xx, and auth: no hidden replay in either ap
   }
 });
 
-test('wife preselects Cloudflare once; husband honors chosen first path, even on errors',async()=>{
+test('both couple modes use direct Gemini once regardless of old relay preference, including errors',async()=>{
   for(const [name,src] of sources){
     const pred=slice(src,'function isSinglePassGenerationPath(path,meta={})','async function integratedRelayFetchDirect(');
     const direct=slice(src,'async function fetchPrimaryDirect(url,options={},meta={})','async function fetchSecondaryDirect(');
@@ -157,9 +157,8 @@ test('wife preselects Cloudflare once; husband honors chosen first path, even on
         vm.runInContext(pred+direct,ctx,{timeout:2000});
         const url='https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent';
         const res=await vm.runInContext('fetchPrimaryDirect('+JSON.stringify(url)+',{method:"POST"},{action:"translate"})',ctx);
-        const expectedRelay=name==='L2K'||preference==='cloudflare';
-        assert.equal(network,expectedRelay?0:1,name+'/'+preference+'/'+status+'/direct');
-        assert.equal(relay,expectedRelay?1:0,name+'/'+preference+'/'+status+'/relay');
+        assert.equal(network,1,name+'/'+preference+'/'+status+'/direct');
+        assert.equal(relay,0,name+'/'+preference+'/'+status+'/relay');
         assert.equal(network+relay,1,name+'/'+preference+'/'+status+'/total');
         assert.equal(res.status,status,name+'/'+preference+'/'+status+'/status');
         assert.equal(refresh,0);
@@ -251,7 +250,20 @@ test('SERVICE-era auth retry selftest is replaced with single-pass auth invarian
     assert.ok(!fn.includes('_credentialRetried'),name);
     assert.ok(fn.includes("await requestIntegratedCredentialRefresh('primary')"),name);
     assert.ok(fn.includes('if(integratedPrimaryPasswordError(response.status,bodyText))'),name);
-    assert.ok(fn.includes('const preselected=await integratedRelayGeminiFetch(options,meta)'),name);
+    assert.ok(!fn.includes('const preselected=await integratedRelayGeminiFetch(options,meta)'),name);
+    assert.ok(fn.includes('response=await fetch(url,Object.assign'),name);
     assert.ok(fn.includes('return response;'),name);
+  }
+});
+
+// 2026-10-14 direct-text policy regression gate: relay preferences affect speech only.
+test('voice transport chooses Cloud Run for husband and Cloudflare for wife',()=>{
+  for(const [name,src] of sources){
+    const fn=slice(src,"function networkRoutePreferred(feature='relay',meta={})",'function networkRouteRecord(');
+    const ctx=vm.createContext({INTEGRATED_MODE:name==='L2K'?'wife':'husband'});
+    vm.runInContext(fn,ctx,{timeout:2000});
+    for(const feature of ['stt','tts']){
+      assert.equal(vm.runInContext('networkRoutePreferred('+JSON.stringify(feature)+')',ctx),name==='L2K'?'cloudflare':'direct',name+'/'+feature);
+    }
   }
 });
