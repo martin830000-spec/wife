@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - test/single-pass-couple-runtime-20261010-r1
+      - test/qa-ui-route-20261014-r2
   workflow_dispatch:
 permissions:
   contents: read
