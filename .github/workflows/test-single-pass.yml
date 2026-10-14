@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - test/single-pass-couple-runtime-20261010-r1
+      - test/text-direct-voice-route-ui-r2-20261014
   workflow_dispatch:
 permissions:
   contents: read
