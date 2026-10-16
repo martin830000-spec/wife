@@ -8,10 +8,23 @@ permissions:
 jobs:
   offline-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: node --test tests/*.test.cjs
+      - name: Offline Chromium DOM smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$BROWSER" ]; then echo "NO_CHROME_BROWSER"; exit 1; fi
+          "$BROWSER" --version
+          timeout 35s "$BROWSER" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-background-networking --no-first-run --virtual-time-budget=2500 --dump-dom "file://$PWD/index.html" > /tmp/service-smoke-0.html 2> /tmp/service-smoke-0.log
+          grep -Fq 'V3.61.209' /tmp/service-smoke-0.html
+          if grep -Eiq 'Uncaught (ReferenceError|TypeError|SyntaxError)|Uncaught SyntaxError:' /tmp/service-smoke-0.log; then cat /tmp/service-smoke-0.log; exit 1; fi
+          timeout 35s "$BROWSER" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-background-networking --no-first-run --virtual-time-budget=2500 --dump-dom "file://$PWD/diagnostic-h2-20261010.html" > /tmp/service-smoke-1.html 2> /tmp/service-smoke-1.log
+          grep -Fq '최근 번역' /tmp/service-smoke-1.html
+          if grep -Eiq 'Uncaught (ReferenceError|TypeError|SyntaxError)|Uncaught SyntaxError:' /tmp/service-smoke-1.log; then cat /tmp/service-smoke-1.log; exit 1; fi
