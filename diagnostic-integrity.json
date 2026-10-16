@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "appVersion": "V3.61.209",
   "diagnosticPath": "diagnostic-h2-20261010.html",
-  "sha256": "b87cb9021e2c07d9e90b2ff099defabb9c7bbf2229d134b1e824169a4bbe16f7",
-  "revision": "H2-GEMINI-LATENCY-R3-REPAIR-RECHECK-DIAGNOSTICS-R1",
-  "policy": "Update diagnostic file and this manifest together; never weaken SHA verification."
+  "sha256": "85f1679ea82402958f67be2b151ff3482e3bce40e8654a2e8d2c364bda38d603",
+  "revision": "H2-BACK-TELEMETRY-EXPORT-20261016-R1-SERVICE",
+  "policy": "Service diagnostic H2: preserve existing four lanes, show stored back-translation ms/status, missing = unmeasured, exclude exact two synthetic events, no DB writes."
 }
