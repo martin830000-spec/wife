@@ -2,7 +2,9 @@
   "schemaVersion": 1,
   "appVersion": "V3.61.209",
   "diagnosticPath": "diagnostic-h2-20261010.html",
-  "sha256": "8c275b2513d2ec20be162ef33a33d8b8f64a91fc495c8daa7f8b921751b319e0",
-  "revision": "H2-SERVICE-SAMETAB-NAV-20261023-R1",
-  "policy": "Service diagnostic H2: preserve existing four lanes, show stored back-translation ms/status, missing = unmeasured, exclude exact two synthetic events, no DB writes. Added TEST-parity same-tab navigation bridge and active-run guard; SERVICE back-translation telemetry retained; no paid calls or DB changes."
+  "sha256": "197c84d8f38e60942eac34ffa06c59c50030e7d1ec7ddb63de354deba2df67a8",
+  "revision": "H2-SERVICE-SOURCE-PARITY-R10-LOCK-20261023-R2",
+  "policy": "SERVICE diagnostic parity with TEST H2 fixed-file input and runtime self-audit; same-tab admin UI environment corrected; A/B runtime title/hash gate corrected for SERVICE; quick comparison viewed only with R10 paid-run block. V3.61.209/P168A R8, backUsage telemetry, synthetic exclusions preserved; translation runtime and backends unchanged.",
+  "quickComparePath": "diagnostic-h2-simple-ab-20261017.html",
+  "quickCompareSha256": "a1e6033a0b59a78a97176888db1f0ca303764880925e7440f317208aa705b146"
 }
