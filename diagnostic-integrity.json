@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "appVersion": "V3.61.209",
   "diagnosticPath": "diagnostic-h2-20261010.html",
-  "sha256": "85f1679ea82402958f67be2b151ff3482e3bce40e8654a2e8d2c364bda38d603",
-  "revision": "H2-BACK-TELEMETRY-EXPORT-20261016-R1-SERVICE",
-  "policy": "Service diagnostic H2: preserve existing four lanes, show stored back-translation ms/status, missing = unmeasured, exclude exact two synthetic events, no DB writes."
+  "sha256": "8c275b2513d2ec20be162ef33a33d8b8f64a91fc495c8daa7f8b921751b319e0",
+  "revision": "H2-SERVICE-SAMETAB-NAV-20261023-R1",
+  "policy": "Service diagnostic H2: preserve existing four lanes, show stored back-translation ms/status, missing = unmeasured, exclude exact two synthetic events, no DB writes. Added TEST-parity same-tab navigation bridge and active-run guard; SERVICE back-translation telemetry retained; no paid calls or DB changes."
 }
