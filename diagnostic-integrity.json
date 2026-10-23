@@ -2,9 +2,10 @@
   "schemaVersion": 1,
   "appVersion": "V3.61.209",
   "diagnosticPath": "diagnostic-h2-20261010.html",
-  "sha256": "197c84d8f38e60942eac34ffa06c59c50030e7d1ec7ddb63de354deba2df67a8",
-  "revision": "H2-SERVICE-SOURCE-PARITY-R10-LOCK-20261023-R2",
+  "sha256": "8ee2cd8134612210b0730b5c3ee94c43d7a7cb1eb81814d9b2edf54ca9d2709c",
+  "revision": "H2-READONLY-RECORD-PERF-COUNT-PARITY-20261023-R1",
   "policy": "SERVICE diagnostic parity with TEST H2 fixed-file input and runtime self-audit; same-tab admin UI environment corrected; A/B runtime title/hash gate corrected for SERVICE; quick comparison viewed only with R10 paid-run block. V3.61.209/P168A R8, backUsage telemetry, synthetic exclusions preserved; translation runtime and backends unchanged.",
   "quickComparePath": "diagnostic-h2-simple-ab-20261017.html",
-  "quickCompareSha256": "a1e6033a0b59a78a97176888db1f0ca303764880925e7440f317208aa705b146"
+  "quickCompareSha256": "a1e6033a0b59a78a97176888db1f0ca303764880925e7440f317208aa705b146",
+  "archive": "50/100/200/500/1000/2000/5000/ALL; fetch read-only; >1000 requires server count or pagination proof; no inferred full census; operation records independently capped at 500; UI preview truncated but TXT contains all collected rows. Translation runtime/DB/Cloudflare/Cloud Run/P168A R8 unchanged."
 }
