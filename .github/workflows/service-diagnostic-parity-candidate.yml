@@ -1,0 +1,51 @@
+name: SERVICE H2 same-tab candidate offline gate
+on:
+  push:
+    branches:
+      - 'test/service-diagnostic-parity-20261023-r1'
+permissions:
+  contents: read
+jobs:
+  static-and-dom:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline regression
+        run: node --test tests/*.test.cjs
+      - name: Diagnostic parity static invariants
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+          const s=fs.readFileSync('index.html','utf8'),h=fs.readFileSync('diagnostic-h2-20261010.html','utf8');
+          const meta=JSON.parse(fs.readFileSync('diagnostic-integrity.json','utf8'));
+          const sha=crypto.createHash('sha256').update(h.replace(/\r\n/g,'\n')).digest('hex');
+          assert.equal(meta.sha256,sha,'H2 source must match integrity manifest');
+          assert.match(s,/id="unifiedH2SameTab"/);
+          assert.match(s,/function openUnifiedAdminDiagnosticSameTab\(/);
+          assert.match(s,/function openUnifiedAdminDiagnostic\(/);
+          assert.match(h,/__UNIFIED_H2_EMBED_ACTIVE__/);
+          assert.match(h,/__H2_ACTIVE_RUN_LABELS__/);
+          assert.match(h,/backMs/);
+          assert.match(h,/function runPerf\(/);
+          assert.match(s,/payload-husband/);
+          assert.match(s,/payload-wife/);
+          assert.match(s,/P168A/);
+          assert.match(fs.readFileSync('version.json','utf8'),/SERVICE/);
+          console.log('OFFLINE_H2_SERVICE_PARITY_GATE PASS');
+          JS
+      - name: Chromium DOM smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$BROWSER" ]; then echo "NO_CHROME_BROWSER"; exit 1; fi
+          timeout 35s "$BROWSER" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-background-networking --no-first-run --virtual-time-budget=2500 --dump-dom "file://$PWD/index.html" > /tmp/h2-index.html 2>/tmp/h2-index.log
+          grep -Fq 'unifiedH2SameTab' /tmp/h2-index.html
+          if grep -Eiq 'Uncaught (ReferenceError|TypeError|SyntaxError)|Uncaught SyntaxError:' /tmp/h2-index.log; then cat /tmp/h2-index.log; exit 1; fi
+          timeout 35s "$BROWSER" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-background-networking --no-first-run --virtual-time-budget=2500 --dump-dom "file://$PWD/diagnostic-h2-20261010.html" > /tmp/h2-diagnostic.html 2>/tmp/h2-diagnostic.log
+          grep -Fq '최근 번역' /tmp/h2-diagnostic.html
+          if grep -Eiq 'Uncaught (ReferenceError|TypeError|SyntaxError)|Uncaught SyntaxError:' /tmp/h2-diagnostic.log; then cat /tmp/h2-diagnostic.log; exit 1; fi
